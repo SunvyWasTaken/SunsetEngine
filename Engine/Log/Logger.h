@@ -1,0 +1,43 @@
+//
+// Created by sunvy on 04/01/2026.
+//
+
+#ifndef SUNSETCRAFT_LOGGER_H
+#define SUNSETCRAFT_LOGGER_H
+
+#include <spdlog/spdlog.h>
+
+namespace SunsetEngine
+{
+    class Application;
+
+    struct Log
+    {
+        friend Application;
+    private:
+        static void Init();
+
+        static void Shutdown();
+    public:
+        static std::shared_ptr<spdlog::logger> InitLog(const std::string_view& name);
+
+        static std::shared_ptr<spdlog::logger> GetLogger(std::string name);
+    };
+
+    struct PrintScreen
+    {
+        static void Add(const std::string_view& string);
+        static void Clear();
+        static std::vector<std::string>& Get();
+    };
+}
+
+#define INITLOG(name) SunsetEngine::Log::InitLog(name);
+/*
+ * level : trace, debug, info, warn, error, critical.
+ */
+#define LOG(name, level, txt, ...) SunsetEngine::Log::GetLogger(name)->level(std::format(txt, ##__VA_ARGS__));
+
+#define PRINTSCREEN(txt, ...) SunsetEngine::PrintScreen::Add(std::format(txt, ##__VA_ARGS__));
+
+#endif //SUNSETCRAFT_LOGGER_H
