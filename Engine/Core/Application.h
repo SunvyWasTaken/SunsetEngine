@@ -23,6 +23,7 @@ namespace SunsetEngine
 
         void OnEvent(Event::Type& event);
 
+        /// Push layer will create and add the layer to the Layer Stack
         template <typename T, typename ...Args>
         requires std::is_base_of_v<SunsetEngine::Layer, T>
         void PushLayer(Args&&... args)
@@ -30,6 +31,8 @@ namespace SunsetEngine
             m_LayerStack.PushLayer<T>(std::forward<Args>(args)...);
         }
 
+        /// Add Layer will just add a existing layer to the layer stack
+        /// If you intend to create a layer and send it directly to the LayerStack Use "PushLayer"
         void AddLayer(Layer* layer)
         {
             m_LayerStack.AddLayer(layer);

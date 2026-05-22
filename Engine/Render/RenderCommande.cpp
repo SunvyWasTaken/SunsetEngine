@@ -190,6 +190,8 @@ namespace SunsetEngine
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+
+        ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
     }
 
     void RenderCommande::EndFrame()
@@ -198,11 +200,11 @@ namespace SunsetEngine
 
         if (!PrintScreen::Get().empty())
         {
-            ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
-            ImGui::Begin("Stats", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+            ImGui::Begin("Stats", nullptr);
             for (const auto& it : PrintScreen::Get())
             {
                 ImGui::Text("%s", it.c_str());
+                ImGui::SameLine();
             }
             ImGui::End();
             PrintScreen::Clear();

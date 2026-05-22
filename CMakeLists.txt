@@ -7,6 +7,8 @@ project(SunsetEngine)
 
 file(GLOB_RECURSE SOURCES "*.h" "*.cpp" "*.txt")
 
+add_subdirectory(Thirdparty/FastNoiseSIMD)
+
 add_library(${PROJECT_NAME} STATIC
         ${SOURCES}
 )
@@ -42,6 +44,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
         glm::glm
         nlohmann_json::nlohmann_json
         spdlog::spdlog_header_only
+        fastNoiseSIMD
 )
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC

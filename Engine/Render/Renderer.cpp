@@ -129,7 +129,7 @@ namespace SunsetEngine
         glfwSetScrollCallback(m_Window, CursorScrollCallback);
 
     #ifdef NDEBUG
-        glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        // glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     #endif
 
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -165,7 +165,7 @@ namespace SunsetEngine
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable;
         ImGui::StyleColorsDark();
 
         ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
