@@ -59,8 +59,7 @@ namespace SunsetEngine
         AppSetting = setting;
         m_Render = new Renderer();
         m_Render->BindEvent([this](Event::Type& event){ OnEvent(event); });
-
-        InputRegister::Init("SunsetCraft/Sources/Input.json");
+        InputRegister::Init(SAVE_PATH "Input.json");
     }
 
     Application::~Application()

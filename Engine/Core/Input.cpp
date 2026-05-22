@@ -5,9 +5,9 @@
 #include "Input.h"
 
 #include "Render/Renderer.h"
+#include "Utility/UtilityFunction.h"
 
 #include <GLFW/glfw3.h>
-#include <nlohmann/json.hpp>
 
 namespace
 {
@@ -50,7 +50,13 @@ namespace SunsetEngine
 {
     void InputRegister::Init(const std::string_view& Path)
     {
-        const nlohmann::json j = UtilityFunction::LoadJson(Path);
+        if (Path.empty())
+            return;
+
+        nlohmann::json j;
+
+        if (!UtilityFunction::DoesFileExist(Path))
+            UtilityFunction::SaveJson(Path, j);
 
         ProcessInputs(j);
     }

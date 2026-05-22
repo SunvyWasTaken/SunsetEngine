@@ -4,13 +4,16 @@
 
 #ifndef SUNSETCRAFT_UTILITYFUNCTION_H
 #define SUNSETCRAFT_UTILITYFUNCTION_H
-#include <nlohmann/json_fwd.hpp>
+
+#include <nlohmann/json.hpp>
 
 namespace SunsetEngine
 {
     struct UtilityFunction
     {
-        static nlohmann::json LoadJson(const std::string_view& path);
+        static bool DoesFileExist(const std::string_view &path);
+        static bool LoadJson(const std::string_view& path, nlohmann::json& json);
+        static bool SaveJson(const std::string_view& path, const nlohmann::json& json);
     };
 }
 
