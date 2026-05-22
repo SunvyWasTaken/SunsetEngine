@@ -1,6 +1,15 @@
+cmake_minimum_required(VERSION 3.28)
+
+add_library(SunsetEngine_compiler_flags INTERFACE)
+target_compile_features(SunsetEngine_compiler_flags INTERFACE cxx_std_20)
+
 project(SunsetEngine)
 
 file(GLOB_RECURSE SOURCES "*.h" "*.cpp" "*.txt")
+
+add_library(${PROJECT_NAME} STATIC
+        ${SOURCES}
+)
 
 find_package(OpenGL REQUIRED)
 find_package(glm CONFIG REQUIRED)
@@ -10,10 +19,6 @@ find_package(Stb REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
-
-add_library(${PROJECT_NAME} STATIC
-        ${SOURCES}
-)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
         ${Stb_INCLUDE_DIR}
@@ -31,12 +36,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
-        MiniMotor_compiler_flags
+        SunsetEngine_compiler_flags
         glm::glm
         nlohmann_json::nlohmann_json
         spdlog::spdlog_header_only
 )
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC
-        SunsetPCH.h
+        Engine/SunsetPCH.h
 )

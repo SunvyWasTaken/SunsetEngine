@@ -1,0 +1,24 @@
+{
+  "name" : "sunsetengine",
+  "version-string" : "1.0.0",
+  "dependencies" : [ {
+    "name" : "glad"
+  }, {
+    "name" : "glfw3"
+  }, {
+    "name" : "glm"
+  }, {
+    "name" : "opengl"
+  }, {
+    "name" : "stb"
+  }, {
+    "name" : "nlohmann-json"
+  }, {
+    "name" : "spdlog"
+  }, {
+    "name" : "imgui",
+    "features" : [ "glfw-binding", "opengl3-binding" ]
+  }, {
+    "name" : "entt"
+  } ]
+}
