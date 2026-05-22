@@ -1,5 +1,5 @@
 {
-  "name" : "sunsetengine",
+  "name" : "sunset-engine",
   "version-string" : "1.0.0",
   "dependencies" : [ {
     "name" : "glad"
@@ -18,7 +18,5 @@
   }, {
     "name" : "imgui",
     "features" : [ "glfw-binding", "opengl3-binding" ]
-  }, {
-    "name" : "entt"
-  } ]
+  }]
 }
