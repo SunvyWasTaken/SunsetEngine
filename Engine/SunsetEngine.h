@@ -7,5 +7,6 @@
 
 #include "Core/Application.h"
 #include "Core/ApplicationSetting.h"
+#include "BaseObject/BaseCube.h"
 
 #endif //SUNSETCRAFT_V2_SUNSETENGINE_H

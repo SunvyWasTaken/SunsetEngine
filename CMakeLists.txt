@@ -14,6 +14,7 @@ add_library(${PROJECT_NAME} STATIC
 )
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC SAVE_PATH=\"${CMAKE_SOURCE_DIR}/Save/\")
+target_compile_definitions(${PROJECT_NAME} PUBLIC ENGINE_SHADERS_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/Shaders/\")
 
 find_package(OpenGL REQUIRED)
 find_package(glm CONFIG REQUIRED)

@@ -36,6 +36,8 @@ namespace SunsetEngine
             m_Uniforms.insert_or_assign(name.data(), value);
         }
 
+        void LoadShader(const std::string_view& vertPath, const std::string_view& fragPath);
+
         std::shared_ptr<Shader> m_Shader;
         std::vector<std::shared_ptr<Textures>> m_Textures;
 

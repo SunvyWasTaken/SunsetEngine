@@ -29,6 +29,16 @@ namespace SunsetEngine
         glm::vec3 GetForward() const;
         glm::vec3 GetUp() const;
 
+        void MoveForward(float speed);
+
+        void MoveBackward(float speed);
+
+        void MoveRight(float speed);
+
+        void MoveLeft(float speed);
+
+        void MoveUp(float speed);
+
         void SetForward(const glm::vec3& forward);
 
         void AddPosition(const glm::vec3& position);

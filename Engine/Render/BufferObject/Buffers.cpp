@@ -157,14 +157,14 @@ namespace SunsetEngine
         return m_Stride;
     }
 
-    VertexBuffer::VertexBuffer(const void* data, size_t size, size_t dataSize)
+    VertexBuffer::VertexBuffer(const void* data, size_t typeSize, size_t dataSize)
         : m_Id(0)
         , m_Layout({})
-        , m_Size(size)
+        , m_Size(typeSize)
     {
         glGenBuffers(1, &m_Id);
         Bind();
-        glBufferData(GL_ARRAY_BUFFER, size * dataSize, data, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, typeSize * dataSize, data, GL_STATIC_DRAW);
         Unbind();
     }
     

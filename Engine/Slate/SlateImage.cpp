@@ -8,14 +8,14 @@
 
 #include "Core/Application.h"
 #include "Core/ApplicationSetting.h"
-#include "Render/Buffers.h"
+#include "../Render/BufferObject/Buffers.h"
 #include "Render/Drawable.h"
 #include "Render/Image.h"
 #include "Render/Material.h"
 #include "Render/Mesh.h"
 #include "Render/Shader.h"
 #include "Render/Texture.h"
-#include "Render/VertexArray.h"
+#include "Render/BufferObject/VertexArray.h"
 
 namespace
 {
@@ -48,7 +48,7 @@ namespace SunsetEngine
         m_Drawable = std::make_unique<Drawable>();
         if (shader.expired())
         {
-            m_Drawable->m_Material->m_Shader = std::make_shared<Shader>("Engine/Shaders/SlateImage.vert", "Engine/Shaders/SlateImage.frag");
+            m_Drawable->m_Material->m_Shader = std::make_shared<Shader>(ENGINE_SHADERS_PATH "SlateImage.vert", ENGINE_SHADERS_PATH "SlateImage.frag");
             shader = m_Drawable->m_Material->m_Shader;
         }
         else

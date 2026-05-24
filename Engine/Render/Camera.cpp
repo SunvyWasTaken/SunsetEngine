@@ -85,6 +85,31 @@ namespace SunsetEngine
         return m_Up;
     }
 
+    void Camera::MoveForward(float speed)
+    {
+        AddPosition(m_Forward * speed);
+    }
+
+    void Camera::MoveBackward(float speed)
+    {
+        AddPosition(m_Forward * -speed);
+    }
+
+    void Camera::MoveRight(float speed)
+    {
+        AddPosition(glm::normalize(glm::cross(m_Forward, m_Up) * speed));
+    }
+
+    void Camera::MoveLeft(float speed)
+    {
+        AddPosition(glm::normalize(glm::cross(m_Forward, m_Up)) * speed * -1.0f);
+    }
+
+    void Camera::MoveUp(float speed)
+    {
+        AddPosition(m_Up * speed);
+    }
+
     void Camera::SetForward(const glm::vec3& forward)
     {
         m_Forward = forward;

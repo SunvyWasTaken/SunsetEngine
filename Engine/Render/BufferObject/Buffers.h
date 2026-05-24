@@ -53,7 +53,7 @@ namespace SunsetEngine
     class VertexBuffer
     {
     public:
-        VertexBuffer(const void* data, size_t size, size_t dataSize);
+        VertexBuffer(const void* data, size_t typeSize, size_t dataSize);
         virtual ~VertexBuffer();
 
         void Bind() const;

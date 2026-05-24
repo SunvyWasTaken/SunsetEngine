@@ -168,7 +168,7 @@ namespace
             cmd.material->m_Shader->SetVec3("location", cmd.position);
 
             if (cmd.state.DrawInstance)
-                glDrawArraysInstanced(ToGLPrimitiveType(cmd.state.primitiveType), 0, 6, cmd.indexCount);
+                glDrawArraysInstanced(ToGLPrimitiveType(cmd.state.primitiveType), 0, 32, cmd.indexCount);
             else if (cmd.state.HasIndice)
                 glDrawElements(ToGLPrimitiveType(cmd.state.primitiveType), cmd.indexCount, GL_UNSIGNED_INT, nullptr);
             else
@@ -220,6 +220,9 @@ namespace SunsetEngine
     void RenderCommande::Submit(const SunsetEngine::Drawable& drawable)
     {
         DrawCommand cmd;
+        if (!drawable)
+            return;
+
         cmd.vao = drawable.m_Mesh->GetVAO();
         cmd.indexCount = drawable.m_Mesh->GetVertexCount();
         cmd.material = drawable.m_Material;

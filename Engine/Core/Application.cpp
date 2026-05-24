@@ -12,6 +12,8 @@
 #include <chrono>
 #include <deque>
 
+#include "BaseObject/BaseCube.h"
+
 namespace
 {
     SunsetEngine::Application* app = nullptr;
@@ -64,6 +66,7 @@ namespace SunsetEngine
 
     Application::~Application()
     {
+        DeleteBaseCube();
         m_LayerStack.Clear();
 
         delete m_Render;

@@ -61,4 +61,9 @@ namespace SunsetEngine
             }, value);
         }
     }
+
+    void Material::LoadShader(const std::string_view &vertPath, const std::string_view &fragPath)
+    {
+        m_Shader = std::make_shared<Shader>(vertPath, fragPath);
+    }
 }

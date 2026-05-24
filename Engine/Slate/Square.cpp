@@ -10,11 +10,11 @@
 
 #include <glm/gtc/constants.hpp>
 
-#include "Render/Buffers.h"
+#include "../Render/BufferObject/Buffers.h"
 #include "Render/Drawable.h"
 #include "Render/Material.h"
 #include "Render/Mesh.h"
-#include "Render/VertexArray.h"
+#include "Render/BufferObject/VertexArray.h"
 
 namespace
 {
@@ -37,7 +37,7 @@ namespace SunsetEngine
 
         if (_shader.expired())
         {
-            m_Drawable->m_Material->m_Shader =std::make_shared<Shader>("Engine/Shaders/Square.vert", "Engine/Shaders/Square.frag");
+            m_Drawable->m_Material->m_Shader =std::make_shared<Shader>(ENGINE_SHADERS_PATH "Square.vert", ENGINE_SHADERS_PATH "Square.frag");
             _shader = m_Drawable->m_Material->m_Shader;
         }
         else

@@ -11,12 +11,17 @@ namespace SunsetEngine
     Drawable::Drawable()
         : m_Mesh(nullptr)
         , m_Material(std::make_shared<Material>())
-        , m_Position(0.f)
+        , m_Position(0.f, 0.f, 0.f)
         , m_RenderState({})
     {
     }
 
     Drawable::~Drawable()
     {
+    }
+
+    Drawable::operator bool() const
+    {
+        return m_Mesh != nullptr && m_Material != nullptr;
     }
 }
