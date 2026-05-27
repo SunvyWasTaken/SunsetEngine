@@ -20,8 +20,30 @@ namespace SunsetEngine
     {
     }
 
+    std::shared_ptr<Mesh> Mesh::CreateMesh(const void *data, size_t typeSize, size_t size,
+        const std::vector<uint32_t> &indices, const std::initializer_list<BufferElement> &layout)
+    {
+        auto vertexBuffer = std::make_shared<VertexBuffer>(data, typeSize, size);
+        vertexBuffer->SetLayout(layout);
+        auto indiceBuffer = std::make_shared<IndiceBuffer>(indices);
+        return CreateMesh(vertexBuffer, indiceBuffer);
+    }
+
+    std::shared_ptr<Mesh> Mesh::CreateMesh(const std::shared_ptr<VertexBuffer> &vertexBuffer,
+        const std::shared_ptr<IndiceBuffer> &indiceBuffer)
+    {
+        auto vao = std::make_unique<VertexArray>();
+        vao->AddVertexBuffer(vertexBuffer);
+        vao->AddIndexBuffer(*indiceBuffer);
+
+        auto mesh = std::make_shared<Mesh>(vao);
+        mesh->m_VertexBuffer = vertexBuffer;
+        mesh->m_IndiceBuffer = indiceBuffer;
+        return mesh;
+    }
+
     std::shared_ptr<Mesh> Mesh::CreateVertexOnly(const void *data, size_t typeSize, size_t size,
-        const std::initializer_list<BufferElement> &layout)
+                                                 const std::initializer_list<BufferElement> &layout)
     {
         auto vertexBuffer = std::make_shared<VertexBuffer>(data, typeSize, size);
         vertexBuffer->SetLayout(layout);

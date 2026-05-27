@@ -37,7 +37,7 @@ namespace SunsetEngine
         // Take a path to a .json with the key in it.
         static void Init(const std::string_view& Path);
         static bool OnEvent(const Event::Type& event);
-        static glm::vec2 GetMouseDelta();
+        [[nodiscard]] static glm::vec2 GetMouseDelta();
         static bool IsKeyPress(const std::string_view& name);
         static void RegisterAction(const std::string_view& name, const std::function<bool(const Event::Action&)>& func);
     };

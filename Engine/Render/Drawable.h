@@ -70,6 +70,7 @@ namespace SunsetEngine
         std::shared_ptr<Mesh> m_Mesh;
         std::shared_ptr<Material> m_Material;
         glm::vec3 m_Position;
+        glm::vec3 m_Scale;
         RenderState m_RenderState;
     };
 }

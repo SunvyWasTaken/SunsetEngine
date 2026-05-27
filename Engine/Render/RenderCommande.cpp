@@ -16,6 +16,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/ext/matrix_transform.hpp>
 
 #include "Camera.h"
 #include "Material.h"
@@ -34,7 +35,7 @@ namespace
         uint32_t vao;
         uint32_t indexCount;
         std::shared_ptr<SunsetEngine::Material> material;
-        glm::vec3 position;
+        glm::mat4 model;
         SunsetEngine::RenderState state;
     };
 
@@ -146,7 +147,6 @@ namespace
             {
                 currentShader = cmd.material->m_Shader;
                 currentShader->Use();
-                currentShader->SetVec3("camPosition", m_FrameData.position);
                 currentShader->SetMat4("view", m_FrameData.view);
                 currentShader->SetMat4("projection", m_FrameData.projection);
             }
@@ -165,7 +165,7 @@ namespace
 
             cmd.material->UniformBind();
 
-            cmd.material->m_Shader->SetVec3("location", cmd.position);
+            cmd.material->m_Shader->SetMat4("model", cmd.model);
 
             if (cmd.state.DrawInstance)
                 glDrawArraysInstanced(ToGLPrimitiveType(cmd.state.primitiveType), 0, 32, cmd.indexCount);
@@ -226,7 +226,11 @@ namespace SunsetEngine
         cmd.vao = drawable.m_Mesh->GetVAO();
         cmd.indexCount = drawable.m_Mesh->GetVertexCount();
         cmd.material = drawable.m_Material;
-        cmd.position = drawable.m_Position;
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, drawable.m_Position);
+        model = glm::scale(model, glm::vec3(drawable.m_Scale));
+        cmd.model = model;
         cmd.state = drawable.m_RenderState;
         m_DrawCommands.emplace_back(cmd);
     }

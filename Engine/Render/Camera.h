@@ -39,6 +39,8 @@ namespace SunsetEngine
 
         void MoveUp(float speed);
 
+        void MoveDown(float speed);
+
         void SetForward(const glm::vec3& forward);
 
         void AddPosition(const glm::vec3& position);

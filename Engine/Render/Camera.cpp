@@ -46,7 +46,7 @@ namespace SunsetEngine
     }
 
     Camera::Camera()
-        : m_Position(0.f, 50.f, 0.f)
+        : m_Position(0.f, 0.f, 0.f)
         , m_Forward(0.0f, 0.0f, -1.0f)
         , m_Up(0.0f, 1.0f, 0.0f)
         , m_Yaw(-90.f)
@@ -97,7 +97,7 @@ namespace SunsetEngine
 
     void Camera::MoveRight(float speed)
     {
-        AddPosition(glm::normalize(glm::cross(m_Forward, m_Up) * speed));
+        AddPosition(glm::normalize(glm::cross(m_Forward, m_Up)) * speed);
     }
 
     void Camera::MoveLeft(float speed)
@@ -108,6 +108,11 @@ namespace SunsetEngine
     void Camera::MoveUp(float speed)
     {
         AddPosition(m_Up * speed);
+    }
+
+    void Camera::MoveDown(float speed)
+    {
+        AddPosition(m_Up * -speed);
     }
 
     void Camera::SetForward(const glm::vec3& forward)

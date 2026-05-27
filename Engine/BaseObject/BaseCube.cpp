@@ -8,37 +8,80 @@
 #include "Render/Material.h"
 #include "Render/Mesh.h"
 #include "Render/RenderCommande.h"
-#include "Render/Shader.h"
 #include "Render/BufferObject/Buffers.h"
 
 namespace
 {
     std::shared_ptr<SunsetEngine::Drawable> DrawableCube = nullptr;
 
-    const std::array<glm::vec3, 36> data = std::array<glm::vec3, 36>{
+    struct Vertex {
+        glm::vec3 pos;
+        glm::vec3 normal;
+    };
+
+    const std::array<Vertex, 24> data{
+
+        // Front (Z-)
+        Vertex{{0,0,0}, {0,0,-1}},
+        {{1,0,0}, {0,0,-1}},
+        {{1,1,0}, {0,0,-1}},
+        {{0,1,0}, {0,0,-1}},
+
+        // Back (Z+)
+        {{1,0,1}, {0,0,1}},
+        {{0,0,1}, {0,0,1}},
+        {{0,1,1}, {0,0,1}},
+        {{1,1,1}, {0,0,1}},
+
+        // Left (X-)
+        {{0,0,1}, {-1,0,0}},
+        {{0,0,0}, {-1,0,0}},
+        {{0,1,0}, {-1,0,0}},
+        {{0,1,1}, {-1,0,0}},
+
+        // Right (X+)
+        {{1,0,0}, {1,0,0}},
+        {{1,0,1}, {1,0,0}},
+        {{1,1,1}, {1,0,0}},
+        {{1,1,0}, {1,0,0}},
+
+        // Top (Y+)
+        {{0,1,0}, {0,1,0}},
+        {{1,1,0}, {0,1,0}},
+        {{1,1,1}, {0,1,0}},
+        {{0,1,1}, {0,1,0}},
+
+        // Bottom (Y-)
+        {{0,0,1}, {0,-1,0}},
+        {{1,0,1}, {0,-1,0}},
+        {{1,0,0}, {0,-1,0}},
+        {{0,0,0}, {0,-1,0}},
+    };
+
+    const std::vector<uint32_t> indices{
         // Front
-        glm::vec3(0,0,0), glm::vec3(1,0,0), glm::vec3(1,1,0),
-        glm::vec3(0,0,0), glm::vec3(1,1,0), glm::vec3(0,1,0),
+        0, 1, 2,
+        0, 2, 3,
 
         // Back
-        glm::vec3(1,0,1), glm::vec3(0,0,1), glm::vec3(0,1,1),
-        glm::vec3(1,0,1), glm::vec3(0,1,1), glm::vec3(1,1,1),
+        5, 4, 7,
+        5, 7, 6,
 
         // Left
-        glm::vec3(0,0,1), glm::vec3(0,0,0), glm::vec3(0,1,0),
-        glm::vec3(0,0,1), glm::vec3(0,1,0), glm::vec3(0,1,1),
+        4, 0, 3,
+        4, 3, 7,
 
         // Right
-        glm::vec3(1,0,0), glm::vec3(1,0,1), glm::vec3(1,1,1),
-        glm::vec3(1,0,0), glm::vec3(1,1,1), glm::vec3(1,1,0),
+        1, 5, 6,
+        1, 6, 2,
 
         // Top
-        glm::vec3(0,1,0), glm::vec3(1,1,0), glm::vec3(1,1,1),
-        glm::vec3(0,1,0), glm::vec3(1,1,1), glm::vec3(0,1,1),
+        3, 2, 6,
+        3, 6, 7,
 
         // Bottom
-        glm::vec3(0,0,1), glm::vec3(1,0,1), glm::vec3(1,0,0),
-        glm::vec3(0,0,1), glm::vec3(1,0,0), glm::vec3(0,0,0)
+        4, 5, 1,
+        4, 1, 0
     };
 }
 
@@ -54,17 +97,17 @@ namespace SunsetEngine
         if (!DrawableCube)
         {
             SunsetEngine::BufferElement buffer{SunsetEngine::ShaderDataType::Float3, "position"};
+            SunsetEngine::BufferElement Normal{SunsetEngine::ShaderDataType::Float3, "normal"};
 
             std::shared_ptr<SunsetEngine::Drawable> d = std::make_shared<SunsetEngine::Drawable>();
-            d->m_Mesh = SunsetEngine::Mesh::CreateVertexOnly(data.data(), sizeof(glm::vec3), data.size(), {buffer});
+            d->m_Mesh = SunsetEngine::Mesh::CreateMesh(data.data(), sizeof(Vertex), data.size(), indices, {buffer, Normal});
             d->m_Material->LoadShader(ENGINE_SHADERS_PATH "Cube.vert", ENGINE_SHADERS_PATH "Cube.frag");
-            d->m_RenderState.HasIndice = false;
             DrawableCube = d;
         }
 
-        std::shared_ptr<SunsetEngine::Drawable> d;
-        d = DrawableCube;
-        d->m_Position = position;
-        RenderCommande::Submit(*d);
+        SunsetEngine::Drawable d;
+        d = *DrawableCube;
+        d.m_Position = position;
+        RenderCommande::Submit(d);
     }
 }

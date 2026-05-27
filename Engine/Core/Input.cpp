@@ -57,6 +57,8 @@ namespace SunsetEngine
 
         if (!UtilityFunction::DoesFileExist(Path))
             UtilityFunction::SaveJson(Path, j);
+        else
+            UtilityFunction::LoadJson(Path, j);
 
         ProcessInputs(j);
     }
