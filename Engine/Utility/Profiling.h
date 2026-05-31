@@ -6,28 +6,29 @@
 
 namespace Sunset
 {
-    struct Profiling
+    struct ProfileData
     {
-        std::chrono::steady_clock::time_point start;
-        const std::string name;
-        explicit Profiling(const std::string_view& _name)
-            : name(_name)
-        {
-            start = std::chrono::steady_clock::now();
-        }
+        static void Free();
+        static std::vector<std::string>& Get();
+    };
 
-        ~Profiling()
-        {
-            const auto end = std::chrono::steady_clock::now();
-            const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-            PRINTSCREEN("{} : {}ms", name, duration.count());
-        }
+    struct Profiling final
+    {
+        explicit Profiling(const std::string_view& _name);
+
+        ~Profiling();
+
+        std::chrono::high_resolution_clock::time_point m_StartTimePoint;
+        const std::string name;
     };
 }
 
+#define SS_PROFILING
+
 #ifdef SS_PROFILING
-    #define SS_PROFILE_SCOPE(name) ::Sunset::Profiling name##__LINE__(#name)
-    #define SS_PROFILE_FUNCTION() SS_PROFILE_SCOPE(__FUNCSIG__)
+    #define SS_CONCAT(x, y) x##y
+    #define SS_PROFILE_SCOPE(name) ::Sunset::Profiling SS_CONCAT(ProfileScope_, __LINE__)(name)
+    #define SS_PROFILE_FUNCTION() SS_PROFILE_SCOPE(__func__)
 #else
     #define SS_PROFILE_SCOPE(name)
     #define SS_PROFILE_FUNCTION()

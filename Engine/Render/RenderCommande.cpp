@@ -127,7 +127,7 @@ namespace
 
     void FlushDrawCommand()
     {
-        HeapTest t(std::format("FlushDrawCommand {}", m_DrawCommands.size()));
+        SS_PROFILE_FUNCTION();
 
         // Sort cmd
         std::shared_ptr<Sunset::Shader> currentShader = nullptr;
@@ -204,12 +204,20 @@ namespace Sunset
             for (const auto& it : PrintScreen::Get())
             {
                 ImGui::Text("%s", it.c_str());
-                ImGui::SameLine();
             }
             ImGui::End();
             PrintScreen::Clear();
         }
-
+        if (!ProfileData::Get().empty())
+        {
+            ImGui::Begin("Profiling", nullptr);
+            for (const auto& it : ProfileData::Get())
+            {
+                ImGui::Text("%s", it.c_str());
+            }
+            ImGui::End();
+            ProfileData::Free();
+        }
         ImGui::Render();
 
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -217,7 +225,7 @@ namespace Sunset
         glfwSwapBuffers(static_cast<GLFWwindow*>(Application::GetWindow()));
     }
 
-    void RenderCommande::Submit(const Sunset::Drawable& drawable)
+    void RenderCommande::Submit(const Drawable& drawable)
     {
         DrawCommand cmd;
         if (!drawable)
@@ -235,7 +243,7 @@ namespace Sunset
         m_DrawCommands.emplace_back(cmd);
     }
 
-    void RenderCommande::UseCamera(const Sunset::Camera& camera)
+    void RenderCommande::UseCamera(const Camera& camera)
     {
         m_FrameData.position = camera.GetPosition();
         m_FrameData.view = camera.GetViewMatrix();
