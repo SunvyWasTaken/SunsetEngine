@@ -5,7 +5,7 @@
 #ifndef SUNSETCRAFT_SLATE_H
 #define SUNSETCRAFT_SLATE_H
 
-namespace SunsetEngine
+namespace Sunset
 {
     class Drawable;
 

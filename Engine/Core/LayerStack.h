@@ -6,7 +6,7 @@
 #define SUNSETCRAFT_LAYERSTACK_H
 #include "Layer.h"
 
-namespace SunsetEngine
+namespace Sunset
 {
     class Layer;
 

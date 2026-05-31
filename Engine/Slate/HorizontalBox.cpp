@@ -4,7 +4,7 @@
 
 #include "HorizontalBox.h"
 
-namespace SunsetEngine
+namespace Sunset
 {
     void HorizontalBox::Draw() const
     {

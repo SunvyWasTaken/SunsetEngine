@@ -71,7 +71,7 @@ namespace
     }
 }
 
-namespace SunsetEngine
+namespace Sunset
 {
     Shader::Shader(const std::string_view& vertPath, const std::string_view& fragPath)
         : id(0)

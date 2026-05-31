@@ -19,7 +19,7 @@
 
 namespace
 {
-    std::weak_ptr<SunsetEngine::Shader> shader;
+    std::weak_ptr<Sunset::Shader> shader;
 
     struct vertice
     {
@@ -39,7 +39,7 @@ namespace
 
 }
 
-namespace SunsetEngine
+namespace Sunset
 {
     SlateImage::SlateImage()
         : Slate()

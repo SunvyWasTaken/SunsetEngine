@@ -16,10 +16,10 @@
 
 namespace
 {
-    SunsetEngine::Application* app = nullptr;
-    SunsetEngine::ApplicationSetting AppSetting;
+    Sunset::Application* app = nullptr;
+    Sunset::ApplicationSetting AppSetting;
     bool IsAppRunning = true;
-    SunsetEngine::Renderer* m_Render = nullptr;
+    Sunset::Renderer* m_Render = nullptr;
 
     struct EMA
     {
@@ -49,7 +49,7 @@ namespace
     EMA fpsema;
 }
 
-namespace SunsetEngine
+namespace Sunset
 {
     Application::Application(const ApplicationSetting& setting)
         : m_LayerStack()
@@ -93,7 +93,7 @@ namespace SunsetEngine
             fpsema.Display();
 
             {
-                HeapTest logic("Logic part");
+                SS_PROFILE_SCOPE("Logic part");
                 for (const auto& layer : m_LayerStack)
                 {
                     layer->OnUpdate(dt.count());
@@ -101,7 +101,7 @@ namespace SunsetEngine
             }
 
             {
-                HeapTest Render("Render part");
+                SS_PROFILE_SCOPE("Render part");
                 RenderCommande::BeginFrame();
                 for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )
                 {

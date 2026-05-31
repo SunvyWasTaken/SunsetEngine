@@ -15,7 +15,7 @@ namespace
     std::vector<std::string> m_PrintScreen;
 }
 
-namespace SunsetEngine
+namespace Sunset
 {
     void Log::Init()
     {

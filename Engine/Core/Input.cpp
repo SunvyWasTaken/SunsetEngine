@@ -16,7 +16,7 @@ namespace
 
     std::unordered_map<std::string, unsigned int> keyMap;
 
-    std::unordered_map<unsigned int, std::function<bool(const SunsetEngine::Event::Action&)>> ActionRegister;
+    std::unordered_map<unsigned int, std::function<bool(const Sunset::Event::Action&)>> ActionRegister;
 
     void ProcessInputs(const nlohmann::json& inputs)
     {
@@ -46,7 +46,7 @@ namespace
     }
 }
 
-namespace SunsetEngine
+namespace Sunset
 {
     void InputRegister::Init(const std::string_view& Path)
     {

@@ -21,5 +21,6 @@
 
 #include "Log/Logger.h"
 #include "Utility/DebugGLM.h"
+#include "Utility/Profiling.h"
 
 #endif //SUNSETCRAFT_SUNSETPCH_H

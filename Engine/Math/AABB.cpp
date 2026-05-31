@@ -4,7 +4,7 @@
 
 #include "AABB.h"
 
-namespace SunsetEngine
+namespace Sunset
 {
     bool AABB::contains(const glm::vec3& point)
     {

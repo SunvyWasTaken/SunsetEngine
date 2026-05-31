@@ -5,7 +5,7 @@
 #ifndef SUNSETCRAFT_MATERIAL_H
 #define SUNSETCRAFT_MATERIAL_H
 
-namespace SunsetEngine
+namespace Sunset
 {
     class Textures;
     class Shader;

@@ -7,7 +7,7 @@
 #include "Render/Drawable.h"
 #include "Render/RenderCommande.h"
 
-namespace SunsetEngine
+namespace Sunset
 {
     Slate::Slate()
         : bIsDirty(true)

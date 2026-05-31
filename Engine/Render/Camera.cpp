@@ -22,7 +22,7 @@ namespace
     }
 }
 
-namespace SunsetEngine
+namespace Sunset
 {
     bool Frustum::IsVisible(const AABB& box)
     {

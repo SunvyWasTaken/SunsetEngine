@@ -7,7 +7,7 @@
 #include "BufferObject/Buffers.h"
 #include "BufferObject/VertexArray.h"
 
-namespace SunsetEngine
+namespace Sunset
 {
     Mesh::Mesh(std::unique_ptr<VertexArray>& vao)
         : m_VertexArray(std::move(vao))

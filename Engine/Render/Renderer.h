@@ -6,7 +6,7 @@
 #define SUNSETCRAFT_RENDERER_H
 #include "Core/Input.h"
 
-namespace SunsetEngine
+namespace Sunset
 {
     class Renderer final
     {

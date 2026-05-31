@@ -5,7 +5,7 @@
 #ifndef SUNSETCRAFTV2_BASECUBE_H
 #define SUNSETCRAFTV2_BASECUBE_H
 
-namespace SunsetEngine
+namespace Sunset
 {
     void DeleteBaseCube();
 

@@ -20,10 +20,10 @@ namespace
 {
     constexpr int NbrPoints = 32;
 
-    std::weak_ptr<SunsetEngine::Shader> _shader;
+    std::weak_ptr<Sunset::Shader> _shader;
 }
 
-namespace SunsetEngine
+namespace Sunset
 {
     Square::Square(const glm::ivec2& pos, const glm::ivec2& size, const glm::vec4& color, int radius)
         : m_Color(color)

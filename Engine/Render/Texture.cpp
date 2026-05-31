@@ -25,7 +25,7 @@ namespace
     }
 }
 
-namespace SunsetEngine
+namespace Sunset
 {
     /// Texture
 

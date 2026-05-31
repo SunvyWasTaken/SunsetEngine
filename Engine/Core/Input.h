@@ -5,7 +5,7 @@
 #ifndef SUNSETCRAFT_INPUT_H
 #define SUNSETCRAFT_INPUT_H
 
-namespace SunsetEngine
+namespace Sunset
 {
     struct Event
     {

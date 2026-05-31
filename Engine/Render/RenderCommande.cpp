@@ -34,9 +34,9 @@ namespace
     {
         uint32_t vao;
         uint32_t indexCount;
-        std::shared_ptr<SunsetEngine::Material> material;
+        std::shared_ptr<Sunset::Material> material;
         glm::mat4 model;
-        SunsetEngine::RenderState state;
+        Sunset::RenderState state;
     };
 
     // to change from just a vector to a 2 vector.
@@ -44,47 +44,47 @@ namespace
 
     FrameData m_FrameData;
 
-    GLenum ToGLBlendFactor(SunsetEngine::BlendFactor factor)
+    GLenum ToGLBlendFactor(Sunset::BlendFactor factor)
     {
         switch (factor)
         {
-        case SunsetEngine::BlendFactor::Zero:                return GL_ZERO;
-        case SunsetEngine::BlendFactor::One:                 return GL_ONE;
-        case SunsetEngine::BlendFactor::SrcAlpha:            return GL_SRC_ALPHA;
-        case SunsetEngine::BlendFactor::OneMinusSrcAlpha:    return GL_ONE_MINUS_SRC_ALPHA;
-        case SunsetEngine::BlendFactor::DstAlpha:            return GL_DST_ALPHA;
-        case SunsetEngine::BlendFactor::OneMinusDstAlpha:    return GL_ONE_MINUS_DST_ALPHA;
-        case SunsetEngine::BlendFactor::SrcColor:            return GL_SRC_COLOR;
-        case SunsetEngine::BlendFactor::OneMinusSrcColor:    return GL_ONE_MINUS_SRC_COLOR;
+        case Sunset::BlendFactor::Zero:                return GL_ZERO;
+        case Sunset::BlendFactor::One:                 return GL_ONE;
+        case Sunset::BlendFactor::SrcAlpha:            return GL_SRC_ALPHA;
+        case Sunset::BlendFactor::OneMinusSrcAlpha:    return GL_ONE_MINUS_SRC_ALPHA;
+        case Sunset::BlendFactor::DstAlpha:            return GL_DST_ALPHA;
+        case Sunset::BlendFactor::OneMinusDstAlpha:    return GL_ONE_MINUS_DST_ALPHA;
+        case Sunset::BlendFactor::SrcColor:            return GL_SRC_COLOR;
+        case Sunset::BlendFactor::OneMinusSrcColor:    return GL_ONE_MINUS_SRC_COLOR;
         default:                               return GL_ONE;
         }
     }
 
-    GLenum ToGLCullMode(SunsetEngine::CullMode mode)
+    GLenum ToGLCullMode(Sunset::CullMode mode)
     {
         switch (mode)
         {
-        case SunsetEngine::CullMode::Back:  return GL_BACK;
-        case SunsetEngine::CullMode::Front: return GL_FRONT;
+        case Sunset::CullMode::Back:  return GL_BACK;
+        case Sunset::CullMode::Front: return GL_FRONT;
         default:              return GL_BACK;
         }
     }
 
-    GLenum ToGLPrimitiveType(const SunsetEngine::PrimitiveType& type)
+    GLenum ToGLPrimitiveType(const Sunset::PrimitiveType& type)
     {
         switch (type)
         {
-        case SunsetEngine::PrimitiveType::Points:           return GL_POINT;
-        case SunsetEngine::PrimitiveType::Lines:            return GL_LINES;
-        case SunsetEngine::PrimitiveType::LineStrip:        return GL_LINE_STRIP;
-        case SunsetEngine::PrimitiveType::Triangles:        return GL_TRIANGLES;
-        case SunsetEngine::PrimitiveType::TriangleStrip:    return GL_TRIANGLE_STRIP;
-        case SunsetEngine::PrimitiveType::TriangleFan:      return GL_TRIANGLE_FAN;
+        case Sunset::PrimitiveType::Points:           return GL_POINT;
+        case Sunset::PrimitiveType::Lines:            return GL_LINES;
+        case Sunset::PrimitiveType::LineStrip:        return GL_LINE_STRIP;
+        case Sunset::PrimitiveType::Triangles:        return GL_TRIANGLES;
+        case Sunset::PrimitiveType::TriangleStrip:    return GL_TRIANGLE_STRIP;
+        case Sunset::PrimitiveType::TriangleFan:      return GL_TRIANGLE_FAN;
         }
         return GL_POINT;
     }
 
-    void ApplyState(const SunsetEngine::RenderState& state)
+    void ApplyState(const Sunset::RenderState& state)
     {
         // Depth Test
         if (state.depthTest)
@@ -110,7 +110,7 @@ namespace
         }
 
         // Face Culling
-        if (state.cullMode == SunsetEngine::CullMode::None)
+        if (state.cullMode == Sunset::CullMode::None)
         {
             glDisable(GL_CULL_FACE);
         }
@@ -130,8 +130,8 @@ namespace
         HeapTest t(std::format("FlushDrawCommand {}", m_DrawCommands.size()));
 
         // Sort cmd
-        std::shared_ptr<SunsetEngine::Shader> currentShader = nullptr;
-        std::shared_ptr<SunsetEngine::Material> currentMaterial = nullptr;
+        std::shared_ptr<Sunset::Shader> currentShader = nullptr;
+        std::shared_ptr<Sunset::Material> currentMaterial = nullptr;
         GLuint currentVAO = 0;
 
         // glEnable(GL_DEPTH_TEST);
@@ -179,7 +179,7 @@ namespace
     }
 }
 
-namespace SunsetEngine
+namespace Sunset
 {
     void RenderCommande::BeginFrame()
     {
@@ -217,7 +217,7 @@ namespace SunsetEngine
         glfwSwapBuffers(static_cast<GLFWwindow*>(Application::GetWindow()));
     }
 
-    void RenderCommande::Submit(const SunsetEngine::Drawable& drawable)
+    void RenderCommande::Submit(const Sunset::Drawable& drawable)
     {
         DrawCommand cmd;
         if (!drawable)
@@ -235,7 +235,7 @@ namespace SunsetEngine
         m_DrawCommands.emplace_back(cmd);
     }
 
-    void RenderCommande::UseCamera(const SunsetEngine::Camera& camera)
+    void RenderCommande::UseCamera(const Sunset::Camera& camera)
     {
         m_FrameData.position = camera.GetPosition();
         m_FrameData.view = camera.GetViewMatrix();

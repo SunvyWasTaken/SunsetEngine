@@ -8,12 +8,12 @@
 
 #define CREATE_PATH(p) std::filesystem::path filepath(p); std::filesystem::create_directory(filepath.parent_path());
 
-bool SunsetEngine::UtilityFunction::DoesFileExist(const std::string_view &path)
+bool Sunset::UtilityFunction::DoesFileExist(const std::string_view &path)
 {
     return std::filesystem::exists(path);
 }
 
-bool SunsetEngine::UtilityFunction::LoadJson(const std::string_view& path, nlohmann::json& json)
+bool Sunset::UtilityFunction::LoadJson(const std::string_view& path, nlohmann::json& json)
 {
     std::ifstream file;
     file.open(path.data());
@@ -29,7 +29,7 @@ bool SunsetEngine::UtilityFunction::LoadJson(const std::string_view& path, nlohm
     return true;
 }
 
-bool SunsetEngine::UtilityFunction::SaveJson(const std::string_view &path, const nlohmann::json &json = nlohmann::json::object())
+bool Sunset::UtilityFunction::SaveJson(const std::string_view &path, const nlohmann::json &json = nlohmann::json::object())
 {
     CREATE_PATH(path);
 

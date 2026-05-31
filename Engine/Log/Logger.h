@@ -2,12 +2,11 @@
 // Created by sunvy on 04/01/2026.
 //
 
-#ifndef SUNSETCRAFT_LOGGER_H
-#define SUNSETCRAFT_LOGGER_H
+#pragma once
 
 #include <spdlog/spdlog.h>
 
-namespace SunsetEngine
+namespace Sunset
 {
     class Application;
 
@@ -32,12 +31,10 @@ namespace SunsetEngine
     };
 }
 
-#define INITLOG(name) SunsetEngine::Log::InitLog(name);
+#define INITLOG(name) Sunset::Log::InitLog(name);
 /*
  * level : trace, debug, info, warn, error, critical.
  */
-#define LOG(name, level, txt, ...) SunsetEngine::Log::GetLogger(name)->level(std::format(txt, ##__VA_ARGS__));
+#define LOG(name, level, txt, ...) ::Sunset::Log::GetLogger(name)->level(std::format(txt, ##__VA_ARGS__));
 
-#define PRINTSCREEN(txt, ...) SunsetEngine::PrintScreen::Add(std::format(txt, ##__VA_ARGS__));
-
-#endif //SUNSETCRAFT_LOGGER_H
+#define PRINTSCREEN(txt, ...) ::Sunset::PrintScreen::Add(std::format(txt, ##__VA_ARGS__));

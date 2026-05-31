@@ -5,7 +5,7 @@
 #ifndef SUNSETCRAFT_IMAGE_H
 #define SUNSETCRAFT_IMAGE_H
 
-namespace SunsetEngine
+namespace Sunset
 {
     class Image
     {

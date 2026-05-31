@@ -12,7 +12,7 @@ namespace
     struct vertice;
 }
 
-namespace SunsetEngine
+namespace Sunset
 {
     class Textures;
     class Camera;

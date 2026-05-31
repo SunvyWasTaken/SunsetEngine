@@ -5,7 +5,7 @@
 #ifndef SUNSETCRAFT_BUFFERS_H
 #define SUNSETCRAFT_BUFFERS_H
 
-namespace SunsetEngine
+namespace Sunset
 {
     enum class ShaderDataType {
         Float, Float2, Float3, Float4,

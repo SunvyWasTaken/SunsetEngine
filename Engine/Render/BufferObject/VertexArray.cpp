@@ -8,7 +8,7 @@
 
 #include <glad/glad.h>
 
-namespace SunsetEngine
+namespace Sunset
 {
     VertexArray::VertexArray()
        : m_Id(0)

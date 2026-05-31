@@ -5,7 +5,7 @@
 #ifndef SUNSETCRAFT_CAMERA_H
 #define SUNSETCRAFT_CAMERA_H
 
-namespace SunsetEngine
+namespace Sunset
 {
     struct AABB;
 

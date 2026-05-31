@@ -16,55 +16,55 @@ namespace
         int type = 0;
     };
 
-    constexpr ShaderDataTypeInfo GetInfo(SunsetEngine::ShaderDataType type)
+    constexpr ShaderDataTypeInfo GetInfo(Sunset::ShaderDataType type)
     {
         switch (type)
         {
-            case SunsetEngine::ShaderDataType::Float:
+            case Sunset::ShaderDataType::Float:
                 {
                     return {sizeof(float), 1, GL_FLOAT};
                 }
-            case SunsetEngine::ShaderDataType::Float2:
+            case Sunset::ShaderDataType::Float2:
                 {
                     return {sizeof(float) * 2, 2, GL_FLOAT};
                 }
-            case SunsetEngine::ShaderDataType::Float3:
+            case Sunset::ShaderDataType::Float3:
                 {
                     return {sizeof(float) * 3, 3, GL_FLOAT};
                 }
-            case SunsetEngine::ShaderDataType::Float4:
+            case Sunset::ShaderDataType::Float4:
                 {
                     return {sizeof(float) * 4, 4, GL_FLOAT};
                 }
-            case SunsetEngine::ShaderDataType::Mat3:
+            case Sunset::ShaderDataType::Mat3:
                 {
                     return {sizeof(float) * 3 * 3, 3 * 3, GL_FLOAT};
                 }
-            case SunsetEngine::ShaderDataType::Mat4:
+            case Sunset::ShaderDataType::Mat4:
                 {
                     return {sizeof(float) * 4 * 4, 4 * 4,GL_FLOAT};
                 }
-            case SunsetEngine::ShaderDataType::Int:
+            case Sunset::ShaderDataType::Int:
                 {
                     return {sizeof(int), 1, GL_INT};
                 }
-            case SunsetEngine::ShaderDataType::Int2:
+            case Sunset::ShaderDataType::Int2:
                 {
                     return {sizeof(int) * 2, 2, GL_INT};
                 }
-            case SunsetEngine::ShaderDataType::Int3:
+            case Sunset::ShaderDataType::Int3:
                 {
                     return {sizeof(int) * 3, 3, GL_INT};
                 }
-            case SunsetEngine::ShaderDataType::Int4:
+            case Sunset::ShaderDataType::Int4:
                 {
                     return {sizeof(int) * 4, 4, GL_INT};
                 }
-            case SunsetEngine::ShaderDataType::UInt:
+            case Sunset::ShaderDataType::UInt:
                 {
                     return {sizeof(uint32_t), 1, GL_UNSIGNED_INT};
                 }
-            case SunsetEngine::ShaderDataType::Bool:
+            case Sunset::ShaderDataType::Bool:
                 {
                     return {sizeof(bool), 1, GL_BOOL};
                 }
@@ -72,7 +72,7 @@ namespace
         return {};
     }
 
-    size_t CalculateStride(std::vector<SunsetEngine::BufferElement>& type)
+    size_t CalculateStride(std::vector<Sunset::BufferElement>& type)
     {
         size_t offset = 0;
         size_t stride = 0;
@@ -88,7 +88,7 @@ namespace
     }
 }
 
-namespace SunsetEngine
+namespace Sunset
 {
     BufferElement::BufferElement(ShaderDataType type, const std::string_view& name, bool normalized)
         : name(name)

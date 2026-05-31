@@ -5,7 +5,7 @@
 #ifndef SUNSETCRAFT_DRAWABLE_H
 #define SUNSETCRAFT_DRAWABLE_H
 
-namespace SunsetEngine
+namespace Sunset
 {
     class Material;
     class Textures;

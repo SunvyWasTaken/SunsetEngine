@@ -9,7 +9,7 @@
 
 #include <glad/glad.h>
 
-namespace SunsetEngine
+namespace Sunset
 {
     Image::Image(const std::string_view& path)
        : m_ImageName(path)

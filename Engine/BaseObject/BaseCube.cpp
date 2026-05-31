@@ -12,7 +12,7 @@
 
 namespace
 {
-    std::shared_ptr<SunsetEngine::Drawable> DrawableCube = nullptr;
+    std::shared_ptr<Sunset::Drawable> DrawableCube = nullptr;
 
     struct Vertex {
         glm::vec3 pos;
@@ -59,33 +59,33 @@ namespace
     };
 
     const std::vector<uint32_t> indices{
-        // Front
+        // Front (Z-)
         0, 1, 2,
         0, 2, 3,
 
-        // Back
-        5, 4, 7,
-        5, 7, 6,
+        // Back (Z+)
+        4, 5, 6,
+        4, 6, 7,
 
-        // Left
-        4, 0, 3,
-        4, 3, 7,
+        // Left (X-)
+        8, 9, 10,
+        8, 10, 11,
 
-        // Right
-        1, 5, 6,
-        1, 6, 2,
+        // Right (X+)
+        12, 13, 14,
+        12, 14, 15,
 
-        // Top
-        3, 2, 6,
-        3, 6, 7,
+        // Top (Y+)
+        16, 17, 18,
+        16, 18, 19,
 
-        // Bottom
-        4, 5, 1,
-        4, 1, 0
+        // Bottom (Y-)
+        20, 21, 22,
+        20, 22, 23
     };
 }
 
-namespace SunsetEngine
+namespace Sunset
 {
     void DeleteBaseCube()
     {
@@ -96,16 +96,16 @@ namespace SunsetEngine
     {
         if (!DrawableCube)
         {
-            SunsetEngine::BufferElement buffer{SunsetEngine::ShaderDataType::Float3, "position"};
-            SunsetEngine::BufferElement Normal{SunsetEngine::ShaderDataType::Float3, "normal"};
+            Sunset::BufferElement buffer{Sunset::ShaderDataType::Float3, "position"};
+            Sunset::BufferElement Normal{Sunset::ShaderDataType::Float3, "normal"};
 
-            std::shared_ptr<SunsetEngine::Drawable> d = std::make_shared<SunsetEngine::Drawable>();
-            d->m_Mesh = SunsetEngine::Mesh::CreateMesh(data.data(), sizeof(Vertex), data.size(), indices, {buffer, Normal});
+            std::shared_ptr<Sunset::Drawable> d = std::make_shared<Sunset::Drawable>();
+            d->m_Mesh = Sunset::Mesh::CreateMesh(data.data(), sizeof(Vertex), data.size(), indices, {buffer, Normal});
             d->m_Material->LoadShader(ENGINE_SHADERS_PATH "Cube.vert", ENGINE_SHADERS_PATH "Cube.frag");
             DrawableCube = d;
         }
 
-        SunsetEngine::Drawable d;
+        Sunset::Drawable d;
         d = *DrawableCube;
         d.m_Position = position;
         RenderCommande::Submit(d);

@@ -8,7 +8,7 @@
 #include <string>
 #include <glm/vec2.hpp>
 
-namespace SunsetEngine
+namespace Sunset
 {
     struct ApplicationSetting
     {

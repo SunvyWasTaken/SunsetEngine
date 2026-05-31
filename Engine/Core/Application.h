@@ -8,7 +8,7 @@
 #include "Input.h"
 #include "LayerStack.h"
 
-namespace SunsetEngine
+namespace Sunset
 {
     struct ApplicationSetting;
     class Layer;
@@ -25,7 +25,7 @@ namespace SunsetEngine
 
         /// Push layer will create and add the layer to the Layer Stack
         template <typename T, typename ...Args>
-        requires std::is_base_of_v<SunsetEngine::Layer, T>
+        requires std::is_base_of_v<Sunset::Layer, T>
         void PushLayer(Args&&... args)
         {
             m_LayerStack.PushLayer<T>(std::forward<Args>(args)...);
@@ -45,7 +45,7 @@ namespace SunsetEngine
 
     private:
 
-        SunsetEngine::LayerStack m_LayerStack;
+        Sunset::LayerStack m_LayerStack;
     };
 }
 

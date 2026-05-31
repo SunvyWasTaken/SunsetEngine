@@ -5,7 +5,7 @@
 #ifndef SUNSETCRAFT_SHADER_H
 #define SUNSETCRAFT_SHADER_H
 
-namespace SunsetEngine
+namespace Sunset
 {
     class Shader
     {

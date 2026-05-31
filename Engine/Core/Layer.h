@@ -6,7 +6,7 @@
 #define SUNSETCRAFT_LAYER_H
 #include "Input.h"
 
-namespace SunsetEngine
+namespace Sunset
 {
     class Layer
     {

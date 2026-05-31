@@ -4,7 +4,7 @@
 
 #include "LayerStack.h"
 
-namespace SunsetEngine
+namespace Sunset
 {
     void LayerStack::Clear()
     {

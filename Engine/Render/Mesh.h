@@ -5,7 +5,7 @@
 #ifndef SUNSETCRAFT_MESH_H
 #define SUNSETCRAFT_MESH_H
 
-namespace SunsetEngine
+namespace Sunset
 {
     struct BufferElement;
     class IndiceBuffer;

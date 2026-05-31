@@ -4,7 +4,7 @@
 
 #include "Layer.h"
 
-namespace SunsetEngine
+namespace Sunset
 {
     bool Layer::OnEvent(Event::Type& event)
     {

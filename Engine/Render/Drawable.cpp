@@ -6,7 +6,7 @@
 
 #include "Material.h"
 
-namespace SunsetEngine
+namespace Sunset
 {
     Drawable::Drawable()
         : m_Mesh(nullptr)

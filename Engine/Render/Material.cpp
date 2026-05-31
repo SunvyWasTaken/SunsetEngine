@@ -9,7 +9,7 @@
 #include "Shader.h"
 #include "Texture.h"
 
-namespace SunsetEngine
+namespace Sunset
 {
     Material::Material()
         : m_Shader(nullptr)

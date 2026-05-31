@@ -5,7 +5,7 @@
 #ifndef SUNSETCRAFT_VERTEXARRAY_H
 #define SUNSETCRAFT_VERTEXARRAY_H
 
-namespace SunsetEngine
+namespace Sunset
 {
     class VertexBuffer;
     class IndiceBuffer;

@@ -7,7 +7,7 @@
 
 #include <nlohmann/json.hpp>
 
-namespace SunsetEngine
+namespace Sunset
 {
     struct UtilityFunction
     {

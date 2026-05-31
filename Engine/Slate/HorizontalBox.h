@@ -7,7 +7,7 @@
 
 #include "Slate.h"
 
-namespace SunsetEngine
+namespace Sunset
 {
     class HorizontalBox : public Slate
     {

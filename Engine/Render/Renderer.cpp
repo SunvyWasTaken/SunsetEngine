@@ -20,7 +20,7 @@ namespace
 {
     GLFWwindow* m_Window = nullptr;
 
-    std::function<void(SunsetEngine::Event::Type&)> EventCallback;
+    std::function<void(Sunset::Event::Type&)> EventCallback;
 
     void GLAPIENTRY OpenGLDebugCallback(
         GLenum source,
@@ -44,7 +44,7 @@ namespace
         LOG("OpenGL", error, "[{}] {}", severityStr, message);
     }
 
-    GLFWwindow* CreateWindow(const SunsetEngine::ApplicationSetting& setting)
+    GLFWwindow* CreateWindow(const Sunset::ApplicationSetting& setting)
     {
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -58,23 +58,23 @@ namespace
         return glfwCreateWindow(setting.WindowSize.x, setting.WindowSize.y, setting.WindowTitle.data(), NULL, NULL);
     }
 
-    SunsetEngine::Event::Action ItoA(const int action)
+    Sunset::Event::Action ItoA(const int action)
     {
         if (action == 0)
-            return SunsetEngine::Event::Action::Release;
+            return Sunset::Event::Action::Release;
 
         if (action == 1)
-            return SunsetEngine::Event::Action::Press;
+            return Sunset::Event::Action::Press;
 
         if (action == 2)
-            return SunsetEngine::Event::Action::Hold;
+            return Sunset::Event::Action::Hold;
 
-        return SunsetEngine::Event::Action::Release;
+        return Sunset::Event::Action::Release;
     }
 
     void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
-        SunsetEngine::Event::Type event = SunsetEngine::Event::KeyEvent{static_cast<unsigned int>(key), ItoA(action)};
+        Sunset::Event::Type event = Sunset::Event::KeyEvent{static_cast<unsigned int>(key), ItoA(action)};
         EventCallback(event);
     }
 
@@ -86,24 +86,24 @@ namespace
 
     void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
     {
-        SunsetEngine::Event::Type event = SunsetEngine::Event::MouseEvent{button, 0, ItoA(action)};
+        Sunset::Event::Type event = Sunset::Event::MouseEvent{button, 0, ItoA(action)};
         EventCallback(event);
     }
 
     void CursorScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
     {
-        SunsetEngine::Event::Type event = SunsetEngine::Event::MouseEvent{0, static_cast<int>(yoffset), ItoA(1)};
+        Sunset::Event::Type event = Sunset::Event::MouseEvent{0, static_cast<int>(yoffset), ItoA(1)};
         EventCallback(event);
     }
 
     void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     {
         glViewport(0, 0, width, height);
-        SunsetEngine::Application::ResizeWindow({width, height});
+        Sunset::Application::ResizeWindow({width, height});
     }
 }
 
-namespace SunsetEngine
+namespace Sunset
 {
     Renderer::Renderer()
     {
@@ -174,7 +174,6 @@ namespace SunsetEngine
         ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
         ImGui_ImplOpenGL3_Init("#version 330");
     }
-
     Renderer::~Renderer()
     {
         ImGui_ImplOpenGL3_Shutdown();

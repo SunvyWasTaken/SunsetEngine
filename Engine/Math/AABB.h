@@ -6,7 +6,7 @@
 #define SUNSETCRAFT_AABB_H
 #include <glm/vec3.hpp>
 
-namespace SunsetEngine
+namespace Sunset
 {
     struct AABB
     {

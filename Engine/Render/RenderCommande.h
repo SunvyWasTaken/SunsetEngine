@@ -5,7 +5,7 @@
 #ifndef SUNSETCRAFT_RENDERCOMMANDE_H
 #define SUNSETCRAFT_RENDERCOMMANDE_H
 
-namespace SunsetEngine
+namespace Sunset
 {
     class Camera;
     class Drawable;

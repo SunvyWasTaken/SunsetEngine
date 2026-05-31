@@ -6,7 +6,7 @@
 #define SUNSETCRAFT_TEXTURE_H
 
 
-namespace SunsetEngine
+namespace Sunset
 {
     class Shader;
     struct Image;
