@@ -24,6 +24,7 @@ find_package(Stb REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
+find_package(enet CONFIG)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
         ${Stb_INCLUDE_DIR}
@@ -34,6 +35,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
         glfw
         glad::glad
         imgui::imgui
+        enet
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
