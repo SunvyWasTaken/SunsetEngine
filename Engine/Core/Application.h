@@ -25,7 +25,7 @@ namespace Sunset
 
         /// Push layer will create and add the layer to the Layer Stack
         template <typename T, typename ...Args>
-        requires std::is_base_of_v<Sunset::Layer, T>
+        requires std::is_base_of_v<Layer, T>
         void PushLayer(Args&&... args)
         {
             m_LayerStack.PushLayer<T>(std::forward<Args>(args)...);
@@ -45,7 +45,7 @@ namespace Sunset
 
     private:
 
-        Sunset::LayerStack m_LayerStack;
+        LayerStack m_LayerStack;
     };
 }
 
