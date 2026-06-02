@@ -26,6 +26,9 @@ namespace Sunset
         void Update(float dt);
         void Shutdown();
 
+        void Send(/*data to send*/);
+        void Broadcast();
+
         template <typename T>
         void RegisterHandler(std::function<void(PeerId, const T&)> handler)
         {

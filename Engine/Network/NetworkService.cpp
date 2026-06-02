@@ -70,4 +70,16 @@ namespace Sunset
         LOG("Engine", info, "Shutdown Server")
         g_Sunset.reset();
     }
+
+    void NetworkService::Send()
+    {
+        if (!m_Transport)
+            return;
+    }
+
+    void NetworkService::Broadcast()
+    {
+        if (!m_Transport)
+            return;
+    }
 }
