@@ -6,12 +6,6 @@
 
 #include "Network/INetworkTransport.h"
 
-struct _ENetHost;
-struct _ENetPeer;
-
-using ENetHost = _ENetHost;
-using ENetPeer = _ENetPeer;
-
 namespace Sunset
 {
     class ENetTransport : public INetworkTransport
@@ -21,27 +15,33 @@ namespace Sunset
 
         ~ENetTransport() override;
 
-        bool Host(uint16_t port, size_t maxClients) override;
+        bool StartServer(uint16_t port, uint32_t maxPeers) override;
 
-        bool Connect(const std::string &addressStr, uint16_t port) override;
+        bool Connect(const EndPoint& endpoint) override;
 
         void Disconnect(PeerId peer) override;
 
-        void Update() override;
+        void Send(
+            PeerId peer,
+            ChannelId channel,
+            std::span<const std::byte> payload,
+            DeliveryType mode
+        ) override;
 
-        void Send(PeerId peer, const void *data, size_t size, ChannelId channel, DeliveryType mode) override;
+        void Broadcast(
+            ChannelId channel,
+            std::span<const std::byte> payload,
+            DeliveryType mode
+        ) override;
 
-        std::vector<NetworkEvent> PollEvents() override;
+        std::vector<NetworkEvent::Type> PollEvents() override;
+
+        void Flush() override;
+
+        void Shutdown() override;
 
     private:
-        ENetHost *m_Host = nullptr;
-
-        PeerId m_NextPeerId = 1;
-
-        std::unordered_map<PeerId, ENetPeer*> m_Peers;
-
-        std::unordered_map<ENetPeer*, PeerId> m_PeerIds;
-
-        std::vector<NetworkEvent> m_Events;
+        struct Impl;
+        std::unique_ptr<Impl> m_Impl;
     };
 }

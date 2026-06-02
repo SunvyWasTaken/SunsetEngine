@@ -8,141 +8,91 @@
 
 namespace Sunset
 {
+    struct ENetTransport::Impl
+    {
+        explicit operator bool() const
+        {
+            return client != nullptr && peer != nullptr;
+        }
+
+        ENetHost* client = nullptr;
+        ENetPeer* peer = nullptr;
+    };
+
+
     ENetTransport::ENetTransport()
     {
+        LOG("Engine", info, "ENetTransport Create");
+        m_Impl = std::make_unique<Impl>();
+        if (enet_initialize() != 0)
+        {
+            LOG("Engine", error, "Failed to initialize");
+            return;
+        }
     }
 
     ENetTransport::~ENetTransport()
     {
+        LOG("Engine", info, "ENetTransport Destroy");
+        enet_deinitialize();
     }
 
-    bool ENetTransport::Host(uint16_t port, size_t maxClients)
+    bool ENetTransport::StartServer(uint16_t port, uint32_t maxClients)
     {
-        ENetAddress address;
-        address.host = ENET_HOST_ANY;
-        address.port = port;
-
-        m_Host = enet_host_create(&address, maxClients, 2, 0, 0);
-
-        return m_Host != nullptr;
+        m_Impl->client = enet_host_create(NULL, maxClients, maxClients, 0, 0);
+        if (m_Impl->client == nullptr)
+        {
+            LOG("Engine", error, "Failed to create ENetHost");
+            return false;
+        }
+        return true;
     }
 
-    bool ENetTransport::Connect(const std::string &addressStr, uint16_t port)
+    bool ENetTransport::Connect(const EndPoint& endpoint)
     {
         ENetAddress address;
-        enet_address_set_host(&address, addressStr.c_str());
-        address.port = port;
 
-        ENetPeer* peer = enet_host_connect(m_Host, &address, 2, 0);
-
-        return peer != nullptr;
+        enet_address_set_host(&address, endpoint.Address.c_str());
+        address.port = endpoint.Port;
+        m_Impl->peer = enet_host_connect(m_Impl->client, &address, 0, 0);
+        if (m_Impl->peer == nullptr)
+        {
+            LOG("Engine", error, "Failed to connect to ENetHost");
+            return false;
+        }
+        return true;
     }
 
     void ENetTransport::Disconnect(PeerId peer)
     {
     }
 
-    void ENetTransport::Update()
+    void ENetTransport::Send(PeerId peer, ChannelId channel, std::span<const std::byte> payload, DeliveryType mode)
     {
+    }
+
+    void ENetTransport::Broadcast(ChannelId channel, std::span<const std::byte> payload, DeliveryType mode)
+    {
+    }
+
+    std::vector<NetworkEvent::Type> ENetTransport::PollEvents()
+    {
+        if (!*m_Impl)
+            return {};
+
         ENetEvent event;
-
-        while (enet_host_service(
-            m_Host,
-            &event,
-            0) > 0)
+        if (enet_host_service(m_Impl->client, &event, 5000) > 0 && event.type == ENET_EVENT_TYPE_CONNECT)
         {
-            switch (event.type)
-            {
-                case ENET_EVENT_TYPE_CONNECT:
-                {
-                    PeerId id = AllocatePeerId();
-
-                    m_Peers[id] = event.peer;
-                    m_PeerIds[event.peer] = id;
-
-                    m_Events.push_back(
-                        PeerConnected{id});
-
-                    break;
-                }
-
-                case ENET_EVENT_TYPE_DISCONNECT:
-                {
-                    auto it =
-                        m_PeerIds.find(event.peer);
-
-                    if (it != m_PeerIds.end())
-                    {
-                        PeerId id = it->second;
-
-                        m_Peers.erase(id);
-                        m_PeerIds.erase(it);
-
-                        m_Events.push_back(
-                            PeerDisconnected{id});
-                    }
-
-                    break;
-                }
-
-                case ENET_EVENT_TYPE_RECEIVE:
-                {
-                    auto it =
-                        m_PeerIds.find(event.peer);
-
-                    if (it != m_PeerIds.end())
-                    {
-                        PacketReceived packet;
-
-                        packet.Peer = it->second;
-
-                        packet.Data.resize(
-                            event.packet->dataLength);
-
-                        std::memcpy(
-                            packet.Data.data(),
-                            event.packet->data,
-                            event.packet->dataLength);
-
-                        m_Events.push_back(
-                            std::move(packet));
-                    }
-
-                    enet_packet_destroy(
-                        event.packet);
-
-                    break;
-                }
-
-                default:
-                    break;
-            }
+            LOG("Engine", info, "Connection to 127.0.0.1:7777 succeed");
         }
-    }
-
-    void ENetTransport::Send(PeerId peer, const void *data, size_t size, ChannelId channel, DeliveryType mode)
-    {
-        auto it = m_Peers.find(peer);
-
-        if (it == m_Peers.end())
-            return;
-
-        ENetPacket* packet =
-            enet_packet_create(
-                data,
-                size,
-                mode == DeliveryType::Reliable
-                    ? ENET_PACKET_FLAG_RELIABLE
-                    : 0);
-
-        enet_peer_send(
-            it->second,
-            channel,
-            packet);
-    }
-
-    std::vector<NetworkEvent> ENetTransport::PollEvents()
-    {
         return {};
+    }
+
+    void ENetTransport::Flush()
+    {
+    }
+
+    void ENetTransport::Shutdown()
+    {
     }
 }

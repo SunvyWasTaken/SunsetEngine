@@ -8,21 +8,23 @@
 
 namespace Sunset
 {
-    struct PeerConnected
+    namespace NetworkEvent
     {
-        PeerId Peer;
-    };
+        struct PeerConnected
+        {
+            PeerId Peer;
+        };
 
-    struct PeerDisconnected
-    {
-        PeerId Peer;
-    };
+        struct PeerDisconnected
+        {
+            PeerId Peer;
+        };
 
-    struct PacketReceived
-    {
-        PeerId Peer;
-        std::vector<std::byte> Data;
-    };
+        struct PacketReceived
+        {
+            Packet packet;
+        };
 
-    using NetworkEvent = std::variant<PeerConnected, PeerDisconnected, PacketReceived>;
+        using Type = std::variant<PeerConnected, PeerDisconnected, PacketReceived>;
+    }
 }
