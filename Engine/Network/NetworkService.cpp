@@ -62,7 +62,25 @@ namespace Sunset
         if (!m_Transport)
             return;
 
-        m_Transport->PollEvents();
+        auto events = m_Transport->PollEvents();
+
+        for (auto& event : events)
+        {
+            std::visit(overloads
+            {
+                [&](NetworkEvent::PeerConnected)
+                {
+                },
+                [&](NetworkEvent::PeerDisconnected)
+                {
+
+                },
+                [&](NetworkEvent::PacketReceived& e)
+                {
+                    Broadcast(e.packet.channel, e.packet.payload, DeliveryType::Reliable);
+                }
+            }, event);
+        }
     }
 
     void NetworkService::Shutdown()
@@ -71,15 +89,21 @@ namespace Sunset
         g_Sunset.reset();
     }
 
-    void NetworkService::Send()
+    void NetworkService::Send(PeerId peer, ChannelId channel, std::span<const std::byte> payload, DeliveryType mode)
     {
         if (!m_Transport)
             return;
+
+        m_Transport->Send(peer, channel, payload, mode);
+        m_Transport->Flush();
     }
 
-    void NetworkService::Broadcast()
+    void NetworkService::Broadcast(ChannelId channel, std::span<const std::byte> payload, DeliveryType mode)
     {
         if (!m_Transport)
             return;
+
+        m_Transport->Broadcast(channel, payload, mode);
+        m_Transport->Flush();
     }
 }

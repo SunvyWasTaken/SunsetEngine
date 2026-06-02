@@ -10,6 +10,9 @@ namespace Sunset
 {
     class INetworkTransport;
 
+    struct IMessage
+    {};
+
     class NetworkService
     {
     public:
@@ -26,17 +29,26 @@ namespace Sunset
         void Update(float dt);
         void Shutdown();
 
-        void Send(/*data to send*/);
-        void Broadcast();
+        void Send(
+            PeerId peer,
+            ChannelId channel,
+            std::span<const std::byte> payload,
+            DeliveryType mode = DeliveryType::Reliable
+        );
+
+        void Broadcast(
+            ChannelId channel,
+            std::span<const std::byte> payload,
+            DeliveryType mode = DeliveryType::Reliable
+        );
 
         template <typename T>
-        void RegisterHandler(std::function<void(PeerId, const T&)> handler)
+        void RegisterHandler(std::function<void(const T&)> handler)
         {
 
         }
 
     private:
         std::unique_ptr<INetworkTransport> m_Transport;
-
     };
 }
