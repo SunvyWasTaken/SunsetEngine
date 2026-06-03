@@ -77,7 +77,7 @@ namespace Sunset
                 },
                 [&](NetworkEvent::PacketReceived& e)
                 {
-                    Broadcast(e.packet.channel, e.packet.payload, DeliveryType::Reliable);
+                    Dispatch(e.packet.channel, e.packet.payload);
                 }
             }, event);
         }
@@ -105,5 +105,17 @@ namespace Sunset
 
         m_Transport->Broadcast(channel, payload, mode);
         m_Transport->Flush();
+    }
+
+    void NetworkService::Dispatch(ChannelId channel, std::span<const std::byte> payload)
+    {
+        const auto handler = m_Handlers.find(channel);
+        if (handler == m_Handlers.end())
+        {
+            LOG("Engine", warn, "No Network handler registered for channel {}", channel);
+            return;
+        }
+
+        handler->second(payload);
     }
 }
