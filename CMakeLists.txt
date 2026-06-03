@@ -25,6 +25,7 @@ find_package(nlohmann_json CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(unofficial-enet CONFIG REQUIRED)
+find_package(EnTT CONFIG REQUIRED)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
         ${Stb_INCLUDE_DIR}
@@ -34,6 +35,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
         OpenGL::GL
         glfw
         glad::glad
+        spdlog::spdlog_header_only
         imgui::imgui
         unofficial::enet::enet
 )
@@ -46,8 +48,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
         SunsetEngine_compiler_flags
         glm::glm
         nlohmann_json::nlohmann_json
-        spdlog::spdlog_header_only
         fastNoiseSIMD
+        EnTT::EnTT
 )
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC

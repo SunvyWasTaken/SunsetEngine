@@ -2,8 +2,7 @@
 // Created by sunvy on 15/12/2025.
 //
 
-#ifndef SUNSETCRAFT_APPLICATION_H
-#define SUNSETCRAFT_APPLICATION_H
+#pragma once
 
 #include "Input.h"
 #include "LayerStack.h"
@@ -48,5 +47,3 @@ namespace Sunset
         LayerStack m_LayerStack;
     };
 }
-
-#endif //SUNSETCRAFT_APPLICATION_H

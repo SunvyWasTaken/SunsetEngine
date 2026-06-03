@@ -70,13 +70,15 @@ namespace Sunset
             {
                 [&](NetworkEvent::PeerConnected)
                 {
+                    LOG("Engine", trace, "Peer connected")
                 },
                 [&](NetworkEvent::PeerDisconnected)
                 {
-
+                    LOG("Engine", trace, "Peer disconnected")
                 },
                 [&](NetworkEvent::PacketReceived& e)
                 {
+                    LOG("Engine", trace, "Packet received")
                     Dispatch(e.packet.channel, e.packet.payload);
                 }
             }, event);
@@ -85,7 +87,7 @@ namespace Sunset
 
     void NetworkService::Shutdown()
     {
-        LOG("Engine", info, "Shutdown Server")
+        LOG("Engine", info, "Shutdown Network Service")
         g_Sunset.reset();
     }
 

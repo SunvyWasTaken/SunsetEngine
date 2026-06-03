@@ -19,6 +19,8 @@
     "name" : "imgui",
     "features" : [ "glfw-binding", "opengl3-binding" ]
   }, {
-     "name": "enet"
-    }]
+      "name": "enet"
+  }, {
+    "name" : "entt"
+  }]
 }
