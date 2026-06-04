@@ -15,4 +15,14 @@ namespace Sunset
     {
         return m_peerId;
     }
+
+    void Controller::Possess(const Entity &entity)
+    {
+        m_entity = entity;
+    }
+
+    void Controller::UnPossess()
+    {
+        m_entity = {};
+    }
 }

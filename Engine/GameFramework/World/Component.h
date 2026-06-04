@@ -3,12 +3,23 @@
 //
 
 #pragma once
-#include <glm/fwd.hpp>
+
+#include "Render/Drawable.h"
 
 namespace Sunset
 {
     struct Component
     {
+    };
+
+    struct TagComponent : public Component
+    {
+        std::string Tag;
+
+        TagComponent() = default;
+        TagComponent(const TagComponent&) = default;
+        TagComponent(const std::string& tag) : Tag(tag) {}
+
     };
 
     struct TransformComponent : public Component
@@ -20,5 +31,10 @@ namespace Sunset
 
         operator glm::mat4& () { return Transform; }
         operator const glm::mat4& () const { return Transform; }
+    };
+
+    struct MeshComponent : public Component
+    {
+        Drawable m_mesh;
     };
 } // Sunset

@@ -6,7 +6,6 @@
 
 #include "Component.h"
 #include "World.h"
-#include "entt/entt.hpp"
 
 namespace Sunset
 {
@@ -18,13 +17,10 @@ namespace Sunset
         virtual ~Entity();
 
         template <typename T, typename ...Args>
-        void AddComponent(Args&&... args)
+        T& AddComponent(Args&&... args)
         {
             static_assert(std::is_base_of_v<Component, T>, "The class should be derived from Component");
-            if (!m_World)
-                return;
-
-            m_World->Reg().emplace<T>(m_Id, std::forward<Args>(args)...);
+            return m_World->Reg().emplace<T>(m_Id, std::forward<Args>(args)...);
         }
 
         template <typename T>
@@ -34,6 +30,17 @@ namespace Sunset
                 return nullptr;
 
             return m_World->Reg().try_get<T>(m_Id);
+        }
+
+        template <typename T>
+        void RemoveComponent()
+        {
+            m_World->Reg().remove<T>(m_Id);
+        }
+
+        explicit operator bool() const
+        {
+            return m_World != nullptr;
         }
 
     private:

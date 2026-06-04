@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include "World/Entity.h"
 
 namespace Sunset
 {
@@ -15,7 +16,11 @@ namespace Sunset
 
         [[nodiscard]] PeerId GetPeerId() const;
 
+        void Possess(const Entity& entity);
+        void UnPossess();
+
     private:
         PeerId m_peerId;
+        Entity m_entity;
     };
 }

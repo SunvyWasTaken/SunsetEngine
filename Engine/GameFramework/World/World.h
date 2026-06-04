@@ -19,13 +19,7 @@ namespace Sunset
 
         void Update(float deltatime);
 
-        template <typename T>
-        [[nodiscard]] T CreateEntity()
-        {
-            static_assert(std::is_base_of_v<Entity, T>, "The class should be derived from Entity");
-            T entity{this, m_Registry.create()};
-            return entity;
-        }
+        Entity CreateEntity(const std::string& name);
 
         entt::registry& Reg()
         {
