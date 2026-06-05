@@ -24,7 +24,7 @@ namespace Sunset
 
     struct TransformComponent : public Component
     {
-        glm::mat4 Transform;
+        glm::mat4 Transform{1.f};
         TransformComponent() = default;
         TransformComponent(const TransformComponent&) = default;
         TransformComponent(const glm::mat4& transform);

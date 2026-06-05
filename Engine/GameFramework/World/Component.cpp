@@ -11,8 +11,6 @@ namespace Sunset
     TransformComponent::TransformComponent(const glm::mat4 &transform)
         : Transform(transform)
     {
-        Transform = glm::translate(glm::mat4(1.0), glm::vec3(0.0f, 0.0f, 5.0f));
-        Transform = glm::scale(Transform, glm::vec3(1.0f, 1.0f, 1.0f));
     }
 
     glm::vec3 TransformComponent::GetLocation() const
