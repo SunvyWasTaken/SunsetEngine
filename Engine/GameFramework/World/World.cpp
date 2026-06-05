@@ -9,6 +9,7 @@
 #include "Entity.h"
 #include "BaseObject/BaseCube.h"
 #include "Core/Input.h"
+#include "Network/NetworkService.h"
 #include "Render/RenderCommande.h"
 
 namespace
@@ -22,6 +23,11 @@ namespace Sunset
         : m_Registry()
         , m_Controllers()
     {
+        NetworkService::Get().RegisterPeerConnectedHandler([this](PeerId peerId)
+        {
+            OnPeerConnected(peerId);
+        });
+
         CreatePlayer(0);
     }
 
@@ -62,6 +68,14 @@ namespace Sunset
 
     void World::CreatePlayer(PeerId peer, bool local)
     {
+        const auto controller = std::ranges::find_if(m_Controllers, [peer](const Controller& controller)
+        {
+            return controller.GetPeerId() == peer;
+        });
+
+        if (controller != m_Controllers.end())
+            return;
+
         std::unique_ptr<IInputSource> inputSource = nullptr;
         if (local)
             inputSource = std::make_unique<LocalInputSource>();

@@ -52,6 +52,94 @@ namespace
         static constexpr Sunset::ChannelId ChannelId = 1;
         uint32_t Buttons = 0;
     };
+
+    enum InputButton : uint32_t
+    {
+        Input_Forward = 1 << 0,
+        Input_Backward = 1 << 1,
+        Input_Left = 1 << 2,
+        Input_Right = 1 << 3,
+    };
+
+        std::unordered_map<Sunset::PeerId, NetworkInputMessage> networkInputs;
+    bool networkInputHandlerRegistered = false;
+
+    bool IsPressed(const Sunset::Event::Type& action)
+    {
+        return std::visit(overloads{
+            [](const Sunset::Event::KeyEvent& event)
+            {
+                return event.action == Sunset::Event::Action::Press || event.action == Sunset::Event::Action::Hold;
+            },
+            [](const Sunset::Event::MouseEvent& event)
+            {
+                return event.action == Sunset::Event::Action::Press || event.action == Sunset::Event::Action::Hold;
+            }
+        }, action);
+    }
+
+    void SetAction(Sunset::Event::Type& action, Sunset::Event::Action state)
+    {
+        std::visit(overloads{
+            [state](Sunset::Event::KeyEvent& event)
+            {
+                event.action = state;
+            },
+            [state](Sunset::Event::MouseEvent& event)
+            {
+                event.action = state;
+            }
+        }, action);
+    }
+
+    void SetInputState(Sunset::InputState& inputState, const std::string& name, bool pressed)
+    {
+        const auto input = inputState.RegisteredInputs.find(name);
+        if (input == inputState.RegisteredInputs.end())
+            return;
+
+        SetAction(input->second, pressed ? Sunset::Event::Action::Press : Sunset::Event::Action::Release);
+    }
+
+    uint32_t BuildNetworkButtons(const Sunset::InputState& inputState)
+    {
+        uint32_t buttons = 0;
+
+        const auto addButton = [&](const std::string& name, InputButton button)
+        {
+            const auto input = inputState.RegisteredInputs.find(name);
+            if (input != inputState.RegisteredInputs.end() && IsPressed(input->second))
+                buttons |= button;
+        };
+
+        addButton("Forward", Input_Forward);
+        addButton("Backward", Input_Backward);
+        addButton("Left", Input_Left);
+        addButton("Right", Input_Right);
+
+        return buttons;
+    }
+
+    void ApplyNetworkButtons(Sunset::InputState& inputState, uint32_t buttons)
+    {
+        SetInputState(inputState, "Forward", (buttons & Input_Forward) != 0);
+        SetInputState(inputState, "Backward", (buttons & Input_Backward) != 0);
+        SetInputState(inputState, "Left", (buttons & Input_Left) != 0);
+        SetInputState(inputState, "Right", (buttons & Input_Right) != 0);
+    }
+
+    void EnsureNetworkInputHandler()
+    {
+        if (networkInputHandlerRegistered)
+            return;
+
+        Sunset::NetworkService::Get().RegisterHandler<NetworkInputMessage>([](Sunset::PeerId peer, const NetworkInputMessage& msg)
+        {
+            networkInputs[peer] = msg;
+        });
+
+        networkInputHandlerRegistered = true;
+    }
 }
 
 namespace Sunset
@@ -187,12 +275,8 @@ namespace Sunset
             }, action);
         }
         NetworkInputMessage msg;
-        // if (forwardPressed)  msg.Buttons |= Input_Forward;
-        // if (backwardPressed) msg.Buttons |= Input_Backward;
-        // if (leftPressed)     msg.Buttons |= Input_Left;
-        // if (rightPressed)    msg.Buttons |= Input_Right;
-
-        // NetworkService::Get().Broadcast(1, msg, DeliveryType::Unreliable);
+        msg.Buttons = BuildNetworkButtons(*this);
+        NetworkService::Get().Broadcast(msg, DeliveryType::Unreliable);
     }
 
     Event::Type InputState::operator[](const std::string_view &name) const
@@ -206,6 +290,7 @@ namespace Sunset
     LocalInputSource::LocalInputSource()
         : m_InputState()
     {
+        EnsureNetworkInputHandler();
     }
 
     LocalInputSource::~LocalInputSource()
@@ -222,10 +307,7 @@ namespace Sunset
         : m_InputState()
         , m_peerId(peer)
     {
-        NetworkService::Get().RegisterHandler<NetworkInputMessage>([this](PeerId _peer, const NetworkInputMessage& msg)
-        {
-
-        });
+        EnsureNetworkInputHandler();
     }
 
     NetworkInputSource::~NetworkInputSource()
@@ -234,6 +316,8 @@ namespace Sunset
 
     InputState NetworkInputSource::GetInput()
     {
+        if (const auto input = networkInputs.find(m_peerId); input != networkInputs.end())
+            ApplyNetworkButtons(m_InputState, input->second.Buttons);
         return m_InputState;
     }
 }

@@ -40,6 +40,9 @@ namespace Sunset
         void Update(float dt);
         void Shutdown();
 
+        void RegisterPeerConnectedHandler(std::function<void(PeerId)> handler);
+        void RegisterPeerDisconnectedHandler(std::function<void(PeerId)> handler);
+
         void Send(
             PeerId peer,
             ChannelId channel,
@@ -53,7 +56,7 @@ namespace Sunset
             static_assert(std::is_trivially_copyable_v<T>, "Network message must be trivially copyable");
 
             const auto payload = std::as_bytes(std::span{&message, 1});
-            Send(peer , payload, mode);
+            Send(peer, ResolveChannel<T>(), payload, mode);
         }
 
         void Broadcast(
@@ -61,6 +64,15 @@ namespace Sunset
             std::span<const std::byte> payload,
             DeliveryType mode = DeliveryType::Reliable
         );
+
+        template <typename T>
+        void Broadcast(const T& message, DeliveryType mode = DeliveryType::Reliable)
+        {
+            static_assert(std::is_trivially_copyable_v<T>, "Network message must be trivially copyable");
+
+            const auto payload = std::as_bytes(std::span{&message, 1});
+            Broadcast(ResolveChannel<T>(), payload, mode);
+        }
 
         template <typename T>
         void RegisterHandler(std::function<void(PeerId, const T&)> handler)
@@ -111,6 +123,8 @@ namespace Sunset
         std::unique_ptr<INetworkTransport> m_Transport;
         std::unordered_map<ChannelId, std::function<void(PeerId, std::span<const std::byte>)>> m_Handlers;
         std::unordered_map<std::type_index, ChannelId> m_TypeChannels;
+        std::vector<std::function<void(PeerId)>> m_PeerConnectedHandlers;
+        std::vector<std::function<void(PeerId)>> m_PeerDisconnectedHandlers;
         ChannelId m_NextDynamicChannel = 0;
     };
 }

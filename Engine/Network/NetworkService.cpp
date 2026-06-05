@@ -69,13 +69,17 @@ namespace Sunset
         {
             std::visit(overloads
             {
-                [&](NetworkEvent::PeerConnected)
+                [&](NetworkEvent::PeerConnected& e)
                 {
                     LOG("Engine", trace, "Peer connected")
+                    for (const auto& handler : m_PeerConnectedHandlers)
+                        handler(e.Peer);
                 },
-                [&](NetworkEvent::PeerDisconnected)
+                [&](NetworkEvent::PeerDisconnected& e)
                 {
                     LOG("Engine", trace, "Peer disconnected")
+                    for (const auto& handler : m_PeerDisconnectedHandlers)
+                        handler(e.Peer);
                 },
                 [&](NetworkEvent::PacketReceived& e)
                 {
@@ -90,6 +94,16 @@ namespace Sunset
     {
         LOG("Engine", info, "Shutdown Network Service")
         g_Sunset.reset();
+    }
+
+    void NetworkService::RegisterPeerConnectedHandler(std::function<void(PeerId)> handler)
+    {
+        m_PeerConnectedHandlers.emplace_back(std::move(handler));
+    }
+
+    void NetworkService::RegisterPeerDisconnectedHandler(std::function<void(PeerId)> handler)
+    {
+        m_PeerDisconnectedHandlers.emplace_back(std::move(handler));
     }
 
     void NetworkService::Send(PeerId peer, ChannelId channel, std::span<const std::byte> payload, DeliveryType mode)
