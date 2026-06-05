@@ -12,7 +12,7 @@ namespace Sunset
     class Controller
     {
     public:
-        Controller(PeerId peer, std::unique_ptr<IInputSource>&& inputSource);
+        Controller(PeerId peer, std::unique_ptr<IInputSource>& inputSource);
         virtual ~Controller() = default;
 
         Controller(const Controller&) = delete;

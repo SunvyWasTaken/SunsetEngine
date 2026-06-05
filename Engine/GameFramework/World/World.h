@@ -33,7 +33,7 @@ namespace Sunset
 
     private:
 
-        void CreatePlayer(PeerId peer = 0);
+        void CreatePlayer(PeerId peer = 0, bool local = true);
 
     private:
         entt::registry m_Registry;

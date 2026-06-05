@@ -7,7 +7,7 @@
 
 namespace Sunset
 {
-    Controller::Controller(PeerId peer, std::unique_ptr<IInputSource>&& inputSource)
+    Controller::Controller(PeerId peer, std::unique_ptr<IInputSource>& inputSource)
         : m_peerId(peer)
         , m_InputSource(std::move(inputSource))
     {

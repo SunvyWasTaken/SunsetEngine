@@ -197,9 +197,22 @@ namespace Sunset
     {
     }
 
-    InputState LocalInputSource::GetInput() const
+    InputState LocalInputSource::GetInput()
     {
-        const_cast<InputState*>(&m_InputState)->Update();
+        m_InputState.Update();
         return m_InputState;
+    }
+
+    NetworkInputSource::NetworkInputSource()
+    {
+    }
+
+    NetworkInputSource::~NetworkInputSource()
+    {
+    }
+
+    InputState NetworkInputSource::GetInput()
+    {
+
     }
 }

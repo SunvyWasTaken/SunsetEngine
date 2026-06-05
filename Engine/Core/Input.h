@@ -58,7 +58,7 @@ namespace Sunset
     public:
         virtual ~IInputSource() = default;
 
-        virtual InputState GetInput() const = 0;
+        virtual InputState GetInput() = 0;
     };
 
     class LocalInputSource : public IInputSource
@@ -67,10 +67,21 @@ namespace Sunset
         LocalInputSource();
         ~LocalInputSource() override;
 
-        [[nodiscard]] InputState GetInput() const override;
+        [[nodiscard]] InputState GetInput() override;
 
     private:
+        InputState m_InputState;
+    };
 
+    class NetworkInputSource : public IInputSource
+    {
+    public:
+        NetworkInputSource();
+        ~NetworkInputSource() override;
+
+        [[nodiscard]] InputState GetInput() override;
+
+    private:
         InputState m_InputState;
     };
 }

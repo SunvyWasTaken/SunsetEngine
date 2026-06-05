@@ -4,8 +4,6 @@
 
 #include "World.h"
 
-#include <memory>
-
 #include "GameFramework/Controller.h"
 #include "Component.h"
 #include "Entity.h"
@@ -59,12 +57,18 @@ namespace Sunset
 
     void World::OnPeerConnected(PeerId peerId)
     {
-        CreatePlayer(peerId);
+        CreatePlayer(peerId, false);
     }
 
-    void World::CreatePlayer(PeerId peer)
+    void World::CreatePlayer(PeerId peer, bool local)
     {
-        Controller playerController(peer, std::make_unique<LocalInputSource>());
+        std::unique_ptr<IInputSource> inputSource = nullptr;
+        if (local)
+            inputSource = std::make_unique<LocalInputSource>();
+        else
+            inputSource = std::make_unique<NetworkInputSource>();
+
+        Controller playerController(peer, inputSource);
 
         Entity character = CreateEntity("Player");
 
