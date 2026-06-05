@@ -15,6 +15,7 @@ namespace Sunset
 {
     NetworkService::NetworkService()
     {
+        LOG("Engine", info, "NetworkService::NetworkService")
         m_Transport = std::make_unique<ENetTransport>();
     }
 
@@ -79,7 +80,7 @@ namespace Sunset
                 [&](NetworkEvent::PacketReceived& e)
                 {
                     LOG("Engine", trace, "Packet received")
-                    Dispatch(e.packet.channel, e.packet.payload);
+                    Dispatch(e.packet.peer, e.packet.channel, e.packet.payload);
                 }
             }, event);
         }
@@ -109,7 +110,7 @@ namespace Sunset
         m_Transport->Flush();
     }
 
-    void NetworkService::Dispatch(ChannelId channel, std::span<const std::byte> payload)
+    void NetworkService::Dispatch(PeerId peer, ChannelId channel, std::span<const std::byte> payload)
     {
         const auto handler = m_Handlers.find(channel);
         if (handler == m_Handlers.end())
@@ -118,6 +119,6 @@ namespace Sunset
             return;
         }
 
-        handler->second(payload);
+        handler->second(peer, payload);
     }
 }

@@ -9,6 +9,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include "Network/NetworkService.h"
+
 namespace
 {
     glm::vec2 lastMousePosition = glm::vec2(0.0f, 0.0f);
@@ -44,6 +46,12 @@ namespace
             keyMap.emplace(name, key);
         }
     }
+
+    struct NetworkInputMessage
+    {
+        static constexpr Sunset::ChannelId ChannelId = 1;
+        uint32_t Buttons = 0;
+    };
 }
 
 namespace Sunset
@@ -178,6 +186,13 @@ namespace Sunset
                 }
             }, action);
         }
+        NetworkInputMessage msg;
+        // if (forwardPressed)  msg.Buttons |= Input_Forward;
+        // if (backwardPressed) msg.Buttons |= Input_Backward;
+        // if (leftPressed)     msg.Buttons |= Input_Left;
+        // if (rightPressed)    msg.Buttons |= Input_Right;
+
+        // NetworkService::Get().Broadcast(1, msg, DeliveryType::Unreliable);
     }
 
     Event::Type InputState::operator[](const std::string_view &name) const
@@ -203,8 +218,14 @@ namespace Sunset
         return m_InputState;
     }
 
-    NetworkInputSource::NetworkInputSource()
+    NetworkInputSource::NetworkInputSource(PeerId peer)
+        : m_InputState()
+        , m_peerId(peer)
     {
+        NetworkService::Get().RegisterHandler<NetworkInputMessage>([this](PeerId _peer, const NetworkInputMessage& msg)
+        {
+
+        });
     }
 
     NetworkInputSource::~NetworkInputSource()
@@ -213,6 +234,6 @@ namespace Sunset
 
     InputState NetworkInputSource::GetInput()
     {
-
+        return m_InputState;
     }
 }

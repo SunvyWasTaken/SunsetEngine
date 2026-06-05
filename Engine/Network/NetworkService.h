@@ -63,12 +63,12 @@ namespace Sunset
         );
 
         template <typename T>
-        void RegisterHandler(std::function<void(const T&)> handler)
+        void RegisterHandler(std::function<void(PeerId, const T&)> handler)
         {
             static_assert(std::is_trivially_copyable_v<T>, "Network message must be trivially copyable");
 
             const ChannelId channel = ResolveChannel<T>();
-            m_Handlers[channel] = [channel, handler = std::move(handler)](std::span<const std::byte> payload)
+            m_Handlers[channel] = [channel, handler = std::move(handler)](PeerId peer, std::span<const std::byte> payload)
             {
                 if (payload.size() != sizeof(T))
                 {
@@ -77,7 +77,7 @@ namespace Sunset
                 }
                 T message;
                 std::memcpy(&message, payload.data(), sizeof(T));
-                handler(message);
+                handler(peer, message);
             };
         }
 
@@ -105,11 +105,11 @@ namespace Sunset
             return channel;
         }
 
-        void Dispatch(ChannelId channel, std::span<const std::byte> payload);
+        void Dispatch(PeerId peer, ChannelId channel, std::span<const std::byte> payload);
 
     private:
         std::unique_ptr<INetworkTransport> m_Transport;
-        std::unordered_map<ChannelId, std::function<void(std::span<const std::byte>)>> m_Handlers;
+        std::unordered_map<ChannelId, std::function<void(PeerId, std::span<const std::byte>)>> m_Handlers;
         std::unordered_map<std::type_index, ChannelId> m_TypeChannels;
         ChannelId m_NextDynamicChannel = 0;
     };

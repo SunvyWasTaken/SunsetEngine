@@ -66,7 +66,7 @@ namespace Sunset
         if (local)
             inputSource = std::make_unique<LocalInputSource>();
         else
-            inputSource = std::make_unique<NetworkInputSource>();
+            inputSource = std::make_unique<NetworkInputSource>(peer);
 
         Controller playerController(peer, inputSource);
 

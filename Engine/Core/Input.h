@@ -2,8 +2,9 @@
 // Created by sunvy on 15/12/2025.
 //
 
-#ifndef SUNSETCRAFT_INPUT_H
-#define SUNSETCRAFT_INPUT_H
+#pragma once
+
+#include "GameFramework/Controller.h"
 
 namespace Sunset
 {
@@ -76,14 +77,13 @@ namespace Sunset
     class NetworkInputSource : public IInputSource
     {
     public:
-        NetworkInputSource();
+        explicit NetworkInputSource(PeerId peer);
         ~NetworkInputSource() override;
 
         [[nodiscard]] InputState GetInput() override;
 
     private:
         InputState m_InputState;
+        PeerId m_peerId;
     };
 }
-
-#endif //SUNSETCRAFT_INPUT_H
