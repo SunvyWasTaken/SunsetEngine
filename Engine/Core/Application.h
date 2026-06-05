@@ -37,13 +37,32 @@ namespace Sunset
             m_LayerStack.AddLayer(layer);
         }
 
+        template <typename T, typename ...Args>
+        void LoadLayer(Args&& ...args)
+        {
+            m_CommandBuffer.emplace_back([&]()->void
+            {
+                m_LayerStack.PushLayer<T>(std::forward<Args>(args)...);
+            });
+        }
+
+        void ClearLayer()
+        {
+            m_CommandBuffer.emplace_back([&]()
+            {
+               m_LayerStack.Clear();
+            });
+        }
+
         static const ApplicationSetting& GetSetting();
-        static const Application& GetApplication();
+        static Application& GetApplication();
         static void ResizeWindow(const glm::ivec2& setting);
         static void* GetWindow();
 
-    private:
+        static void CloseApplication();
 
+    private:
         LayerStack m_LayerStack;
+        std::vector<std::function<void()>> m_CommandBuffer;
     };
 }

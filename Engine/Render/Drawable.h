@@ -2,8 +2,7 @@
 // Created by sunvy on 15/12/2025.
 //
 
-#ifndef SUNSETCRAFT_DRAWABLE_H
-#define SUNSETCRAFT_DRAWABLE_H
+#pragma once
 
 namespace Sunset
 {
@@ -74,6 +73,3 @@ namespace Sunset
         RenderState m_RenderState;
     };
 }
-
-
-#endif //SUNSETCRAFT_DRAWABLE_H

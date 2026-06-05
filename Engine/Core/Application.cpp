@@ -109,6 +109,15 @@ namespace Sunset
                 }
                 RenderCommande::EndFrame();
             }
+
+            if (!m_CommandBuffer.empty())
+            {
+                for (const auto& func : m_CommandBuffer)
+                {
+                    func();
+                }
+                m_CommandBuffer.clear();
+            }
         }
     }
 
@@ -129,7 +138,7 @@ namespace Sunset
         return AppSetting;
     }
 
-    const Application& Application::GetApplication()
+    Application& Application::GetApplication()
     {
         return *app;
     }
@@ -142,5 +151,10 @@ namespace Sunset
     void* Application::GetWindow()
     {
         return Renderer::Get();
+    }
+
+    void Application::CloseApplication()
+    {
+        IsAppRunning = false;
     }
 }

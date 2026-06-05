@@ -128,7 +128,6 @@ namespace
     void FlushDrawCommand()
     {
         SS_PROFILE_FUNCTION();
-
         // Sort cmd
         std::shared_ptr<Sunset::Shader> currentShader = nullptr;
         std::shared_ptr<Sunset::Material> currentMaterial = nullptr;
@@ -237,9 +236,24 @@ namespace Sunset
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, drawable.m_Position);
-        model = glm::scale(model, glm::vec3(drawable.m_Scale));
+        model = glm::scale(model, drawable.m_Scale);
         cmd.model = model;
         cmd.state = drawable.m_RenderState;
+        m_DrawCommands.emplace_back(cmd);
+    }
+
+    void RenderCommande::Submit(const Drawable &mesh, const glm::mat4 &transform)
+    {
+        DrawCommand cmd;
+        if (!mesh)
+            return;
+
+        cmd.vao = mesh.m_Mesh->GetVAO();
+        cmd.indexCount = mesh.m_Mesh->GetVertexCount();
+        cmd.material = mesh.m_Material;
+
+        cmd.model = transform;
+        cmd.state = mesh.m_RenderState;
         m_DrawCommands.emplace_back(cmd);
     }
 

@@ -28,7 +28,11 @@ namespace Sunset
 #ifdef SS_PROFILING
     #define SS_CONCAT(x, y) x##y
     #define SS_PROFILE_SCOPE(name) ::Sunset::Profiling SS_CONCAT(ProfileScope_, __LINE__)(name)
-    #define SS_PROFILE_FUNCTION() SS_PROFILE_SCOPE(__func__)
+#ifndef _MSC_VER
+    #define SS_PROFILE_FUNCTION() SS_PROFILE_SCOPE(__PRETTY_FUNCTION__)
+#else
+    #define SS_PROFILE_FUNCTION() SS_PROFILE_SCOPE(__FUNCSIG__)
+#endif
 #else
     #define SS_PROFILE_SCOPE(name)
     #define SS_PROFILE_FUNCTION()

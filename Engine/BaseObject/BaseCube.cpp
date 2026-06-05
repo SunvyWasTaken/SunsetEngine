@@ -110,4 +110,22 @@ namespace Sunset
         d.m_Position = position;
         RenderCommande::Submit(d);
     }
+
+    void DrawCube(const glm::mat4 &transform, const glm::vec4 &color, bool wireframe)
+    {
+        if (!DrawableCube)
+        {
+            Sunset::BufferElement buffer{Sunset::ShaderDataType::Float3, "position"};
+            Sunset::BufferElement Normal{Sunset::ShaderDataType::Float3, "normal"};
+
+            std::shared_ptr<Sunset::Drawable> d = std::make_shared<Sunset::Drawable>();
+            d->m_Mesh = Sunset::Mesh::CreateMesh(data.data(), sizeof(Vertex), data.size(), indices, {buffer, Normal});
+            d->m_Material->LoadShader(ENGINE_SHADERS_PATH "Cube.vert", ENGINE_SHADERS_PATH "Cube.frag");
+            DrawableCube = d;
+        }
+
+        Sunset::Drawable d;
+        d = *DrawableCube;
+        RenderCommande::Submit(d, transform);
+    }
 }

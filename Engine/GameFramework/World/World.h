@@ -8,7 +8,10 @@
 
 namespace Sunset
 {
+    class Controller;
     class Entity;
+
+    using PeerId = uint32_t;
 
     class World
     {
@@ -26,7 +29,14 @@ namespace Sunset
             return m_Registry;
         }
 
+        void OnPeerConnected(PeerId peerId);
+
+    private:
+
+        void CreatePlayer(PeerId peer = 0);
+
     private:
         entt::registry m_Registry;
+        std::vector<Controller> m_Controllers;
     };
 } // Sunset

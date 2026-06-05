@@ -24,7 +24,7 @@ namespace Sunset
 
         struct MouseEvent
         {
-            int button;
+            unsigned int button;
             int Scroll;
             Action action;
         };
@@ -40,6 +40,38 @@ namespace Sunset
         [[nodiscard]] static glm::vec2 GetMouseDelta();
         static bool IsKeyPress(const std::string_view& name);
         static void RegisterAction(const std::string_view& name, const std::function<bool(const Event::Action&)>& func);
+    };
+
+    class InputState final
+    {
+    public:
+        InputState();
+        ~InputState();
+        void Update();
+        std::unordered_map<std::string, Event::Type> RegisteredInputs;
+
+        Event::Type operator[](const std::string_view& name) const;
+    };
+
+    class IInputSource
+    {
+    public:
+        virtual ~IInputSource() = default;
+
+        virtual InputState GetInput() const = 0;
+    };
+
+    class LocalInputSource : public IInputSource
+    {
+    public:
+        LocalInputSource();
+        ~LocalInputSource() override;
+
+        [[nodiscard]] InputState GetInput() const override;
+
+    private:
+
+        InputState m_InputState;
     };
 }
 

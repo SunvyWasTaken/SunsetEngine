@@ -29,6 +29,13 @@ namespace Sunset
         TransformComponent(const TransformComponent&) = default;
         TransformComponent(const glm::mat4& transform);
 
+        glm::vec3 GetLocation() const;
+
+        void AddLocation(const glm::vec3& location);
+        void SetLocation(const glm::vec3& location);
+        void AddScale(const glm::vec3& scale);
+        void SetScale(const glm::vec3& scale);
+
         operator glm::mat4& () { return Transform; }
         operator const glm::mat4& () const { return Transform; }
     };

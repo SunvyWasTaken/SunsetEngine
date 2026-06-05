@@ -86,7 +86,7 @@ namespace
 
     void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
     {
-        Sunset::Event::Type event = Sunset::Event::MouseEvent{button, 0, ItoA(action)};
+        Sunset::Event::Type event = Sunset::Event::MouseEvent{static_cast<unsigned int>(button), 0, ItoA(action)};
         EventCallback(event);
     }
 

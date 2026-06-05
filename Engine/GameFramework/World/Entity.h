@@ -43,6 +43,11 @@ namespace Sunset
             return m_World != nullptr;
         }
 
+        operator entt::entity() const
+        {
+            return m_Id;
+        }
+
     private:
 
         World* m_World;
