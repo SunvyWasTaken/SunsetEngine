@@ -19,7 +19,7 @@ namespace Sunset
         // Todo : Pour le moment je vais mettre les déplacement ici.
         InputState inputs = m_InputSource->GetInput();
 
-        auto Check = [](const Event::Type& action)->bool
+        auto Check = [&](const Event::Type& action)->bool
         {
             return std::visit(overloads{
                 [](const Event::KeyEvent& event)
@@ -35,23 +35,23 @@ namespace Sunset
 
         if (Check(inputs["Forward"]))
         {
-            if (auto comp = m_entity.GetComponent<TransformComponent>())
-                comp->AddLocation(glm::vec3{1, 0, 0} * dt);
+            if (auto* comp = m_entity.GetComponent<TransformComponent>())
+                comp->AddLocation(glm::vec3{100, 0, 0} * dt);
         }
         else if (Check(inputs["Backward"]))
         {
-            if (auto comp = m_entity.GetComponent<TransformComponent>())
-                comp->AddLocation(glm::vec3{-1, 0, 0} * dt);
+            if (auto* comp = m_entity.GetComponent<TransformComponent>())
+                comp->AddLocation(glm::vec3{-100, 0, 0} * dt);
         }
         else if (Check(inputs["Left"]))
         {
-            if (auto comp = m_entity.GetComponent<TransformComponent>())
-                comp->AddLocation(glm::vec3{0, 0, -1} * dt);
+            if (auto* comp = m_entity.GetComponent<TransformComponent>())
+                comp->AddLocation(glm::vec3{0, 0, -100} * dt);
         }
         else if (Check(inputs["Right"]))
         {
-            if (auto comp = m_entity.GetComponent<TransformComponent>())
-                comp->AddLocation(glm::vec3{0, 0, 1} * dt);
+            if (auto* comp = m_entity.GetComponent<TransformComponent>())
+                comp->AddLocation(glm::vec3{0, 0, 100} * dt);
         }
     }
 

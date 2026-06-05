@@ -162,14 +162,14 @@ namespace Sunset
         for (auto& [key, action] : RegisteredInputs)
         {
             std::visit(overloads{
-                [](Event::KeyEvent& event)
+                [&](Event::KeyEvent& event)
                 {
                     if (glfwGetKey(static_cast<GLFWwindow*>(Renderer::Get()), event.key) == GLFW_PRESS)
                         event.action = Event::Action::Press;
                     else if (glfwGetKey(static_cast<GLFWwindow*>(Renderer::Get()), event.key) == GLFW_RELEASE)
                         event.action = Event::Action::Release;
                 },
-                [](Event::MouseEvent& event)
+                [&](Event::MouseEvent& event)
                 {
                     if (glfwGetMouseButton(static_cast<GLFWwindow*>(Renderer::Get()), event.button) == GLFW_PRESS)
                         event.action = Event::Action::Press;
@@ -182,7 +182,7 @@ namespace Sunset
 
     Event::Type InputState::operator[](const std::string_view &name) const
     {
-        if (RegisteredInputs.contains(name.data()))
+        if (!RegisteredInputs.contains(name.data()))
             return {};
 
         return RegisteredInputs.at(name.data());

@@ -27,6 +27,7 @@ namespace Sunset
 
     void TransformComponent::SetLocation(const glm::vec3 &location)
     {
+        Transform[3] = glm::vec4(location, 1.0f);
     }
 
     void TransformComponent::AddScale(const glm::vec3 &scale)

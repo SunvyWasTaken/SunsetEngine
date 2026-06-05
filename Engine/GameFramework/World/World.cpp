@@ -29,6 +29,7 @@ namespace Sunset
 
     World::~World()
     {
+        LOG("Engine", trace, "World::~World()")
     }
 
     void World::Update(float deltatime)
