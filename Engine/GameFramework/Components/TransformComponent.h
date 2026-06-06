@@ -4,21 +4,33 @@
 
 #pragma once
 
+#include <glm/detail/type_quat.hpp>
+#include <glm/gtc/quaternion.hpp>
+
 #include "Component.h"
 
 namespace Sunset
 {
+    using PeerId = uint32_t;
+
     struct TransformComponent : public Component
     {
-        glm::mat4 Transform{1.f};
+        glm::vec3 Position{0.f};
+        glm::quat Rotation{1.f, 0.f, 0.f, 0.f};
+        glm::vec3 Scale{1.f};
+        PeerId OwnerPeerId = 0;
+        bool bSyncPositionInWorld = true;
 
         TransformComponent() = default;
 
         TransformComponent(const TransformComponent&) = default;
+        TransformComponent(PeerId ownerPeerId, bool syncPositionInWorld = true);
 
-        TransformComponent(const glm::mat4& transform);
+        void Update(float deltatime);
 
         glm::vec3 GetForwardVector() const;
+
+        glm::vec3 GetRightVector() const;
 
         glm::vec3 GetLocation() const;
 
@@ -28,14 +40,12 @@ namespace Sunset
 
         void SetLocation(const glm::vec3& location);
 
-        void Rotate(const glm::vec3& rotation, float angle);
+        void Rotate(const glm::vec3& axis, float angle);
 
         void AddScale(const glm::vec3& scale);
 
         void SetScale(const glm::vec3& scale);
 
-        operator glm::mat4& () { return Transform; }
-
-        operator const glm::mat4& () const { return Transform; }
+        operator glm::mat4 () const { return glm::translate(glm::mat4(1.f), Position) * glm::mat4_cast(Rotation) * glm::scale(glm::mat4(1.f), Scale); }
     };
 } // Sunset

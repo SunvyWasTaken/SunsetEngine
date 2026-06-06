@@ -41,6 +41,16 @@ namespace Sunset
     void World::Update(float deltatime)
     {
         SS_PROFILE_FUNCTION();
+        for (auto& controller : m_Controllers)
+        {
+            controller.Update(deltatime);
+        }
+
+        auto transformView = m_Registry.view<TransformComponent>();
+        for (auto entity : transformView)
+        {
+            transformView.get<TransformComponent>(entity).Update(deltatime);
+        }
         auto group = m_Registry.view<TransformComponent, MeshComponent>();
         for (const auto& entity : group)
         {
@@ -49,7 +59,6 @@ namespace Sunset
         }
         for (auto& m : m_Controllers)
         {
-            m.Update(deltatime);
             const auto& transform = m_Registry.get<TransformComponent>(m.GetEntity());
             if (auto cam = m_Registry.try_get<CameraComponent>(m.GetEntity()))
             {
@@ -96,7 +105,7 @@ namespace Sunset
         Entity character = CreateEntity("Player");
 
         playerController.Possess(character);
-        character.AddComponent<TransformComponent>();
+        character.AddComponent<TransformComponent>(peer);
         if (local)
             character.AddComponent<CameraComponent>();
 

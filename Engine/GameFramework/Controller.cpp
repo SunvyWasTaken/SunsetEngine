@@ -37,28 +37,30 @@ namespace Sunset
 
         if (auto* comp = m_entity.GetComponent<TransformComponent>())
         {
+            constexpr float speed = 10.f;
             if (Check(inputs["Forward"]))
             {
-                comp->AddLocation(glm::vec3{100, 0, 0} * dt);
+                comp->AddLocation(comp->GetForwardVector() * speed * dt);
             }
             else if (Check(inputs["Backward"]))
             {
-                comp->AddLocation(glm::vec3{-100, 0, 0} * dt);
+                comp->AddLocation(-comp->GetForwardVector() * speed * dt);
             }
             else if (Check(inputs["Left"]))
             {
-                comp->AddLocation(glm::vec3{0, 0, -100} * dt);
+                comp->AddLocation(-comp->GetRightVector() * speed * dt);
             }
             else if (Check(inputs["Right"]))
             {
-                comp->AddLocation(glm::vec3{0, 0, 100} * dt);
+                comp->AddLocation(comp->GetRightVector() * speed * dt);
             }
 
             glm::vec2 mous = InputRegister::GetMouseDelta();
-            if (mous.length() >= 0.1)
+            if (mous.length() >= 0.001)
             {
-                comp->Rotate({0, 1, 0}, -mous.y);
-                comp->Rotate({1, 0, 0}, mous.x);
+                //mous = glm::normalize(mous);
+                comp->Rotate({1, 0, 0}, -mous.y * dt);
+                comp->Rotate({0, 1, 0}, mous.x * dt);
             }
         }
     }
