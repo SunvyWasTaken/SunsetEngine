@@ -39,28 +39,24 @@ namespace Sunset
         {
             constexpr float speed = 10.f;
             if (Check(inputs["Forward"]))
-            {
                 comp->AddLocation(comp->GetForwardVector() * speed * dt);
-            }
-            else if (Check(inputs["Backward"]))
-            {
+            if (Check(inputs["Backward"]))
                 comp->AddLocation(-comp->GetForwardVector() * speed * dt);
-            }
-            else if (Check(inputs["Left"]))
-            {
+            if (Check(inputs["Left"]))
                 comp->AddLocation(-comp->GetRightVector() * speed * dt);
-            }
-            else if (Check(inputs["Right"]))
-            {
+            if (Check(inputs["Right"]))
                 comp->AddLocation(comp->GetRightVector() * speed * dt);
-            }
+            if (Check(inputs["Up"]))
+                comp->AddLocation(glm::vec3{0, 1, 0} * speed * dt);
+            if (Check(inputs["Down"]))
+                comp->AddLocation(glm::vec3{0, -1, 0} * speed * dt);
 
             glm::vec2 mous = InputRegister::GetMouseDelta();
             if (mous.length() >= 0.001)
             {
                 //mous = glm::normalize(mous);
-                comp->Rotate({1, 0, 0}, -mous.y * dt);
-                comp->Rotate({0, 1, 0}, mous.x * dt);
+                comp->Rotate(comp->GetRightVector(), -mous.y * dt);
+                comp->Rotate({0, 1, 0}, -mous.x * dt);
             }
         }
     }
