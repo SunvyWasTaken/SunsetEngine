@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Component.h"
+#include "GameFramework/Components/Component.h"
 #include "World.h"
 
 namespace Sunset

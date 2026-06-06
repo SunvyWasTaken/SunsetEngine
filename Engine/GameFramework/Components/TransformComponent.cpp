@@ -1,21 +1,35 @@
 //
-// Created by sunvy on 03/06/2026.
+// Created by sunvy on 06/06/2026.
 //
 
-#include "Component.h"
+#include "TransformComponent.h"
 
 #include <glm/ext/matrix_transform.hpp>
 
 namespace Sunset
 {
     TransformComponent::TransformComponent(const glm::mat4 &transform)
-        : Transform(transform)
+    : Transform(transform)
     {
+    }
+
+    glm::vec3 TransformComponent::GetForwardVector() const
+    {
+        return glm::normalize(-glm::vec3(Transform[2]));
     }
 
     glm::vec3 TransformComponent::GetLocation() const
     {
         return {Transform[3]};
+    }
+
+    glm::vec3 TransformComponent::GetScale() const
+    {
+        return {
+            glm::length(glm::vec3(Transform[0])),
+            glm::length(glm::vec3(Transform[1])),
+            glm::length(glm::vec3(Transform[2]))
+        };
     }
 
     void TransformComponent::AddLocation(const glm::vec3 &location)
@@ -26,6 +40,11 @@ namespace Sunset
     void TransformComponent::SetLocation(const glm::vec3 &location)
     {
         Transform[3] = glm::vec4(location, 1.0f);
+    }
+
+    void TransformComponent::Rotate(const glm::vec3 &rotation, float angle)
+    {
+        Transform = glm::rotate(Transform, angle, rotation);
     }
 
     void TransformComponent::AddScale(const glm::vec3 &scale)

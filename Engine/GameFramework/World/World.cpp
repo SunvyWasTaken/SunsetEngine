@@ -5,11 +5,13 @@
 #include "World.h"
 
 #include "GameFramework/Controller.h"
-#include "Component.h"
 #include "Entity.h"
 #include "BaseObject/BaseCube.h"
 #include "Core/Input.h"
+#include "GameFramework/Components/CameraComponent.h"
+#include "GameFramework/Components/TransformComponent.h"
 #include "Network/NetworkService.h"
+#include "Render/Camera.h"
 #include "Render/RenderCommande.h"
 
 namespace
@@ -49,6 +51,13 @@ namespace Sunset
         {
             m.Update(deltatime);
             const auto& transform = m_Registry.get<TransformComponent>(m.GetEntity());
+            if (auto cam = m_Registry.try_get<CameraComponent>(m.GetEntity()))
+            {
+                Camera camera;
+                camera.SetPosition(transform.GetLocation() - (transform.GetForwardVector() * 10.f));
+                camera.SetForward(transform.GetForwardVector());
+                RenderCommande::UseCamera(camera);
+            }
             DrawCube(transform, glm::vec4(1.0), true);
             PRINTSCREEN("Controller location {}", transform.GetLocation());
         }
@@ -88,6 +97,8 @@ namespace Sunset
 
         playerController.Possess(character);
         character.AddComponent<TransformComponent>();
+        if (local)
+            character.AddComponent<CameraComponent>();
 
         m_Controllers.emplace_back(std::move(playerController));
     }
