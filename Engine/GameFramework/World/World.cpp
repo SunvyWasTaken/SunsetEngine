@@ -25,6 +25,7 @@ namespace Sunset
         : m_Registry()
         , m_Controllers()
     {
+        NetworkService::Init();
         NetworkService::Get().RegisterPeerConnectedHandler([this](PeerId peerId)
         {
             OnPeerConnected(peerId);
@@ -35,6 +36,7 @@ namespace Sunset
 
     World::~World()
     {
+        NetworkService::Shutdown();
         LOG("Engine", trace, "World::~World()")
     }
 

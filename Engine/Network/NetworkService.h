@@ -32,13 +32,16 @@ namespace Sunset
 
         ~NetworkService();
 
+        static void Init();
+
+        static void Shutdown();
+
         static NetworkService& Get();
 
         bool Host(uint16_t port, uint32_t maxPlayer);
         bool Join(const EndPoint& endpoint);
 
         void Update(float dt);
-        void Shutdown();
 
         void RegisterPeerConnectedHandler(std::function<void(PeerId)> handler);
         void RegisterPeerDisconnectedHandler(std::function<void(PeerId)> handler);

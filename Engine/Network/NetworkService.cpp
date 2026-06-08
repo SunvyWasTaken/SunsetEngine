@@ -15,7 +15,6 @@ namespace Sunset
 {
     NetworkService::NetworkService()
     {
-        LOG("Engine", info, "NetworkService::NetworkService")
         m_Transport = std::make_unique<ENetTransport>();
     }
 
@@ -24,10 +23,23 @@ namespace Sunset
         m_Transport->Shutdown();
     }
 
+    void NetworkService::Init()
+    {
+        g_Sunset = std::make_unique<NetworkService>();
+    }
+
+    void NetworkService::Shutdown()
+    {
+        g_Sunset.reset();
+    }
+
     NetworkService & NetworkService::Get()
     {
         if (!g_Sunset)
-            g_Sunset = std::make_unique<NetworkService>();
+        {
+            LOG("Engine", error, "U forgot to call NetworkService::Init() first");
+            DEBUG_BREAK();
+        }
 
         return *g_Sunset;
     }
@@ -88,12 +100,6 @@ namespace Sunset
                 }
             }, event);
         }
-    }
-
-    void NetworkService::Shutdown()
-    {
-        LOG("Engine", info, "Shutdown Network Service")
-        g_Sunset.reset();
     }
 
     void NetworkService::RegisterPeerConnectedHandler(std::function<void(PeerId)> handler)
