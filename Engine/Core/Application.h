@@ -22,19 +22,33 @@ namespace Sunset
 
         void OnEvent(Event::Type& event);
 
+        template <typename T, typename ...Args>
+        void PushOverlay(Args&& ...args)
+        {
+            m_LayerStack.PushOverlay<T>(std::forward<Args>(args)...);
+        }
+
         /// Push layer will create and add the layer to the Layer Stack
         template <typename T, typename ...Args>
-        requires std::is_base_of_v<Layer, T>
         void PushLayer(Args&&... args)
         {
             m_LayerStack.PushLayer<T>(std::forward<Args>(args)...);
         }
 
-        /// Add Layer will just add a existing layer to the layer stack
+        /// Add Layer will just add an existing layer to the layer stack
         /// If you intend to create a layer and send it directly to the LayerStack Use "PushLayer"
         void AddLayer(Layer* layer)
         {
             m_LayerStack.AddLayer(layer);
+        }
+
+        template <typename T, typename ...Args>
+        void LoadOverlay(Args&& ...args)
+        {
+            m_CommandBuffer.emplace_back([&]()->void
+            {
+                m_LayerStack.PushOverlay<T>(std::forward<Args>(args)...);
+            });
         }
 
         template <typename T, typename ...Args>

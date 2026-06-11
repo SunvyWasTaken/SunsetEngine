@@ -6,14 +6,9 @@
 
 #include "ApplicationSetting.h"
 #include "Layer.h"
+#include "BaseObject/BaseCube.h"
 #include "Render/RenderCommande.h"
 #include "Render/Renderer.h"
-
-#include <chrono>
-#include <deque>
-
-#include "BaseObject/BaseCube.h"
-#include "Network/NetworkService.h"
 
 namespace
 {
@@ -92,8 +87,6 @@ namespace Sunset
 
             fpsema.Add(dt.count());
             fpsema.Display();
-
-            NetworkService::Get().Update(dt.count());
             {
                 SS_PROFILE_SCOPE("Logic part");
                 for (const auto& layer : m_LayerStack)

@@ -2,21 +2,33 @@
 // Created by sunvy on 16/12/2025.
 //
 
-#ifndef SUNSETCRAFT_LAYERSTACK_H
-#define SUNSETCRAFT_LAYERSTACK_H
+#pragma once
+
 #include "Layer.h"
 
 namespace Sunset
 {
     class Layer;
 
-    class LayerStack
+    class LayerStack final
     {
     public:
 
+        LayerStack() = default;
+
+        ~LayerStack() = default;
+
         void Clear();
 
+        template <typename T, typename... Args>
+        requires std::is_base_of_v<Layer, T>
+        void PushOverlay(Args&& ...args)
+        {
+            m_Layers.emplace(m_Layers.begin() + m_OverlayPosition++, std::make_unique<T>(std::forward<Args>(args)...));
+        }
+
         template<typename T, typename... Args>
+        requires std::is_base_of_v<Layer, T>
         void PushLayer(Args&& ...args)
         {
             m_Layers.emplace_back(std::make_unique<T>(std::forward<Args>(args)...));
@@ -39,7 +51,6 @@ namespace Sunset
 
     private:
         std::vector<std::unique_ptr<Layer>> m_Layers;
+        uint32_t m_OverlayPosition = 0;
     };
 }
-
-#endif //SUNSETCRAFT_LAYERSTACK_H
