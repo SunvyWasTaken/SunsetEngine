@@ -64,6 +64,9 @@ namespace Sunset
         if (!m_Transport->StartServer(port, maxPlayer))
             return false;
 
+        m_IsServer = true;
+        m_IsClient = false;
+
         LOG("Engine", info, "Server Start success")
 
         return true;
@@ -77,9 +80,22 @@ namespace Sunset
         if (!m_Transport->Connect(endpoint))
             return false;
 
+        m_IsServer = false;
+        m_IsClient = true;
+
         LOG("Engine", info, "Server Connect success")
 
         return true;
+    }
+
+    bool NetworkService::IsServer() const
+    {
+        return m_IsServer;
+    }
+
+    bool NetworkService::IsClient() const
+    {
+        return m_IsClient;
     }
 
     void NetworkService::Update(float dt)

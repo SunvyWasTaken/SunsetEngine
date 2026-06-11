@@ -24,6 +24,7 @@ namespace Sunset
         void Update(float dt);
 
         [[nodiscard]] PeerId GetPeerId() const;
+        void SetPeerId(PeerId peer);
         [[nodiscard]] Entity GetEntity() const;
 
         void Possess(const Entity& entity);

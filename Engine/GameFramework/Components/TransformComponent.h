@@ -20,11 +20,12 @@ namespace Sunset
         glm::vec3 Scale{1.f};
         PeerId OwnerPeerId = 0;
         bool bSyncPositionInWorld = true;
+        bool bBroadcastPositionInWorld = true;
 
         TransformComponent() = default;
 
         TransformComponent(const TransformComponent&) = default;
-        TransformComponent(PeerId ownerPeerId, bool syncPositionInWorld = true);
+        TransformComponent(PeerId ownerPeerId, bool syncPositionInWorld = true, bool broadcastPositionInWorld = true);
 
         void Update(float deltatime);
 

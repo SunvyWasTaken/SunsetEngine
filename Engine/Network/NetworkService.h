@@ -104,6 +104,12 @@ namespace Sunset
         /// Starts a client connection toward the provided endpoint.
         bool Join(const EndPoint& endpoint);
 
+        /// Returns true when this service instance is hosting peers.
+        [[nodiscard]] bool IsServer() const;
+
+        /// Returns true when this service instance is connected as a client.
+        [[nodiscard]] bool IsClient() const;
+
         /// Polls network events, dispatches packets, and calls connection callbacks.
         void Update(float dt);
 
@@ -211,6 +217,8 @@ namespace Sunset
 
     private:
         std::unique_ptr<INetworkTransport> m_Transport;
+        bool m_IsServer = false;
+        bool m_IsClient = false;
         NetworkMessageRegistry m_MessageRegistry;
         std::unordered_map<ChannelId, std::function<void(PeerId, std::span<const std::byte>)>> m_Handlers;
         std::vector<std::function<void(PeerId)>> m_PeerConnectedHandlers;

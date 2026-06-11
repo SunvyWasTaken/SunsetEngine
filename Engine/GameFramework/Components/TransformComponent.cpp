@@ -42,9 +42,10 @@ namespace
 
 namespace Sunset
 {
-    TransformComponent::TransformComponent(PeerId ownerPeerId, bool syncPositionInWorld)
+    TransformComponent::TransformComponent(PeerId ownerPeerId, bool syncPositionInWorld, bool broadcastPositionInWorld)
     : OwnerPeerId(ownerPeerId)
     , bSyncPositionInWorld(syncPositionInWorld)
+    , bBroadcastPositionInWorld(broadcastPositionInWorld)
     {
         EnsureNetworkTransformHandler();
     }
@@ -53,19 +54,22 @@ namespace Sunset
     {
         (void)deltatime;
 
-        if (!bSyncPositionInWorld)
-            return;
-
         EnsureNetworkTransformHandler();
 
-        if (const auto transform = networkTransforms.find(OwnerPeerId); transform != networkTransforms.end())
+        if (bSyncPositionInWorld)
         {
-            SetLocation({
-                transform->second.LocationX,
-                transform->second.LocationY,
-                transform->second.LocationZ
-            });
+            if (const auto transform = networkTransforms.find(OwnerPeerId); transform != networkTransforms.end())
+            {
+                SetLocation({
+                    transform->second.LocationX,
+                    transform->second.LocationY,
+                    transform->second.LocationZ
+                });
+            }
         }
+
+        if (!bBroadcastPositionInWorld)
+            return;
 
         const glm::vec3 location = GetLocation();
         NetworkTransformMessage msg;
