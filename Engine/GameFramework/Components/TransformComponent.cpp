@@ -13,7 +13,6 @@ namespace
     struct NetworkTransformMessage : public Sunset::IMessage
     {
         static constexpr Sunset::ChannelId ChannelId = 2;
-
         Sunset::PeerId OwnerPeerId = 0;
         float LocationX = 0.0f;
         float LocationY = 0.0f;
@@ -28,6 +27,7 @@ namespace
         if (networkTransformHandlerRegistered)
             return;
 
+        Sunset::NetworkService::Get().RegisterMessage<NetworkTransformMessage>(2);
         Sunset::NetworkService::Get().RegisterHandler<NetworkTransformMessage>([](Sunset::PeerId peer, const NetworkTransformMessage& msg)
         {
             NetworkTransformMessage transform = msg;
@@ -46,6 +46,7 @@ namespace Sunset
     : OwnerPeerId(ownerPeerId)
     , bSyncPositionInWorld(syncPositionInWorld)
     {
+        EnsureNetworkTransformHandler();
     }
 
     void TransformComponent::Update(float deltatime)

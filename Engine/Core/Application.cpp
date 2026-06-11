@@ -41,9 +41,7 @@ namespace
             }
             dts.push_back(dt);
         }
-    };
-
-    EMA fpsema;
+    }fpsema;
 }
 
 namespace Sunset
@@ -94,12 +92,15 @@ namespace Sunset
             std::chrono::duration<float> dt = now - prev;
             prev = now;
 
-            fpsema.Add(dt.count());
             if (!AppSetting.Headless)
+            {
+                fpsema.Add(dt.count());
                 fpsema.Display();
+            }
 
             if (NetworkService::IsInitialized())
                 NetworkService::Get().Update(dt.count());
+
             {
                 SS_PROFILE_SCOPE("Logic part");
                 for (const auto& layer : m_LayerStack)

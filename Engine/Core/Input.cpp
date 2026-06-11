@@ -61,7 +61,7 @@ namespace
         Input_Right = 1 << 3,
     };
 
-        std::unordered_map<Sunset::PeerId, NetworkInputMessage> networkInputs;
+    std::unordered_map<Sunset::PeerId, NetworkInputMessage> networkInputs;
     bool networkInputHandlerRegistered = false;
 
     bool IsPressed(const Sunset::Event::Type& action)
@@ -133,6 +133,7 @@ namespace
         if (networkInputHandlerRegistered)
             return;
 
+        Sunset::NetworkService::Get().RegisterMessage<NetworkInputMessage>(1);
         Sunset::NetworkService::Get().RegisterHandler<NetworkInputMessage>([](Sunset::PeerId peer, const NetworkInputMessage& msg)
         {
             networkInputs[peer] = msg;

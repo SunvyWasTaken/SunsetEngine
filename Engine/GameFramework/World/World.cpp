@@ -26,7 +26,6 @@ namespace Sunset
         : m_Registry()
         , m_Controllers()
     {
-        NetworkService::Init();
         NetworkService::Get().RegisterPeerConnectedHandler([this](PeerId peerId)
         {
             OnPeerConnected(peerId);

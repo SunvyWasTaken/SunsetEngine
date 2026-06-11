@@ -5,6 +5,7 @@
 #include "Controller.h"
 
 #include "Components/TransformComponent.h"
+#include "Core/Application.h"
 #include "Core/Input.h"
 
 namespace Sunset
@@ -19,6 +20,10 @@ namespace Sunset
     {
         SS_PROFILE_FUNCTION();
         // Todo : Pour le moment je vais mettre les déplacement ici.
+
+        if (Application::IsHeadless())
+            return;
+
         InputState inputs = m_InputSource->GetInput();
 
         auto Check = [&](const Event::Type& action)->bool

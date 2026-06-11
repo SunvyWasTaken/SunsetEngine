@@ -25,6 +25,12 @@ namespace Sunset
 
     void NetworkService::Init()
     {
+        if (g_Sunset)
+        {
+            LOG("Engine", trace, "NetworkService is already initialized");
+            return;
+        }
+
         g_Sunset = std::make_unique<NetworkService>();
     }
 
@@ -42,9 +48,9 @@ namespace Sunset
     {
         if (!g_Sunset)
         {
-            Init();
-            // LOG("Engine", error, "U forgot to call NetworkService::Init() first");
-            // DEBUG_BREAK();
+            // Init();
+            LOG("Engine", error, "U forgot to call NetworkService::Init() first");
+            DEBUG_BREAK();
         }
 
         return *g_Sunset;
