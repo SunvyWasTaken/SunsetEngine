@@ -21,9 +21,6 @@ namespace Sunset
         SS_PROFILE_FUNCTION();
         // Todo : Pour le moment je vais mettre les déplacement ici.
 
-        if (Application::IsHeadless())
-            return;
-
         InputState inputs = m_InputSource->GetInput();
 
         auto Check = [&](const Event::Type& action)->bool
@@ -56,12 +53,15 @@ namespace Sunset
             if (Check(inputs["Down"]))
                 comp->AddLocation(glm::vec3{0, -1, 0} * speed * dt);
 
-            glm::vec2 mous = InputRegister::GetMouseDelta();
-            if (mous.length() >= 0.001)
+            if (!Application::IsHeadless() && dynamic_cast<LocalInputSource*>(m_InputSource.get()) != nullptr)
             {
-                //mous = glm::normalize(mous);
-                comp->Rotate(comp->GetRightVector(), -mous.y * dt);
-                comp->Rotate({0, 1, 0}, -mous.x * dt);
+                glm::vec2 mous = InputRegister::GetMouseDelta();
+                if (mous.length() >= 0.001)
+                {
+                    //mous = glm::normalize(mous);
+                    comp->Rotate(comp->GetRightVector(), -mous.y * dt);
+                    comp->Rotate({0, 1, 0}, -mous.x * dt);
+                }
             }
         }
     }
@@ -69,6 +69,11 @@ namespace Sunset
     PeerId Controller::GetPeerId() const
     {
         return m_peerId;
+    }
+
+    void Controller::SetPeerId(PeerId peer)
+    {
+        m_peerId = peer;
     }
 
     Entity Controller::GetEntity() const

@@ -15,24 +15,30 @@
 #include "Render/Camera.h"
 #include "Render/RenderCommande.h"
 
-namespace
-{
-
-}
-
 namespace Sunset
 {
     World::World()
         : m_Registry()
         , m_Controllers()
     {
+        NetworkService::Get().RegisterMessage<NetworkPlayerSessionMessage>(NetworkPlayerSessionMessage::ChannelId);
+        NetworkService::Get().RegisterHandler<NetworkPlayerSessionMessage>([this](PeerId, const NetworkPlayerSessionMessage& msg)
+        {
+            OnPlayerSessionMessage(msg);
+        });
+
         NetworkService::Get().RegisterPeerConnectedHandler([this](PeerId peerId)
         {
             OnPeerConnected(peerId);
         });
 
+        NetworkService::Get().RegisterPeerDisconnectedHandler([this](PeerId peerId)
+        {
+            OnPeerDisconnected(peerId);
+        });
+
         if (!Application::IsHeadless())
-            CreatePlayer(0);
+            CreatePlayer(m_LocalPeerId);
     }
 
     World::~World()
@@ -87,7 +93,101 @@ namespace Sunset
 
     void World::OnPeerConnected(PeerId peerId)
     {
+        if (!NetworkService::Get().IsServer())
+            return;
+
         CreatePlayer(peerId, false);
+
+        NetworkPlayerSessionMessage assignMessage;
+        assignMessage.MessageType = NetworkPlayerSessionMessage::Type::AssignLocalPeer;
+        assignMessage.Peer = peerId;
+        NetworkService::Get().Send(peerId, assignMessage);
+
+        for (const auto& controller : m_Controllers)
+        {
+            NetworkPlayerSessionMessage joinedMessage;
+            joinedMessage.MessageType = NetworkPlayerSessionMessage::Type::PlayerJoined;
+            joinedMessage.Peer = controller.GetPeerId();
+            NetworkService::Get().Send(peerId, joinedMessage);
+        }
+
+        NetworkPlayerSessionMessage joinedMessage;
+        joinedMessage.MessageType = NetworkPlayerSessionMessage::Type::PlayerJoined;
+        joinedMessage.Peer = peerId;
+        NetworkService::Get().Broadcast(joinedMessage);
+    }
+
+    void World::OnPeerDisconnected(PeerId peerId)
+    {
+        if (!NetworkService::Get().IsServer())
+            return;
+
+        DestroyPlayer(peerId);
+
+        NetworkPlayerSessionMessage leftMessage;
+        leftMessage.MessageType = NetworkPlayerSessionMessage::Type::PlayerLeft;
+        leftMessage.Peer = peerId;
+        NetworkService::Get().Broadcast(leftMessage);
+    }
+
+    void World::OnPlayerSessionMessage(const NetworkPlayerSessionMessage& msg)
+    {
+        if (NetworkService::Get().IsServer())
+            return;
+
+        switch (msg.MessageType)
+        {
+            case NetworkPlayerSessionMessage::Type::AssignLocalPeer:
+                SetLocalPeerId(msg.Peer);
+                break;
+            case NetworkPlayerSessionMessage::Type::PlayerJoined:
+                if (msg.Peer != m_LocalPeerId)
+                    CreatePlayer(msg.Peer, false);
+                break;
+            case NetworkPlayerSessionMessage::Type::PlayerLeft:
+                if (msg.Peer != m_LocalPeerId)
+                    DestroyPlayer(msg.Peer);
+                break;
+            default:
+                break;
+        }
+    }
+
+    void World::SetLocalPeerId(PeerId peerId)
+    {
+        if (m_LocalPeerId == peerId)
+            return;
+
+        const PeerId previousLocalPeerId = m_LocalPeerId;
+        m_LocalPeerId = peerId;
+
+        const auto controller = std::ranges::find_if(m_Controllers, [previousLocalPeerId](const Controller& controller)
+        {
+            return controller.GetPeerId() == previousLocalPeerId;
+        });
+
+        if (controller == m_Controllers.end())
+            return;
+
+        controller->SetPeerId(peerId);
+        if (auto* transform = controller->GetEntity().GetComponent<TransformComponent>())
+            transform->OwnerPeerId = peerId;
+    }
+
+    void World::DestroyPlayer(PeerId peer)
+    {
+        const auto controller = std::ranges::find_if(m_Controllers, [peer](const Controller& controller)
+        {
+            return controller.GetPeerId() == peer;
+        });
+
+        if (controller == m_Controllers.end())
+            return;
+
+        if (const Entity entity = controller->GetEntity())
+            m_Registry.destroy(entity);
+
+        m_Controllers.erase(controller);
     }
 
     void World::CreatePlayer(PeerId peer, bool local)
@@ -111,7 +211,10 @@ namespace Sunset
         Entity character = CreateEntity("Player");
 
         playerController.Possess(character);
-        character.AddComponent<TransformComponent>(peer);
+
+        const bool receiveNetworkPosition = !Application::IsHeadless() || local;
+        const bool broadcastNetworkPosition = Application::IsHeadless() || local;
+        character.AddComponent<TransformComponent>(peer, receiveNetworkPosition, broadcastNetworkPosition);
         if (local)
             character.AddComponent<CameraComponent>();
 
