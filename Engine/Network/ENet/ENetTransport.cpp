@@ -22,6 +22,7 @@ namespace Sunset
             return Host != nullptr;
         }
 
+        /// Assigns an engine peer id to a newly connected ENet peer, or returns the existing id.
         PeerId RegisterPeer(ENetPeer* peer)
         {
             if (peer == nullptr)
@@ -41,6 +42,7 @@ namespace Sunset
             return peerId;
         }
 
+        /// Finds the engine peer id associated with an ENet peer pointer.
         PeerId GetPeerId(const ENetPeer* peer) const
         {
             if (peer == nullptr)
@@ -57,6 +59,7 @@ namespace Sunset
             return existingPeer->first;
         }
 
+        /// Removes an ENet peer from the engine peer map when it disconnects.
         void UnregisterPeer(ENetPeer* peer)
         {
             const PeerId peerId = GetPeerId(peer);
