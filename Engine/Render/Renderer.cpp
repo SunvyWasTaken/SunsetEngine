@@ -176,11 +176,14 @@ namespace Sunset
     }
     Renderer::~Renderer()
     {
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui_ImplGlfw_Shutdown();
-        ImGui::DestroyContext();
-
-        glfwDestroyWindow(m_Window);
+        if (m_Window)
+        {
+            ImGui_ImplOpenGL3_Shutdown();
+            ImGui_ImplGlfw_Shutdown();
+            ImGui::DestroyContext();
+            glfwDestroyWindow(m_Window);
+            m_Window = nullptr;
+        }
         glfwTerminate();
         LOG("Engine", info, "Render Destroy")
     }

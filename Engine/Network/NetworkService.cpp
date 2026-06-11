@@ -33,6 +33,11 @@ namespace Sunset
         g_Sunset.reset();
     }
 
+    bool NetworkService::IsInitialized()
+    {
+        return g_Sunset != nullptr;
+    }
+
     NetworkService & NetworkService::Get()
     {
         if (!g_Sunset)

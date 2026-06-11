@@ -1,6 +1,8 @@
 # SunsetEngine
 
-SunsetEngine is a C++20 game-engine library built around OpenGL rendering, a layer-based application loop, an Entity Component System powered by EnTT, UI widgets, logging/profiling utilities, and an ENet-based networking layer. The project currently builds a static library named `SunsetEngine` that can be linked by a game or sandbox executable.
+> SunsetEngine is a C++20 game-engine library built around OpenGL rendering, a layer-based application loop, an Entity Component System powered by EnTT, UI widgets, logging/profiling utilities, and an ENet-based networking layer. The project currently builds a static library named `SunsetEngine` that can be linked by a game or sandbox executable.
+
+---
 
 ## Features
 
@@ -12,6 +14,8 @@ SunsetEngine is a C++20 game-engine library built around OpenGL rendering, a lay
 - **Slate UI**: basic immediate-style UI objects including square panels, images, and horizontal boxes.
 - **Utilities**: logging through spdlog, on-screen debug text, profiling scopes, math helpers, and a reusable debug cube primitive.
 - **Third-party noise**: FastNoiseSIMD is included in `Thirdparty/FastNoiseSIMD` and built with the engine.
+
+---
 
 ## Repository layout
 
@@ -34,6 +38,8 @@ SunsetEngine is a C++20 game-engine library built around OpenGL rendering, a lay
 └── Thirdparty/FastNoiseSIMD/       # Vendored FastNoiseSIMD library
 ```
 
+---
+
 ## Requirements
 
 - A C++20 compiler.
@@ -53,6 +59,8 @@ The vcpkg manifest declares these external packages:
 - imgui with GLFW and OpenGL 3 bindings
 - enet
 - entt
+
+---
 
 ## Building
 
@@ -74,6 +82,8 @@ If vcpkg is already integrated globally or your environment exposes the required
 cmake -S . -B build
 cmake --build build
 ```
+
+---
 
 ## Using SunsetEngine from another CMake project
 
@@ -116,6 +126,24 @@ int main()
 }
 ```
 
+---
+
+### Headless mode
+
+Set `ApplicationSetting::Headless` to `true` for a server-style process that should not create a GLFW window, OpenGL context, ImGui context, or run draw frames. The application loop still updates layers and automatically ticks `NetworkService` when it has been initialized, so a headless layer can host or join a network session without depending on rendering.
+
+```cpp
+Sunset::ApplicationSetting settings;
+settings.Headless = true;
+settings.HeadlessTickRate = 60.0f;
+
+Sunset::Application app(settings);
+app.PushLayer<ServerLayer>();
+app.Run();
+```
+
+---
+
 ## Runtime data
 
 SunsetEngine defines a `SAVE_PATH` compile definition that points to `${CMAKE_SOURCE_DIR}/Save/`. The input system initializes from `Input.json` inside that folder, so applications should provide a file such as:
@@ -125,6 +153,8 @@ Save/Input.json
 ```
 
 Shader paths are compiled into the engine through `ENGINE_SHADERS_PATH` and point to the repository `Shaders/` directory.
+
+---
 
 ## Networking overview
 
@@ -153,12 +183,16 @@ network.Broadcast(move);
 
 Remember to call `NetworkService::Shutdown()` when your application is done if you initialize the service manually.
 
+---
+
 ## Development notes
 
 - The root [`CMakeLists.txt`](CMakeLists.txt) currently uses `file(GLOB_RECURSE ...)` to collect engine sources.
 - [`Engine/SunsetPCH.h`](Engine/SunsetPCH.h) is configured as a public precompiled header for the engine target.
 - `Thirdparty/FastNoiseSIMD` is built as a subdirectory and linked publicly.
 - The engine target exposes `Engine/` as a public include directory, so headers can be included relative to that folder.
+
+---
 
 ## License
 

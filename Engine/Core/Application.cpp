@@ -7,6 +7,7 @@
 #include "ApplicationSetting.h"
 #include "Layer.h"
 #include "BaseObject/BaseCube.h"
+#include "Network/NetworkService.h"
 #include "Render/RenderCommande.h"
 #include "Render/Renderer.h"
 
@@ -55,9 +56,17 @@ namespace Sunset
         LOG("Engine", info, "App Create");
         app = this;
         AppSetting = setting;
-        m_Render = new Renderer();
-        m_Render->BindEvent([this](Event::Type& event){ OnEvent(event); });
-        InputRegister::Init(SAVE_PATH "Input.json");
+        IsAppRunning = true;
+        if (!AppSetting.Headless)
+        {
+            m_Render = new Renderer();
+            m_Render->BindEvent([this](Event::Type& event){ OnEvent(event); });
+            InputRegister::Init(SAVE_PATH "Input.json");
+        }
+        else
+        {
+            LOG("Engine", info, "App Create in headless mode");
+        }
     }
 
     Application::~Application()
@@ -79,14 +88,18 @@ namespace Sunset
     {
         std::chrono::steady_clock::time_point prev = std::chrono::steady_clock::now();
 
-        while (IsAppRunning && m_Render->Valid())
+        while (IsAppRunning && (AppSetting.Headless || (m_Render && m_Render->Valid())))
         {
             std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
             std::chrono::duration<float> dt = now - prev;
             prev = now;
 
             fpsema.Add(dt.count());
-            fpsema.Display();
+            if (!AppSetting.Headless)
+                fpsema.Display();
+
+            if (NetworkService::IsInitialized())
+                NetworkService::Get().Update(dt.count());
             {
                 SS_PROFILE_SCOPE("Logic part");
                 for (const auto& layer : m_LayerStack)
@@ -95,6 +108,7 @@ namespace Sunset
                 }
             }
 
+            if (!AppSetting.Headless)
             {
                 SS_PROFILE_SCOPE("Render part");
                 RenderCommande::BeginFrame();
@@ -112,6 +126,14 @@ namespace Sunset
                     func();
                 }
                 m_CommandBuffer.clear();
+            }
+
+            if (AppSetting.Headless && AppSetting.HeadlessTickRate > 0.0f)
+            {
+                const auto targetFrameTime = std::chrono::duration<float>(1.0f / AppSetting.HeadlessTickRate);
+                const auto elapsed = std::chrono::steady_clock::now() - now;
+                if (elapsed < targetFrameTime)
+                    std::this_thread::sleep_for(targetFrameTime - elapsed);
             }
         }
     }
@@ -145,7 +167,15 @@ namespace Sunset
 
     void* Application::GetWindow()
     {
+        if (!m_Render)
+            return nullptr;
+
         return Renderer::Get();
+    }
+
+    bool Application::IsHeadless()
+    {
+        return AppSetting.Headless;
     }
 
     void Application::CloseApplication()

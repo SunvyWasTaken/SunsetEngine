@@ -7,6 +7,7 @@
 #include "GameFramework/Controller.h"
 #include "Entity.h"
 #include "BaseObject/BaseCube.h"
+#include "Core/Application.h"
 #include "Core/Input.h"
 #include "GameFramework/Components/CameraComponent.h"
 #include "GameFramework/Components/TransformComponent.h"
@@ -31,7 +32,8 @@ namespace Sunset
             OnPeerConnected(peerId);
         });
 
-        CreatePlayer(0);
+        if (!Application::IsHeadless())
+            CreatePlayer(0);
     }
 
     World::~World()
@@ -53,24 +55,27 @@ namespace Sunset
         {
             transformView.get<TransformComponent>(entity).Update(deltatime);
         }
-        auto group = m_Registry.view<TransformComponent, MeshComponent>();
-        for (const auto& entity : group)
+        if (!Application::IsHeadless())
         {
-            const auto& [transform, mesh] = group.get<TransformComponent, MeshComponent>(entity);
-            RenderCommande::Submit(mesh.m_mesh);
-        }
-        for (auto& m : m_Controllers)
-        {
-            const auto& transform = m_Registry.get<TransformComponent>(m.GetEntity());
-            if (auto cam = m_Registry.try_get<CameraComponent>(m.GetEntity()))
+            auto group = m_Registry.view<TransformComponent, MeshComponent>();
+            for (const auto& entity : group)
             {
-                Camera camera;
-                camera.SetPosition(transform.GetLocation() - (transform.GetForwardVector() * 10.f));
-                camera.SetForward(transform.GetForwardVector());
-                RenderCommande::UseCamera(camera);
+                const auto& [transform, mesh] = group.get<TransformComponent, MeshComponent>(entity);
+                RenderCommande::Submit(mesh.m_mesh);
             }
-            DrawCube(transform, glm::vec4(1.0), true);
-            PRINTSCREEN("Controller location {}", transform.GetLocation());
+            for (auto& m : m_Controllers)
+            {
+                const auto& transform = m_Registry.get<TransformComponent>(m.GetEntity());
+                if (auto cam = m_Registry.try_get<CameraComponent>(m.GetEntity()))
+                {
+                    Camera camera;
+                    camera.SetPosition(transform.GetLocation() - (transform.GetForwardVector() * 10.f));
+                    camera.SetForward(transform.GetForwardVector());
+                    RenderCommande::UseCamera(camera);
+                }
+                DrawCube(transform, glm::vec4(1.0), true);
+                PRINTSCREEN("Controller location {}", transform.GetLocation());
+            }
         }
     }
 

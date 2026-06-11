@@ -93,6 +93,8 @@ namespace Sunset
         /// Destroys the global network service instance and releases its transport.
         static void Shutdown();
 
+        static bool IsInitialized();
+
         /// Returns the global network service instance, creating it lazily if needed.
         static NetworkService& Get();
 

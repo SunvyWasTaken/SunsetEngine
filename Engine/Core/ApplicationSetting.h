@@ -2,20 +2,15 @@
 // Created by sunvy on 15/12/2025.
 //
 
-#ifndef SUNSETCRAFT_APPLICATIONSETTING_H
-#define SUNSETCRAFT_APPLICATIONSETTING_H
-
-#include <string>
-#include <glm/vec2.hpp>
+#pragma once
 
 namespace Sunset
 {
     struct ApplicationSetting
     {
-        glm::ivec2 WindowSize;
-        std::string WindowTitle;
+        glm::ivec2 WindowSize{1280, 720};
+        std::string WindowTitle{"SunsetEngine"};
+        bool Headless = false;
+        float HeadlessTickRate = 60.0f;
     };
 }
-
-
-#endif //SUNSETCRAFT_APPLICATIONSETTING_H
