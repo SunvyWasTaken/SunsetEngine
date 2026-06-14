@@ -35,6 +35,6 @@ namespace Sunset
 /*
  * level : trace, debug, info, warn, error, critical.
  */
-#define LOG(name, level, txt, ...) ::Sunset::Log::GetLogger(name)->level(std::format(txt, ##__VA_ARGS__));
+#define LOG(name, level, txt, ...) if (std::shared_ptr<spdlog::logger> _l = ::Sunset::Log::GetLogger(name)) {_l->level(std::format(txt, ##__VA_ARGS__));};
 
 #define PRINTSCREEN(txt, ...) ::Sunset::PrintScreen::Add(std::format(txt, ##__VA_ARGS__));

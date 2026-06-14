@@ -47,8 +47,10 @@ namespace Sunset
 
     std::shared_ptr<spdlog::logger> Log::GetLogger(std::string name)
     {
-        const auto it = m_Loggers.find(name);
-        return it == m_Loggers.end() ? nullptr : it->second;
+        if (m_Loggers.empty() || !m_Loggers.contains(name))
+            return nullptr;
+
+        return m_Loggers.at(name);
     }
 
     void PrintScreen::Add(const std::string_view& string)
