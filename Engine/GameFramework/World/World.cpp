@@ -130,6 +130,11 @@ namespace Sunset
         NetworkService::Get().Broadcast(leftMessage);
     }
 
+    Controller & World::GetController(size_t index)
+    {
+        return m_Controllers[index];
+    }
+
     void World::OnPlayerSessionMessage(const NetworkPlayerSessionMessage& msg)
     {
         if (NetworkService::Get().IsServer())

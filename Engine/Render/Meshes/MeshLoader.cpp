@@ -11,5 +11,6 @@ namespace Sunset
 {
     Mesh * MeshLoader::LoadMesh(const std::string &path)
     {
+        return nullptr;
     }
 } // Sunset

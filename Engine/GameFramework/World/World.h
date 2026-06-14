@@ -47,6 +47,8 @@ namespace Sunset
         void OnPeerConnected(PeerId peerId);
         void OnPeerDisconnected(PeerId peerId);
 
+        Controller& GetController(size_t index);
+
     private:
 
         void OnPlayerSessionMessage(const NetworkPlayerSessionMessage& msg);
