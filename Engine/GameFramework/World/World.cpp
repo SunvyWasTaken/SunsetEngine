@@ -73,7 +73,7 @@ namespace Sunset
                 const auto& transform = m_Registry.get<TransformComponent>(m.GetEntity());
                 if (auto cam = m_Registry.try_get<CameraComponent>(m.GetEntity()))
                 {
-                    Camera camera;
+                    Camera& camera = cam->camera;
                     camera.SetPosition(transform.GetLocation() - (transform.GetForwardVector() * 10.f));
                     camera.SetForward(transform.GetForwardVector());
                     RenderCommande::UseCamera(camera);

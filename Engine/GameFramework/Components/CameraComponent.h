@@ -4,6 +4,7 @@
 
 #pragma once
 #include "Component.h"
+#include "Render/Camera.h"
 
 namespace Sunset
 {
@@ -12,5 +13,7 @@ namespace Sunset
     public:
         CameraComponent() = default;
         ~CameraComponent() override = default;
+
+        Camera camera;
     };
 } // Sunset
