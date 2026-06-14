@@ -12,7 +12,7 @@
 #include "Render/Drawable.h"
 #include "Render/Image.h"
 #include "Render/Material.h"
-#include "Render/Mesh.h"
+#include "../Render/Meshes/Mesh.h"
 #include "Render/Shader.h"
 #include "Render/Texture.h"
 #include "Render/BufferObject/VertexArray.h"

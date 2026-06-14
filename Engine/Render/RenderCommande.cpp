@@ -7,7 +7,7 @@
 #include "Core/Application.h"
 #include "Core/ApplicationSetting.h"
 #include "Drawable.h"
-#include "Mesh.h"
+#include "Meshes/Mesh.h"
 #include "Shader.h"
 
 #include <imgui.h>

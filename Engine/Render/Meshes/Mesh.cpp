@@ -4,8 +4,8 @@
 
 #include "Mesh.h"
 
-#include "BufferObject/Buffers.h"
-#include "BufferObject/VertexArray.h"
+#include "../BufferObject/Buffers.h"
+#include "../BufferObject/VertexArray.h"
 
 namespace Sunset
 {

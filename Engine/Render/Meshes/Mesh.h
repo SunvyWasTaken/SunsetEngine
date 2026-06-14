@@ -2,8 +2,7 @@
 // Created by sunvy on 07/02/2026.
 //
 
-#ifndef SUNSETCRAFT_MESH_H
-#define SUNSETCRAFT_MESH_H
+#pragma once
 
 namespace Sunset
 {
@@ -12,11 +11,11 @@ namespace Sunset
     class VertexBuffer;
     class VertexArray;
 
-    class Mesh final
+    class Mesh
     {
     public:
         explicit Mesh(std::unique_ptr<VertexArray>& vao);
-        ~Mesh();
+        virtual ~Mesh();
 
         static std::shared_ptr<Mesh> CreateMesh(const void* data, size_t typeSize, size_t size, const std::vector<uint32_t>& indices, const std::initializer_list<BufferElement>& layout);
         static std::shared_ptr<Mesh> CreateMesh(const std::shared_ptr<VertexBuffer>& vertexBuffer, const std::shared_ptr<IndiceBuffer>& indiceBuffer);
@@ -33,5 +32,3 @@ namespace Sunset
         std::shared_ptr<IndiceBuffer> m_IndiceBuffer;
     };
 }
-
-#endif //SUNSETCRAFT_MESH_H

@@ -6,7 +6,7 @@
 
 #include "Render/Drawable.h"
 #include "Render/Material.h"
-#include "Render/Mesh.h"
+#include "../Render/Meshes/Mesh.h"
 #include "Render/RenderCommande.h"
 #include "Render/BufferObject/Buffers.h"
 
