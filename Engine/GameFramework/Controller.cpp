@@ -39,7 +39,7 @@ namespace Sunset
 
         if (auto* comp = m_entity.GetComponent<TransformComponent>())
         {
-            constexpr float speed = 10.f;
+            constexpr float speed = 100.f;
             if (Check(inputs["Forward"]))
                 comp->AddLocation(comp->GetForwardVector() * speed * dt);
             if (Check(inputs["Backward"]))
