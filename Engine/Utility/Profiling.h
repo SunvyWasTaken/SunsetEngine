@@ -23,8 +23,6 @@ namespace Sunset
     };
 }
 
-#define SS_PROFILING
-
 #ifdef SS_PROFILING
     #define SS_CONCAT(x, y) x##y
     #define SS_PROFILE_SCOPE(name) ::Sunset::Profiling SS_CONCAT(ProfileScope_, __LINE__)(name)

@@ -30,11 +30,15 @@ namespace Sunset
         static std::vector<std::string>& Get();
     };
 }
-
+#ifndef SS_RELEASE
 #define INITLOG(name) Sunset::Log::InitLog(name);
 /*
  * level : trace, debug, info, warn, error, critical.
  */
 #define LOG(name, level, txt, ...) if (std::shared_ptr<spdlog::logger> _l = ::Sunset::Log::GetLogger(name)) {_l->level(std::format(txt, ##__VA_ARGS__));};
-
 #define PRINTSCREEN(txt, ...) ::Sunset::PrintScreen::Add(std::format(txt, ##__VA_ARGS__));
+#else
+#define INITLOG(name)
+#define LOG(name, level, txt, ...)
+#define PRINTSCREEN(txt, ...)
+#endif
