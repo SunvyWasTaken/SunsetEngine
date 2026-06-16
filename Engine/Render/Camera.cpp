@@ -62,7 +62,7 @@ namespace Sunset
     glm::mat4 Camera::GetProjection() const
     {
         const glm::ivec2& src = Application::GetSetting().WindowSize;
-        return glm::perspective(glm::radians(fov), static_cast<float>(src.x) / static_cast<float>(src.y), 0.1f, 500.0f);
+        return glm::perspective(glm::radians(fov), static_cast<float>(src.x) / static_cast<float>(src.y), 0.1f, 1000.0f);
     }
 
     glm::mat4 Camera::GetViewMatrix() const
