@@ -3,6 +3,22 @@ cmake_minimum_required(VERSION 3.28)
 add_library(SunsetEngine_compiler_flags INTERFACE)
 target_compile_features(SunsetEngine_compiler_flags INTERFACE cxx_std_20)
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(SunsetEngine_compiler_flags INTERFACE
+            $<$<CONFIG:Release>:-O3>
+            $<$<CONFIG:RelWithDebInfo>:-O2>
+            $<$<CONFIG:Release>:-DNDEBUG>
+            $<$<CONFIG:RelWithDebInfo>:-DNDEBUG>
+    )
+elseif(MSVC)
+    target_compile_options(SunsetEngine_compiler_flags INTERFACE
+            $<$<CONFIG:Release>:/O2>
+            $<$<CONFIG:RelWithDebInfo>:/O2>
+            $<$<CONFIG:Release>:/DNDEBUG>
+            $<$<CONFIG:RelWithDebInfo>:/DNDEBUG>
+    )
+endif()
+
 project(SunsetEngine)
 
 file(GLOB_RECURSE SOURCES "*.h" "*.cpp" "*.txt")

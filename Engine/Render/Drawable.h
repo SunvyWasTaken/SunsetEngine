@@ -54,6 +54,7 @@ namespace Sunset
         CullMode cullMode = CullMode::Front;
         bool wireframe = false;
         bool DrawInstance = false;
+        uint32_t nbrInstance = 0;
         bool HasIndice = true;
         PrimitiveType primitiveType = PrimitiveType::Triangles;
     };

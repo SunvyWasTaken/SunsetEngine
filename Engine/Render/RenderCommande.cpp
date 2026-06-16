@@ -167,7 +167,7 @@ namespace
             cmd.material->m_Shader->SetMat4("model", cmd.model);
 
             if (cmd.state.DrawInstance)
-                glDrawArraysInstanced(ToGLPrimitiveType(cmd.state.primitiveType), 0, 32, cmd.indexCount);
+                glDrawArraysInstanced(ToGLPrimitiveType(cmd.state.primitiveType), 0, cmd.state.nbrInstance, cmd.indexCount);
             else if (cmd.state.HasIndice)
                 glDrawElements(ToGLPrimitiveType(cmd.state.primitiveType), cmd.indexCount, GL_UNSIGNED_INT, nullptr);
             else
