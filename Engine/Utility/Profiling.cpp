@@ -6,10 +6,13 @@
 
 namespace
 {
+    std::mutex ProfilingDataMutex;
+
     std::vector<std::string> ProfilingData;
 
     void Add(const std::string& data)
     {
+        std::scoped_lock lock(ProfilingDataMutex);
         ProfilingData.emplace_back(data);
     }
 
@@ -20,11 +23,13 @@ namespace Sunset
 {
     void ProfileData::Free()
     {
+        std::scoped_lock lock(ProfilingDataMutex);
         ProfilingData.clear();
     }
 
     std::vector<std::string> & ProfileData::Get()
     {
+        std::scoped_lock lock(ProfilingDataMutex);
         return ProfilingData;
     }
 

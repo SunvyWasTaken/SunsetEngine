@@ -123,7 +123,7 @@ namespace Sunset
                 },
                 [&](NetworkEvent::PacketReceived& e)
                 {
-                    LOG("Engine", trace, "Packet received")
+                    // LOG("Engine", trace, "Packet received")
                     Dispatch(e.packet.peer, e.packet.channel, e.packet.payload);
                 }
             }, event);

@@ -223,7 +223,6 @@ namespace Sunset
             return;
         }
 
-        LOG("Engine", trace, "Broadcast ENet packet for peer {}", channel);
         enet_host_broadcast(m_Impl->Host, channel, packet);
     }
 
