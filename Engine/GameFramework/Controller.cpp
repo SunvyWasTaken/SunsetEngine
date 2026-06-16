@@ -59,8 +59,8 @@ namespace Sunset
                 if (mous.length() >= 0.001)
                 {
                     //mous = glm::normalize(mous);
-                    comp->Rotate(comp->GetRightVector(), -mous.y * dt);
-                    comp->Rotate({0, 1, 0}, -mous.x * dt);
+                    comp->Rotate(comp->GetRightVector(), -mous.y * 0.005f);
+                    comp->Rotate({0, 1, 0}, -mous.x * 0.005f);
                 }
             }
         }
