@@ -29,32 +29,15 @@ namespace Sunset
 {
     /// Texture
 
-    Textures::Textures(const std::string_view& name, std::vector<Image>& images, const int width, const int height)
+    Textures::Textures(const std::string_view& name, const int width, const int height)
         : m_Width(width)
         , m_Height(height)
         , m_Name(name)
         , m_Id(0)
-        , m_Nbr(images.size())
+        , m_Nbr(0)
     {
         SendTextureToGpu(m_Id, m_Width, m_Height);
-
         LOG("Engine", trace, "Texture {} created at {}", m_Name, m_Id)
-
-        int currentY = 0;
-
-        for (const auto& image : images)
-        {
-            GLenum format = GL_RGB;
-            if (image.nbrChannels == 1)
-                format = GL_RED;
-            else if (image.nbrChannels == 3)
-                format = GL_RGB;
-            else if (image.nbrChannels == 4)
-                format = GL_RGBA;
-
-            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, currentY, image.width, image.height, format, GL_UNSIGNED_BYTE, image.m_Data);
-            currentY += image.width;
-        }
     }
 
     Textures::~Textures()
@@ -71,6 +54,19 @@ namespace Sunset
     const char* Textures::GetName() const
     {
         return m_Name.c_str();
+    }
+
+    void Textures::AddImageAt(Image &image, const glm::ivec2& coord)
+    {
+        GLenum format = GL_RGB;
+        if (image.nbrChannels == 1)
+            format = GL_RED;
+        else if (image.nbrChannels == 3)
+            format = GL_RGB;
+        else if (image.nbrChannels == 4)
+            format = GL_RGBA;
+
+        glTexSubImage2D(GL_TEXTURE_2D, 0, coord.x, coord.y, image.width, image.height, format, GL_UNSIGNED_BYTE, image.m_Data);
     }
 
     size_t Textures::Nbr() const

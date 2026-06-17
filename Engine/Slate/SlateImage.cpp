@@ -79,18 +79,10 @@ namespace Sunset
         if (!img)
             return;
 
-        std::vector<Image> images;
-        images.emplace_back();
-        images[0].width = img.width;
-        images[0].height = img.height;
-        images[0].nbrChannels = img.nbrChannels;
-        images[0].SetData(img.m_Data);
-        img.SetData(nullptr);
-
-        m_Texture = std::make_shared<Textures>("U_Image", images, img.width, img.height);
+        m_Texture = std::make_shared<Textures>("U_Image", img.width, img.height);
+        m_Texture->AddImageAt(img, {0, 0});
         m_Drawable->m_Material->m_Textures.clear();
         m_Drawable->m_Material->m_Textures.emplace_back(m_Texture);
-
     }
 
     void SlateImage::Draw() const

@@ -14,13 +14,15 @@ namespace Sunset
     class Textures
     {
     public:
-        Textures(const std::string_view& name, std::vector<Image>& images, int width, int height);
+        Textures(const std::string_view& name, int width, int height);
 
         virtual ~Textures();
 
         void Use() const;
 
         const char* GetName() const;
+
+        void AddImageAt(Image& image, const glm::ivec2& coord);
 
         size_t Nbr() const;
 
