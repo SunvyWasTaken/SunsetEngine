@@ -31,7 +31,7 @@ namespace Sunset
 
     void Image::LoadImage(const std::string_view& path)
     {
-        stbi_set_flip_vertically_on_load(true);
+        // stbi_set_flip_vertically_on_load(true);
         m_Data = stbi_load(path.data(), &width, &height, &nbrChannels, 0);
         if (m_Data == nullptr)
         {

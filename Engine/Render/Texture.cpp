@@ -22,6 +22,7 @@ namespace
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 }
 
@@ -58,6 +59,7 @@ namespace Sunset
 
     void Textures::AddImageAt(Image &image, const glm::ivec2& coord)
     {
+        Use();
         GLenum format = GL_RGB;
         if (image.nbrChannels == 1)
             format = GL_RED;
@@ -67,6 +69,7 @@ namespace Sunset
             format = GL_RGBA;
 
         glTexSubImage2D(GL_TEXTURE_2D, 0, coord.x, coord.y, image.width, image.height, format, GL_UNSIGNED_BYTE, image.m_Data);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     size_t Textures::Nbr() const
