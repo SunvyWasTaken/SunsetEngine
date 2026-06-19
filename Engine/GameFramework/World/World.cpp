@@ -78,7 +78,7 @@ namespace Sunset
                     camera.SetForward(transform.GetForwardVector());
                     RenderCommande::UseCamera(camera);
                 }
-                DrawCube(transform, glm::vec4(1.0), true);
+                // DrawCube(transform, glm::vec4(1.0), true);
                 PRINTSCREEN("Controller location {}", transform.GetLocation());
             }
         }
