@@ -125,9 +125,33 @@ namespace
             state.wireframe ? GL_LINE : GL_FILL);
     }
 
+    bool IsTransparent(const DrawCommand& cmd)
+    {
+        return cmd.state.blending;
+    }
+
+    float DistanceToCameraSquared(const DrawCommand& cmd)
+    {
+        const glm::vec3 cameraToObject = glm::vec3(cmd.model[3]) - m_FrameData.position;
+        return glm::dot(cameraToObject, cameraToObject);
+    }
+
     void SortDrawCommands()
     {
+        std::stable_sort(m_DrawCommands.begin(), m_DrawCommands.end(), [](const DrawCommand& lhs, const DrawCommand& rhs)
+        {
+            const bool lhsTransparent = IsTransparent(lhs);
+            const bool rhsTransparent = IsTransparent(rhs);
 
+            if (lhsTransparent != rhsTransparent)
+                return !lhsTransparent;
+
+            if (lhsTransparent)
+                return DistanceToCameraSquared(lhs) > DistanceToCameraSquared(rhs);
+
+            return std::tie(lhs.material->m_Shader, lhs.material, lhs.vao)
+                < std::tie(rhs.material->m_Shader, rhs.material, rhs.vao);
+        });
     }
 
     void FlushDrawCommand()
