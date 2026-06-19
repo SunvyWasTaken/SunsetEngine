@@ -48,15 +48,17 @@ namespace
     {
         switch (factor)
         {
-        case Sunset::BlendFactor::Zero:                return GL_ZERO;
-        case Sunset::BlendFactor::One:                 return GL_ONE;
-        case Sunset::BlendFactor::SrcAlpha:            return GL_SRC_ALPHA;
-        case Sunset::BlendFactor::OneMinusSrcAlpha:    return GL_ONE_MINUS_SRC_ALPHA;
-        case Sunset::BlendFactor::DstAlpha:            return GL_DST_ALPHA;
-        case Sunset::BlendFactor::OneMinusDstAlpha:    return GL_ONE_MINUS_DST_ALPHA;
-        case Sunset::BlendFactor::SrcColor:            return GL_SRC_COLOR;
-        case Sunset::BlendFactor::OneMinusSrcColor:    return GL_ONE_MINUS_SRC_COLOR;
-        default:                               return GL_ONE;
+            case Sunset::BlendFactor::Zero:                return GL_ZERO;
+            case Sunset::BlendFactor::One:                 return GL_ONE;
+            case Sunset::BlendFactor::SrcAlpha:            return GL_SRC_ALPHA;
+            case Sunset::BlendFactor::OneMinusSrcAlpha:    return GL_ONE_MINUS_SRC_ALPHA;
+            case Sunset::BlendFactor::DstAlpha:            return GL_DST_ALPHA;
+            case Sunset::BlendFactor::OneMinusDstAlpha:    return GL_ONE_MINUS_DST_ALPHA;
+            case Sunset::BlendFactor::SrcColor:            return GL_SRC_COLOR;
+            case Sunset::BlendFactor::OneMinusSrcColor:    return GL_ONE_MINUS_SRC_COLOR;
+            case Sunset::BlendFactor::DstColor:            return GL_DST_COLOR;
+            case Sunset::BlendFactor::OneMinusDstColor:    return GL_ONE_MINUS_DST_COLOR;
+            default:                                       return GL_ONE;
         }
     }
 
@@ -84,6 +86,17 @@ namespace
         return GL_POINT;
     }
 
+    void ResetFrameState()
+    {
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(GL_TRUE);
+        glDepthFunc(GL_LESS);
+        glDisable(GL_BLEND);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+
     void ApplyState(const Sunset::RenderState& state)
     {
         // Depth Test
@@ -99,9 +112,12 @@ namespace
         if (state.blending)
         {
             glEnable(GL_BLEND);
-            glBlendFunc(
+            glBlendEquation(GL_FUNC_ADD);
+            glBlendFuncSeparate(
                 ToGLBlendFactor(state.src),
-                ToGLBlendFactor(state.dest)
+                ToGLBlendFactor(state.dest),
+                GL_ONE,
+                GL_ONE_MINUS_SRC_ALPHA
             );
         }
         else
@@ -213,6 +229,7 @@ namespace Sunset
 {
     void RenderCommande::BeginFrame()
     {
+        ResetFrameState();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glfwPollEvents();
@@ -227,6 +244,7 @@ namespace Sunset
     void RenderCommande::EndFrame()
     {
         FlushDrawCommand();
+        ResetFrameState();
 
         if (!PrintScreen::Get().empty())
         {
