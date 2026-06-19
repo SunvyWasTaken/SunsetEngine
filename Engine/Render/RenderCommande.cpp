@@ -125,10 +125,17 @@ namespace
             state.wireframe ? GL_LINE : GL_FILL);
     }
 
+    void SortDrawCommands()
+    {
+
+    }
+
     void FlushDrawCommand()
     {
         SS_PROFILE_FUNCTION();
         // Sort cmd
+        SortDrawCommands();
+
         std::shared_ptr<Sunset::Shader> currentShader = nullptr;
         std::shared_ptr<Sunset::Material> currentMaterial = nullptr;
         GLuint currentVAO = 0;
