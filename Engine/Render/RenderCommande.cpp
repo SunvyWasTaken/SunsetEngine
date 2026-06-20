@@ -146,6 +146,11 @@ namespace
         return cmd.state.blending;
     }
 
+    bool IsOverlay(const DrawCommand& cmd)
+    {
+        return cmd.state.layer == Sunset::RenderLayer::Overlay;
+    }
+
     float DistanceToCameraSquared(const DrawCommand& cmd)
     {
         const glm::vec3 cameraToObject = glm::vec3(cmd.model[3]) - m_FrameData.position;
@@ -156,6 +161,15 @@ namespace
     {
         std::stable_sort(m_DrawCommands.begin(), m_DrawCommands.end(), [](const DrawCommand& lhs, const DrawCommand& rhs)
         {
+            const bool lhsOverlay = IsOverlay(lhs);
+            const bool rhsOverlay = IsOverlay(rhs);
+
+            if (lhsOverlay != rhsOverlay)
+                return !lhsOverlay;
+
+            if (lhsOverlay)
+                return false;
+
             const bool lhsTransparent = IsTransparent(lhs);
             const bool rhsTransparent = IsTransparent(rhs);
 

@@ -42,8 +42,16 @@ namespace Sunset
         TriangleFan
     };
 
+    enum class RenderLayer
+    {
+        World,
+        Overlay
+    };
+
     struct RenderState
     {
+        RenderLayer layer = RenderLayer::World;
+
         bool depthTest = true;
         bool depthWrite = true;
 
