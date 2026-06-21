@@ -209,6 +209,7 @@ namespace
                 currentShader->Use();
                 currentShader->SetMat4("view", m_FrameData.view);
                 currentShader->SetMat4("projection", m_FrameData.projection);
+                currentShader->SetVec3("u_CameraPos", m_FrameData.position);
             }
 
             if (currentMaterial != cmd.material)

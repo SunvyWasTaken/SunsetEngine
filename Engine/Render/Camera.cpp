@@ -85,6 +85,11 @@ namespace Sunset
         return m_Up;
     }
 
+    glm::vec3 Camera::GetRight() const
+    {
+        return glm::normalize(glm::cross(m_Forward, m_Up));
+    }
+
     void Camera::MoveForward(float speed)
     {
         AddPosition(m_Forward * speed);
@@ -97,12 +102,12 @@ namespace Sunset
 
     void Camera::MoveRight(float speed)
     {
-        AddPosition(glm::normalize(glm::cross(m_Forward, m_Up)) * speed);
+        AddPosition(GetRight() * speed);
     }
 
     void Camera::MoveLeft(float speed)
     {
-        AddPosition(glm::normalize(glm::cross(m_Forward, m_Up)) * speed * -1.0f);
+        AddPosition(GetRight() * speed * -1.0f);
     }
 
     void Camera::MoveUp(float speed)

@@ -22,12 +22,19 @@ namespace Sunset
         Camera();
         ~Camera();
 
+        [[nodiscard]]
         glm::mat4 GetProjection() const;
+        [[nodiscard]]
         glm::mat4 GetViewMatrix() const;
 
+        [[nodiscard]]
         glm::vec3 GetPosition() const;
+        [[nodiscard]]
         glm::vec3 GetForward() const;
+        [[nodiscard]]
         glm::vec3 GetUp() const;
+        [[nodiscard]]
+        glm::vec3 GetRight() const;
 
         void MoveForward(float speed);
 
