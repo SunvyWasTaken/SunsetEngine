@@ -43,6 +43,7 @@ namespace
     std::vector<DrawCommand> m_DrawCommands;
 
     FrameData m_FrameData;
+    bool m_FrameRendered = false;
 
     GLenum ToGLBlendFactor(Sunset::BlendFactor factor)
     {
@@ -184,7 +185,12 @@ namespace
         });
     }
 
-    void FlushDrawCommand()
+    bool IsInRenderPass(const DrawCommand& cmd, Sunset::RenderPassMask renderMask)
+    {
+        return (cmd.state.renderMask & renderMask) != 0;
+    }
+
+    void FlushDrawCommand(Sunset::RenderPassMask renderMask)
     {
         SS_PROFILE_FUNCTION();
         // Sort cmd
@@ -201,6 +207,9 @@ namespace
 
         for (const  DrawCommand& cmd : m_DrawCommands)
         {
+            if (!IsInRenderPass(cmd, renderMask))
+                continue;
+
             ApplyState(cmd.state);
 
             if (currentShader != cmd.material->m_Shader)
@@ -235,7 +244,7 @@ namespace
                 glDrawArrays(ToGLPrimitiveType(cmd.state.primitiveType), 0, cmd.indexCount);
         }
 
-        m_DrawCommands.clear();
+        m_FrameRendered = true;
     }
 }
 
@@ -244,6 +253,7 @@ namespace Sunset
     void RenderCommande::BeginFrame()
     {
         ResetFrameState();
+        m_FrameRendered = false;
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glfwPollEvents();
@@ -257,8 +267,12 @@ namespace Sunset
 
     void RenderCommande::EndFrame()
     {
-        FlushDrawCommand();
+        if (!m_FrameRendered)
+            FlushDrawCommand(RenderPass::All);
+
+        m_DrawCommands.clear();
         ResetFrameState();
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         if (!PrintScreen::Get().empty())
         {
@@ -325,5 +339,21 @@ namespace Sunset
         m_FrameData.position = camera.GetPosition();
         m_FrameData.view = camera.GetViewMatrix();
         m_FrameData.projection = camera.GetProjection();
+    }
+
+    void RenderCommande::RenderCamera(const Camera& camera, bool clear)
+    {
+        RenderCamera(camera, camera.GetRenderMask(), camera.GetFrameBufferId(), clear);
+    }
+
+    void RenderCommande::RenderCamera(const Camera& camera, RenderPassMask renderMask, uint32_t frameBufferId, bool clear)
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBufferId);
+        ResetFrameState();
+        if (clear)
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        UseCamera(camera);
+        FlushDrawCommand(renderMask);
     }
 }

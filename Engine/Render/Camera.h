@@ -4,6 +4,7 @@
 
 #ifndef SUNSETCRAFT_CAMERA_H
 #define SUNSETCRAFT_CAMERA_H
+#include "Drawable.h"
 
 namespace Sunset
 {
@@ -19,7 +20,10 @@ namespace Sunset
     class Camera
     {
     public:
-        Camera();
+        // A camera renders every submitted drawable matching this mask into frameBufferId.
+        // frameBufferId == 0 renders to the default back buffer. The camera does not
+        // need to be attached to an entity to render an isolated pass.
+        explicit Camera(RenderPassMask renderMask = RenderPass::Main, uint32_t frameBufferId = 0, bool active = true);
         ~Camera();
 
         glm::mat4 GetProjection() const;
@@ -53,6 +57,17 @@ namespace Sunset
 
         Frustum GetFrustum() const;
 
+        void Render(bool clear = true) const;
+
+        void SetActive(bool active);
+        bool IsActive() const;
+
+        void SetRenderMask(RenderPassMask renderMask);
+        RenderPassMask GetRenderMask() const;
+
+        void SetFrameBufferId(uint32_t frameBufferId);
+        uint32_t GetFrameBufferId() const;
+
     private:
         glm::vec3 m_Position;
         glm::vec3 m_Forward;
@@ -61,6 +76,10 @@ namespace Sunset
         float m_Yaw, m_Pitch;
 
         float fov;
+
+        bool m_Active;
+        RenderPassMask m_RenderMask;
+        uint32_t m_FrameBufferId;
     };
 }
 

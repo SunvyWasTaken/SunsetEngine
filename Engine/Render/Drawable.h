@@ -48,9 +48,21 @@ namespace Sunset
         Overlay
     };
 
+    using RenderPassMask = uint32_t;
+
+    namespace RenderPass
+    {
+        constexpr RenderPassMask Main = 1 << 0;
+        // Intended for first-person meshes such as hands or held items rendered
+        // by a dedicated camera, potentially into an off-screen framebuffer.
+        constexpr RenderPassMask FirstPerson = 1 << 1;
+        constexpr RenderPassMask All = std::numeric_limits<RenderPassMask>::max();
+    }
+
     struct RenderState
     {
         RenderLayer layer = RenderLayer::World;
+        RenderPassMask renderMask = RenderPass::Main;
 
         // Use this for first-person hands/items, HUD meshes, or any geometry that
         // must be rendered after the world without being hidden by the world depth buffer.

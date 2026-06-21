@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include "Drawable.h"
 
 namespace Sunset
 {
@@ -18,5 +19,7 @@ namespace Sunset
         static void Submit(const Drawable& drawable);
         static void Submit(const Drawable& mesh, const glm::mat4& transform);
         static void UseCamera(const Camera& camera);
+        static void RenderCamera(const Camera& camera, bool clear = true);
+        static void RenderCamera(const Camera& camera, RenderPassMask renderMask, uint32_t frameBufferId, bool clear = true);
     };
 }

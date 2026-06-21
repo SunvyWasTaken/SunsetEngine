@@ -68,16 +68,21 @@ namespace Sunset
                 const auto& [transform, mesh] = group.get<TransformComponent, MeshComponent>(entity);
                 RenderCommande::Submit(mesh.m_mesh);
             }
+            auto cameraView = m_Registry.view<TransformComponent, CameraComponent>();
+            for (const auto& entity : cameraView)
+            {
+                auto& [transform, cameraComponent] = cameraView.get<TransformComponent, CameraComponent>(entity);
+                if (!cameraComponent.camera.IsActive())
+                    continue;
+
+                cameraComponent.camera.SetPosition(transform.GetLocation());
+                cameraComponent.camera.SetForward(transform.GetForwardVector());
+                cameraComponent.camera.Render();
+            }
+
             for (auto& m : m_Controllers)
             {
                 const auto& transform = m_Registry.get<TransformComponent>(m.GetEntity());
-                if (auto cam = m_Registry.try_get<CameraComponent>(m.GetEntity()))
-                {
-                    Camera& camera = cam->camera;
-                    camera.SetPosition(transform.GetLocation());
-                    camera.SetForward(transform.GetForwardVector());
-                    RenderCommande::UseCamera(camera);
-                }
                 // DrawCube(transform, glm::vec4(1.0), true);
                 PRINTSCREEN("Controller location {}", transform.GetLocation());
             }
@@ -221,7 +226,7 @@ namespace Sunset
         const bool broadcastNetworkPosition = Application::IsHeadless() || local;
         character.AddComponent<TransformComponent>(peer, receiveNetworkPosition, broadcastNetworkPosition);
         if (local)
-            character.AddComponent<CameraComponent>();
+            character.AddComponent<CameraComponent>(RenderPass::Main);
 
         m_Controllers.emplace_back(std::move(playerController));
     }

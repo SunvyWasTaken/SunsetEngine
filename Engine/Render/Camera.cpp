@@ -7,6 +7,7 @@
 #include "Core/Application.h"
 #include "Core/ApplicationSetting.h"
 #include "Math/AABB.h"
+#include "RenderCommande.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -45,13 +46,16 @@ namespace Sunset
         return true;
     }
 
-    Camera::Camera()
+    Camera::Camera(RenderPassMask renderMask, uint32_t frameBufferId, bool active)
         : m_Position(0.f, 0.f, 0.f)
         , m_Forward(0.0f, 0.0f, -1.0f)
         , m_Up(0.0f, 1.0f, 0.0f)
         , m_Yaw(-90.f)
         , m_Pitch(0.f)
         , fov(45.f)
+        , m_Active(active)
+        , m_RenderMask(renderMask)
+        , m_FrameBufferId(frameBufferId)
     {
     }
 
@@ -170,5 +174,40 @@ namespace Sunset
         }
 
         return f;
+    }
+
+    void Camera::Render(bool clear) const
+    {
+        RenderCommande::RenderCamera(*this, clear);
+    }
+
+    void Camera::SetActive(bool active)
+    {
+        m_Active = active;
+    }
+
+    bool Camera::IsActive() const
+    {
+        return m_Active;
+    }
+
+    void Camera::SetRenderMask(RenderPassMask renderMask)
+    {
+        m_RenderMask = renderMask;
+    }
+
+    RenderPassMask Camera::GetRenderMask() const
+    {
+        return m_RenderMask;
+    }
+
+    void Camera::SetFrameBufferId(uint32_t frameBufferId)
+    {
+        m_FrameBufferId = frameBufferId;
+    }
+
+    uint32_t Camera::GetFrameBufferId() const
+    {
+        return m_FrameBufferId;
     }
 }

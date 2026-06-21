@@ -6,4 +6,8 @@
 
 namespace Sunset
 {
+    CameraComponent::CameraComponent(RenderPassMask renderMask, uint32_t frameBufferId, bool active)
+        : camera(renderMask, frameBufferId, active)
+    {
+    }
 } // Sunset

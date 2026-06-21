@@ -12,6 +12,7 @@ namespace Sunset
     {
     public:
         CameraComponent() = default;
+        explicit CameraComponent(RenderPassMask renderMask, uint32_t frameBufferId = 0, bool active = true);
         ~CameraComponent() override = default;
 
         Camera camera;
