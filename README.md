@@ -144,6 +144,21 @@ app.Run();
 
 ---
 
+## Rendering first-person items after the world
+
+For Minecraft-like first-person hands or held items, submit the normal world drawables as usual, then submit the hand/item drawable with `RenderState::AfterWorldOverlay()`. This keeps the engine's current `RenderCommande::Submit(...)` flow while letting the game opt into a second render layer for meshes that should not clip into walls.
+
+```cpp
+Sunset::Drawable hand = CreateHandDrawable();
+hand.m_RenderState = Sunset::RenderState::AfterWorldOverlay();
+
+Sunset::RenderCommande::Submit(hand, handTransform);
+```
+
+`AfterWorldOverlay()` sets the drawable layer to `RenderLayer::Overlay` and disables depth test/write for that drawable. Because `RenderCommande` already sorts overlay drawables after world drawables, the world depth buffer can no longer hide the hand/item. If you want an overlay mesh that still participates in depth testing, keep using a custom `RenderState` and set only the fields you need.
+
+---
+
 ## Runtime data
 
 SunsetEngine defines a `SAVE_PATH` compile definition that points to `${CMAKE_SOURCE_DIR}/Save/`. The input system initializes from `Input.json` inside that folder, so applications should provide a file such as:
