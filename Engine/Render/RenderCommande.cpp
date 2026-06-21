@@ -327,4 +327,9 @@ namespace Sunset
         m_FrameData.view = camera.GetViewMatrix();
         m_FrameData.projection = camera.GetProjection();
     }
+
+    void RenderCommande::ShowCursor(bool show)
+    {
+        glfwSetInputMode(static_cast<GLFWwindow*>(Application::GetWindow()), GLFW_CURSOR, show ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+    }
 }

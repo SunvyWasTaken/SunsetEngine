@@ -18,5 +18,6 @@ namespace Sunset
         static void Submit(const Drawable& drawable);
         static void Submit(const Drawable& mesh, const glm::mat4& transform);
         static void UseCamera(const Camera& camera);
+        static void ShowCursor(bool show);
     };
 }
