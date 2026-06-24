@@ -15,20 +15,16 @@ namespace Sunset
     {
     public:
         ~UIContext();
-        void SetRoot(const std::shared_ptr<Widget>& rootWidget);
-        [[nodiscard]]
-        std::shared_ptr<Widget> GetRoot() const;
+        void AddWidget(const std::shared_ptr<Widget>& rootWidget);
         void Update(float dt);
         void PrePass();
         void Arrange(float width, float height);
         void ProcessInput();
         void ProcessMouseMove(const glm::ivec2& mousePosition);
-        bool ProcessMouseButton(const glm::ivec2& mousePosition, bool pressed);
         void Paint();
         UIRenderList& GetRenderList();
     private:
-        void ClearButtonState();
-        std::shared_ptr<Widget> m_Root;
+        std::vector<std::shared_ptr<Widget>> m_Roots;
         UIRenderList m_RenderList;
         Widget* m_HoveredWidget = nullptr;
         Button* m_PressedButton = nullptr;

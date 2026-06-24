@@ -5,6 +5,7 @@
 #ifndef SUNSETCRAFT_LAYER_H
 #define SUNSETCRAFT_LAYER_H
 #include "Input.h"
+#include "Widget/UIContext.h"
 
 namespace Sunset
 {
@@ -18,6 +19,9 @@ namespace Sunset
         virtual void OnDraw() = 0;
 
         virtual bool OnEvent(Event::Type& event);
+        UIContext& GetUIContext();
+    private:
+        UIContext m_UIContext;
     };
 }
 

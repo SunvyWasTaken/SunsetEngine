@@ -8,9 +8,9 @@ namespace Sunset
 {
     struct ApplicationSetting
     {
+        std::string_view WindowTitle{"SunsetEngine"};
         glm::ivec2 WindowSize{1280, 720};
-        std::string WindowTitle{"SunsetEngine"};
-        bool Headless = false;
         float HeadlessTickRate = 60.0f;
+        bool Headless = false;
     };
 }

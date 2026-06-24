@@ -10,4 +10,9 @@ namespace Sunset
     {
         return false;
     }
+
+    UIContext & Layer::GetUIContext()
+    {
+        return m_UIContext;
+    }
 }

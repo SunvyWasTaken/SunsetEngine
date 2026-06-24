@@ -30,15 +30,8 @@ namespace Sunset
         [[nodiscard]] const glm::ivec2& GetDesiredSize() const;
         [[nodiscard]] const Rectangle& GetBounds() const;
 
-
         bool bIsVisible = true;
         Rectangle m_Bounds{};
         glm::ivec2 m_DesiredSize {120, 36};
     };
-
-    template <typename T, typename ...Args>
-    std::shared_ptr<T> SNew(Args&& ...args)
-    {
-        return std::make_shared<T>(std::forward<Args>(args)...);
-    }
 } // Sunset

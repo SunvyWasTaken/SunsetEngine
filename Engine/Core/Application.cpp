@@ -10,13 +10,13 @@
 #include "Network/NetworkService.h"
 #include "Render/RenderCommande.h"
 #include "Render/Renderer.h"
+#include "Render/UI/UIRender.h"
 
 namespace
 {
     Sunset::Application* app = nullptr;
     Sunset::ApplicationSetting AppSetting;
     bool IsAppRunning = true;
-    Sunset::Renderer* m_Render = nullptr;
 
     struct EMA
     {
@@ -57,9 +57,10 @@ namespace Sunset
         IsAppRunning = true;
         if (!AppSetting.Headless)
         {
-            m_Render = new Renderer();
+            m_Render = std::make_unique<Renderer>();
             m_Render->BindEvent([this](Event::Type& event){ OnEvent(event); });
             InputRegister::Init(SAVE_PATH "Input.json");
+            m_UIRender = std::make_unique<UIRender>();
         }
         else
         {
@@ -72,8 +73,8 @@ namespace Sunset
         DeleteBaseCube();
         m_LayerStack.Clear();
 
-        delete m_Render;
-        m_Render = nullptr;
+        m_UIRender.reset();
+        m_Render.reset();
 
         app = nullptr;
 
@@ -116,6 +117,7 @@ namespace Sunset
                 for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )
                 {
                     (*--layer)->OnDraw();
+                    m_UIRender->Render((*layer)->GetUIContext().GetRenderList());
                 }
                 RenderCommande::EndFrame();
             }

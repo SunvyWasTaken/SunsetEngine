@@ -8,19 +8,28 @@ namespace Sunset
 {
     void UIRenderList::Clear()
     {
-        m_Rectangles.clear();
+        m_UIDrawList.clear();
     }
 
-    void UIRenderList::AddRectangle(const glm::ivec2& position, const glm::ivec2& size, const glm::vec4& color, int radius)
+    void UIRenderList::AddRectangle(const glm::ivec2 &position, const glm::ivec2 &size, const glm::vec4 &color)
     {
-        if (size.x <= 0 || size.y <= 0)
-            return;
+        m_UIDrawList.emplace_back(UIDraw::Rectangle{position, size, color});
+    }
 
-        m_Rectangles.push_back({position, size, color, radius});
+    void UIRenderList::AddImage(const glm::ivec2 &position, const glm::ivec2 &size, const glm::vec4 &color,
+        uint32_t textureId, const glm::vec4 &uv)
+    {
+        m_UIDrawList.emplace_back(UIDraw::Image{position, size, color, textureId, uv});
+    }
+
+    void UIRenderList::AddText(const std::string &text, const glm::ivec2 &position, const glm::ivec2 &size,
+        const glm::vec4 &color)
+    {
+        m_UIDrawList.emplace_back(UIDraw::Text{position, size, color, text});
     }
 
     bool UIRenderList::IsEmpty() const
     {
-        return m_Rectangles.empty();
+        return m_UIDrawList.empty();
     }
 } // Sunset
