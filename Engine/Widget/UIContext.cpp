@@ -34,7 +34,7 @@ namespace Sunset
 
     void UIContext::Arrange(float width, float height)
     {
-        if (!m_Roots.empty())
+        if (m_Roots.empty())
             return;
 
         Rectangle rect;
@@ -44,7 +44,8 @@ namespace Sunset
         rect.size.y = static_cast<int>(height);
 
         for (auto& root : m_Roots)
-            root->Arrange(rect);
+            if (root)
+                root->Arrange(rect);
     }
 
     void UIContext::ProcessInput()
@@ -53,9 +54,46 @@ namespace Sunset
 
     void UIContext::ProcessMouseMove(const glm::ivec2& mousePosition)
     {
+        Widget* hoveredWidget = nullptr;
         for (auto& root : m_Roots)
             if (root)
-                root->HitTest(mousePosition);
+                if (Widget* hit = root->HitTest(mousePosition))
+                    hoveredWidget = hit;
+
+        if (m_HoveredWidget && m_HoveredWidget != hoveredWidget)
+            if (auto* button = dynamic_cast<Button*>(m_HoveredWidget))
+                button->SetHovered(false);
+
+        m_HoveredWidget = hoveredWidget;
+    }
+
+    bool UIContext::ProcessMouseButton(unsigned int button, Event::Action action, const glm::ivec2& mousePosition)
+    {
+        if (button != 0)
+            return false;
+
+        ProcessMouseMove(mousePosition);
+        if (action == Event::Action::Press)
+        {
+            m_PressedButton = dynamic_cast<Button*>(m_HoveredWidget);
+            if (m_PressedButton)
+            {
+                m_PressedButton->SetPressed(true);
+                return true;
+            }
+        }
+        else if (action == Event::Action::Release && m_PressedButton)
+        {
+            Button* pressedButton = m_PressedButton;
+            pressedButton->SetPressed(false);
+            m_PressedButton = nullptr;
+
+            if (pressedButton == dynamic_cast<Button*>(m_HoveredWidget))
+                pressedButton->Click();
+            return true;
+        }
+
+        return false;
     }
 
     void UIContext::Paint()

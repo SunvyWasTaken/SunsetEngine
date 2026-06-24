@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Core/Input.h"
 #include "Render/UI/UIRenderList.h"
 
 namespace Sunset
@@ -21,6 +22,7 @@ namespace Sunset
         void Arrange(float width, float height);
         void ProcessInput();
         void ProcessMouseMove(const glm::ivec2& mousePosition);
+        bool ProcessMouseButton(unsigned int button, Event::Action action, const glm::ivec2& mousePosition);
         void Paint();
         UIRenderList& GetRenderList();
     private:

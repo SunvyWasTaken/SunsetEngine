@@ -256,6 +256,11 @@ namespace Sunset
         ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
     }
 
+    void RenderCommande::Flush()
+    {
+        FlushDrawCommand();
+    }
+
     void RenderCommande::EndFrame()
     {
         FlushDrawCommand();

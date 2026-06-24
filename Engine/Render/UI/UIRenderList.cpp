@@ -11,9 +11,9 @@ namespace Sunset
         m_UIDrawList.clear();
     }
 
-    void UIRenderList::AddRectangle(const glm::ivec2 &position, const glm::ivec2 &size, const glm::vec4 &color)
+    void UIRenderList::AddRectangle(const glm::ivec2 &position, const glm::ivec2 &size, const glm::vec4 &color, int radius)
     {
-        m_UIDrawList.emplace_back(UIDraw::Rectangle{position, size, color});
+        m_UIDrawList.emplace_back(UIDraw::Rectangle{position, size, color, radius});
     }
 
     void UIRenderList::AddImage(const glm::ivec2 &position, const glm::ivec2 &size, const glm::vec4 &color,

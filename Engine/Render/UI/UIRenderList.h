@@ -3,7 +3,6 @@
 //
 
 #pragma once
-#include "Network/NetworkEvent.h"
 
 namespace Sunset
 {
@@ -18,6 +17,7 @@ namespace Sunset
 
         struct Rectangle : Base
         {
+            int Radius = 0;
         };
         struct Image : Base
         {
@@ -37,7 +37,7 @@ namespace Sunset
     public:
         void Clear();
 
-        void AddRectangle(const glm::ivec2& position, const glm::ivec2& size, const glm::vec4& color);
+        void AddRectangle(const glm::ivec2& position, const glm::ivec2& size, const glm::vec4& color, int radius = 0);
 
         void AddImage(const glm::ivec2& position, const glm::ivec2& size, const glm::vec4& color, uint32_t textureId, const glm::vec4& uv);
 

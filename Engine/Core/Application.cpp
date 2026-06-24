@@ -48,6 +48,9 @@ namespace Sunset
 {
     Application::Application(const ApplicationSetting& setting)
         : m_LayerStack()
+        , m_CommandBuffer()
+        , m_UIRender(nullptr)
+        , m_Render(nullptr)
     {
         Log::Init();
         INITLOG("Engine");
@@ -115,10 +118,17 @@ namespace Sunset
                 SS_PROFILE_SCOPE("Render part");
                 RenderCommande::BeginFrame();
                 for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )
-                {
                     (*--layer)->OnDraw();
-                    m_UIRender->Render((*layer)->GetUIContext().GetRenderList());
+
+                RenderCommande::Flush();
+
+                for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )
+                {
+                    auto& uiContext = (*--layer)->GetUIContext();
+                    uiContext.Paint();
+                    m_UIRender->Render(uiContext.GetRenderList());
                 }
+
                 RenderCommande::EndFrame();
             }
 
@@ -170,7 +180,7 @@ namespace Sunset
 
     void* Application::GetWindow()
     {
-        if (!m_Render)
+        if (!app)
             return nullptr;
 
         return Renderer::Get();
