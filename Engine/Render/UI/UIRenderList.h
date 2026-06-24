@@ -4,13 +4,6 @@
 
 #pragma once
 
-#include <cstdint>
-#include <string>
-#include <variant>
-#include <vector>
-
-#include <glm/glm.hpp>
-
 namespace Sunset
 {
     namespace UIDraw

@@ -4,12 +4,6 @@
 
 #pragma once
 
-#include <cstdint>
-#include <memory>
-#include <vector>
-
-#include <glm/glm.hpp>
-
 namespace Sunset
 {
     class UIRenderList;
