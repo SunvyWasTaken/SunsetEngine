@@ -24,10 +24,16 @@ namespace Sunset
         virtual void Arrange(const Rectangle& parentRect);
         virtual void Paint(UIRenderList& renderList);
         virtual Widget* HitTest(const glm::ivec2& mouse);
+        void SetVisible(bool visible);
+        [[nodiscard]] bool IsVisible() const;
+        void SetDesiredSize(const glm::ivec2& desiredSize);
+        [[nodiscard]] const glm::ivec2& GetDesiredSize() const;
+        [[nodiscard]] const Rectangle& GetBounds() const;
 
-        Rectangle m_Bounds{};
-        glm::ivec2 m_DesiredSize {1, 1};
+
         bool bIsVisible = true;
+        Rectangle m_Bounds{};
+        glm::ivec2 m_DesiredSize {120, 36};
     };
 
     template <typename T, typename ...Args>

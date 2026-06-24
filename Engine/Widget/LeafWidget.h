@@ -10,6 +10,7 @@ namespace Sunset
 {
     class LeafWidget : public Widget
     {
+    public:
         ~LeafWidget() override = default;
     };
 } // Sunset
