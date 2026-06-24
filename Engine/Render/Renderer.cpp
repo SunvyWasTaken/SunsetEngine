@@ -80,19 +80,25 @@ namespace
 
     void CursorPositionCallback(GLFWwindow* window, double x, double y)
     {
-        // SunsetEngine::Event::Type event = SunsetEngine::Event::MouseEvent{x, y};
-        // EventCallback(event);
+        Sunset::Event::Type event = Sunset::Event::MouseEvent{0, 0, Sunset::Event::Action::Hold, {static_cast<int>(x), static_cast<int>(y)}};
+        EventCallback(event);
     }
 
     void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
     {
-        Sunset::Event::Type event = Sunset::Event::MouseEvent{static_cast<unsigned int>(button), 0, ItoA(action)};
+        double x = 0.0;
+        double y = 0.0;
+        glfwGetCursorPos(window, &x, &y);
+        Sunset::Event::Type event = Sunset::Event::MouseEvent{static_cast<unsigned int>(button), 0, ItoA(action), {static_cast<int>(x), static_cast<int>(y)}};
         EventCallback(event);
     }
 
     void CursorScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
     {
-        Sunset::Event::Type event = Sunset::Event::MouseEvent{0, static_cast<int>(yoffset), ItoA(1)};
+        double x = 0.0;
+        double y = 0.0;
+        glfwGetCursorPos(window, &x, &y);
+        Sunset::Event::Type event = Sunset::Event::MouseEvent{static_cast<unsigned int>(-1), static_cast<int>(yoffset), Sunset::Event::Action::Hold, {static_cast<int>(x), static_cast<int>(y)}};
         EventCallback(event);
     }
 

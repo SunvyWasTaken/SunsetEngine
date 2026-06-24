@@ -14,6 +14,7 @@ namespace Sunset
     {
         static void BeginFrame();
         static void EndFrame();
+        static void Flush();
 
         static void Submit(const Drawable& drawable);
         static void Submit(const Drawable& mesh, const glm::mat4& transform);

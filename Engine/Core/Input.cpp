@@ -244,7 +244,7 @@ namespace Sunset
             if (const auto& type = input["type"].get<unsigned int>(); type == 0)
                 RegisteredInputs.emplace(name, Event::KeyEvent{key, Event::Action::Release});
             else
-                RegisteredInputs.emplace(name, Event::MouseEvent{key, 0, Event::Action::Release});
+                RegisteredInputs.emplace(name, Event::MouseEvent{key, 0, Event::Action::Release, {0, 0}});
         }
 
     }

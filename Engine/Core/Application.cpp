@@ -115,10 +115,13 @@ namespace Sunset
                 SS_PROFILE_SCOPE("Render part");
                 RenderCommande::BeginFrame();
                 for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )
-                {
                     (*--layer)->OnDraw();
-                    m_UIRender->Render((*layer)->GetUIContext().GetRenderList());
-                }
+
+                RenderCommande::Flush();
+
+                for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )
+                    m_UIRender->Render((*--layer)->GetUIContext().GetRenderList());
+
                 RenderCommande::EndFrame();
             }
 

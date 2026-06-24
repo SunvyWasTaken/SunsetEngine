@@ -5,7 +5,11 @@
 #include "UIRender.h"
 
 #include <glad/glad.h>
+#include <glm/ext/matrix_clip_space.hpp>
 
+#include "Core/Application.h"
+#include "Core/ApplicationSetting.h"
+#include "Render/Shader.h"
 #include "UIRenderList.h"
 
 namespace
@@ -18,9 +22,15 @@ namespace Sunset
 {
     UIRender::UIRender()
     {
+        m_Shader = std::make_unique<Shader>(ENGINE_SHADERS_PATH "UI.vert", ENGINE_SHADERS_PATH "UI.frag");
+
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
         glGenBuffers(1, &EBO);
+
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
         glNamedBufferData(
             VBO,
@@ -57,7 +67,9 @@ namespace Sunset
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(UIVertex), (void*)offsetof(UIVertex, Color));
         glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(UIVertex), (void*)offsetof(UIVertex, TextureIndex));
+        glVertexAttribIPointer(3, 1, GL_UNSIGNED_INT, sizeof(UIVertex), (void*)offsetof(UIVertex, TextureIndex));
+
+        glBindVertexArray(0);
     }
 
     UIRender::~UIRender()
@@ -70,6 +82,9 @@ namespace Sunset
     void UIRender::Render(const UIRenderList &RenderList)
     {
         Vertices.clear();
+
+        if (RenderList.IsEmpty())
+            return;
 
         for (const UIDraw::Type& draw : RenderList.m_UIDrawList)
         {
@@ -88,6 +103,30 @@ namespace Sunset
                 }
             }, draw);
         }
+
+        if (Vertices.empty())
+            return;
+
+        const auto& setting = Application::GetSetting();
+        const glm::mat4 projection = glm::ortho(
+            0.0f,
+            static_cast<float>(setting.WindowSize.x),
+            static_cast<float>(setting.WindowSize.y),
+            0.0f,
+            -1.0f,
+            1.0f);
+
+        glDisable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        m_Shader->Use();
+        m_Shader->SetMat4("u_Projection", projection);
+
+        glBindVertexArray(VAO);
+        glNamedBufferSubData(VBO, 0, static_cast<GLsizeiptr>(Vertices.size() * sizeof(UIVertex)), Vertices.data());
+        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>((Vertices.size() / 4) * 6), GL_UNSIGNED_INT, nullptr);
+        glBindVertexArray(0);
     }
 
     void UIRender::PushQuad(const glm::vec2 &pos, const glm::vec2 &size, const glm::vec4 &color, uint32_t textureIndex,

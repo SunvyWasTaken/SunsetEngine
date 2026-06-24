@@ -28,6 +28,7 @@ namespace Sunset
             unsigned int button;
             int Scroll;
             Action action;
+            glm::ivec2 position {0, 0};
         };
 
         using Type = std::variant<KeyEvent, MouseEvent>;

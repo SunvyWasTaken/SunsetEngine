@@ -4,9 +4,16 @@
 
 #pragma once
 
+#include <cstdint>
+#include <memory>
+#include <vector>
+
+#include <glm/glm.hpp>
+
 namespace Sunset
 {
     class UIRenderList;
+    class Shader;
 
     struct UIVertex
     {
@@ -28,5 +35,6 @@ namespace Sunset
     private:
         uint32_t VBO = 0, VAO = 0, EBO = 0;
         std::vector<UIVertex> Vertices;
+        std::unique_ptr<Shader> m_Shader;
     };
 } // Sunset
