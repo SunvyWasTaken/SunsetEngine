@@ -15,10 +15,11 @@ namespace Sunset
         Layer() = default;
         virtual ~Layer() = default;
 
-        virtual void OnUpdate(float dt) = 0;
-        virtual void OnDraw() = 0;
+        virtual void OnUpdate(float dt);
+        virtual void OnDraw();
 
         virtual bool OnEvent(Event::Type& event);
+        void AddToViewport(const std::shared_ptr<Widget>& widget);
         UIContext& GetUIContext();
     private:
         UIContext m_UIContext;
