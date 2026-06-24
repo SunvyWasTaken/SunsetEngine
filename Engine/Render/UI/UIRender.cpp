@@ -42,12 +42,11 @@ namespace Sunset
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
-        glNamedBufferData(
-            VBO,
+        glBufferData(
+            GL_ARRAY_BUFFER,
             MaxVertices * sizeof(UIVertex),
             nullptr,
-            GL_DYNAMIC_DRAW
-        );
+            GL_DYNAMIC_DRAW);
 
         std::vector<uint32_t> indices;
         indices.reserve(MaxVertices);
@@ -64,11 +63,11 @@ namespace Sunset
             offset += 4;
         }
 
-        glNamedBufferData(
-            EBO,
+        glBufferData(
+            GL_ELEMENT_ARRAY_BUFFER,
             indices.size() * sizeof(uint32_t),
             indices.data(),
-            GL_DYNAMIC_DRAW);
+        GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(UIVertex), (void*)offsetof(UIVertex, Position));
@@ -131,6 +130,7 @@ namespace Sunset
             1.0f);
 
         glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -144,7 +144,8 @@ namespace Sunset
         }
 
         glBindVertexArray(VAO);
-        glNamedBufferSubData(VBO, 0, static_cast<GLsizeiptr>(Vertices.size() * sizeof(UIVertex)), Vertices.data());
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, static_cast<GLsizeiptr>(Vertices.size() * sizeof(UIVertex)), Vertices.data());
         glDrawElements(GL_TRIANGLES, static_cast<GLsizei>((Vertices.size() / 4) * 6), GL_UNSIGNED_INT, nullptr);
         glBindVertexArray(0);
 
