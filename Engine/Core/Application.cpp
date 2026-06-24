@@ -48,6 +48,9 @@ namespace Sunset
 {
     Application::Application(const ApplicationSetting& setting)
         : m_LayerStack()
+        , m_CommandBuffer()
+        , m_UIRender(nullptr)
+        , m_Render(nullptr)
     {
         Log::Init();
         INITLOG("Engine");
@@ -173,7 +176,7 @@ namespace Sunset
 
     void* Application::GetWindow()
     {
-        if (!m_Render)
+        if (!app)
             return nullptr;
 
         return Renderer::Get();
