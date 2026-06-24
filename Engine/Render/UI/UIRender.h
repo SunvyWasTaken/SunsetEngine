@@ -26,8 +26,11 @@ namespace Sunset
         void Render(const UIRenderList& RenderList);
     private:
         void PushQuad(const glm::vec2& pos, const glm::vec2& size, const glm::vec4& color, uint32_t textureIndex, const glm::vec4& uv);
+        uint32_t GetTextureSlot(uint32_t textureId, std::vector<uint32_t>& textureSlots) const;
     private:
+        static constexpr uint32_t MaxTextureSlots = 16;
         uint32_t VBO = 0, VAO = 0, EBO = 0;
+        uint32_t WhiteTexture = 0;
         std::vector<UIVertex> Vertices;
         std::unique_ptr<Shader> m_Shader;
     };

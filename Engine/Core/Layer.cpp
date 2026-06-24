@@ -19,7 +19,6 @@ namespace Sunset
 
     void Layer::OnDraw()
     {
-        m_UIContext.Paint();
     }
 
     bool Layer::OnEvent(Event::Type& event)
@@ -27,6 +26,7 @@ namespace Sunset
         if (std::holds_alternative<Event::MouseEvent>(event))
         {
             const auto& mouseEvent = std::get<Event::MouseEvent>(event);
+            m_UIContext.ProcessMouseMove(mouseEvent.position);
             if (m_UIContext.ProcessMouseButton(mouseEvent.button, mouseEvent.action, mouseEvent.position))
                 return true;
         }

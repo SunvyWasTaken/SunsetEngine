@@ -16,7 +16,7 @@ namespace Sunset
         void Paint(UIRenderList& out) override;
 
     private:
-        uint32_t m_Texture;
+        uint32_t m_Texture = 0;
         glm::vec4 m_UV{0.f, 0.f, 1.f, 1.f};
         glm::vec4 m_Color{1.f};
     };

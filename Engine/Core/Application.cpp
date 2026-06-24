@@ -123,7 +123,11 @@ namespace Sunset
                 RenderCommande::Flush();
 
                 for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )
-                    m_UIRender->Render((*--layer)->GetUIContext().GetRenderList());
+                {
+                    auto& uiContext = (*--layer)->GetUIContext();
+                    uiContext.Paint();
+                    m_UIRender->Render(uiContext.GetRenderList());
+                }
 
                 RenderCommande::EndFrame();
             }
