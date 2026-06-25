@@ -8,6 +8,7 @@
 
 namespace Sunset
 {
+    class Texture;
     class UIRenderList;
 
     class UIButton : public Widget
@@ -15,7 +16,7 @@ namespace Sunset
     public:
         void Paint(UIRenderList& out) override;
     private:
-        uint32_t m_Texture;
+        std::shared_ptr<Texture> m_Texture;
         glm::vec4 UV{0, 0, 1, 1};
         bool m_Pressed = false;
     };

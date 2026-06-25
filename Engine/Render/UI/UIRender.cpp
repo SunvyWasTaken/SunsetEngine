@@ -11,6 +11,7 @@
 #include "Core/ApplicationSetting.h"
 #include "Render/Shader.h"
 #include "UIRenderList.h"
+#include "Render/Texture.h"
 
 namespace
 {
@@ -23,16 +24,6 @@ namespace Sunset
     UIRender::UIRender()
     {
         m_Shader = std::make_unique<Shader>(ENGINE_SHADERS_PATH "UI.vert", ENGINE_SHADERS_PATH "UI.frag");
-
-        constexpr uint32_t whitePixel = 0xffffffff;
-        glGenTextures(1, &WhiteTexture);
-        glBindTexture(GL_TEXTURE_2D, WhiteTexture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &whitePixel);
-        glBindTexture(GL_TEXTURE_2D, 0);
 
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
@@ -86,15 +77,14 @@ namespace Sunset
         glDeleteBuffers(1, &VBO);
         glDeleteBuffers(1, &EBO);
         glDeleteVertexArrays(1, &VAO);
-        glDeleteTextures(1, &WhiteTexture);
     }
 
     void UIRender::Render(const UIRenderList &RenderList)
     {
         Vertices.clear();
-        std::vector<uint32_t> textureSlots;
+        std::vector<std::shared_ptr<Texture>> textureSlots;
         textureSlots.reserve(MaxTextureSlots);
-        textureSlots.emplace_back(WhiteTexture);
+        textureSlots.emplace_back(nullptr);
 
         if (RenderList.IsEmpty())
             return;
@@ -104,11 +94,11 @@ namespace Sunset
             std::visit(overloads{
                 [&](const UIDraw::Rectangle& rect)
                 {
-                    PushQuad(rect.Position, rect.Size, rect.Color, 0, {0, 0, 1, 1});
+                    PushQuad(rect.Position, rect.Size, rect.Color, {0, 0, 1, 1});
                 },
                 [&](const UIDraw::Image& img)
                 {
-                    PushQuad(img.Position, img.Size, img.Color, GetTextureSlot(img.TextureId, textureSlots), img.Uv);
+                    PushQuad(img.Position, img.Size, img.Color, img.Uv);
                 },
                 [&](const UIDraw::Text& text)
                 {
@@ -139,7 +129,7 @@ namespace Sunset
         for (uint32_t i = 0; i < MaxTextureSlots; ++i)
         {
             glActiveTexture(GL_TEXTURE0 + i);
-            glBindTexture(GL_TEXTURE_2D, i < textureSlots.size() ? textureSlots[i] : WhiteTexture);
+            textureSlots[i]->Use();
             m_Shader->SetInt(std::format("u_Textures[{}]", i), static_cast<int>(i));
         }
 
@@ -152,31 +142,14 @@ namespace Sunset
         glActiveTexture(GL_TEXTURE0);
     }
 
-    void UIRender::PushQuad(const glm::vec2 &pos, const glm::vec2 &size, const glm::vec4 &color, uint32_t textureIndex,
-        const glm::vec4 &uv)
+    void UIRender::PushQuad(const glm::vec2 &pos, const glm::vec2 &size, const glm::vec4 &color, const glm::vec4 &uv)
     {
         if (Vertices.size() + 4 > MaxVertices)
             return;
 
-        Vertices.emplace_back(UIVertex{pos                         , glm::vec2{uv.x, uv.y}, color, textureIndex});
-        Vertices.emplace_back(UIVertex{pos + glm::vec2{size.x, 0}, glm::vec2{uv.z, uv.y}, color, textureIndex});
-        Vertices.emplace_back(UIVertex{pos + size                  , glm::vec2{uv.z, uv.w}, color, textureIndex});
-        Vertices.emplace_back(UIVertex{pos + glm::vec2{0, size.y}, glm::vec2{uv.x, uv.w}, color, textureIndex});
-    }
-
-    uint32_t UIRender::GetTextureSlot(uint32_t textureId, std::vector<uint32_t>& textureSlots) const
-    {
-        if (textureId == 0)
-            return 0;
-
-        for (uint32_t i = 1; i < textureSlots.size(); ++i)
-            if (textureSlots[i] == textureId)
-                return i;
-
-        if (textureSlots.size() >= MaxTextureSlots)
-            return 0;
-
-        textureSlots.emplace_back(textureId);
-        return static_cast<uint32_t>(textureSlots.size() - 1);
+        Vertices.emplace_back(UIVertex{pos                         , glm::vec2{uv.x, uv.y}, color});
+        Vertices.emplace_back(UIVertex{pos + glm::vec2{size.x, 0}, glm::vec2{uv.z, uv.y}, color});
+        Vertices.emplace_back(UIVertex{pos + size                  , glm::vec2{uv.z, uv.w}, color});
+        Vertices.emplace_back(UIVertex{pos + glm::vec2{0, size.y}, glm::vec2{uv.x, uv.w}, color});
     }
 } // Sunset
