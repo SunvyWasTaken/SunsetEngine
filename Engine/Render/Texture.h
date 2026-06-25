@@ -2,9 +2,7 @@
 // Created by sunvy on 19/12/2025.
 //
 
-#ifndef SUNSETCRAFT_TEXTURE_H
-#define SUNSETCRAFT_TEXTURE_H
-
+#pragma once
 
 namespace Sunset
 {
@@ -52,5 +50,3 @@ namespace Sunset
         size_t m_Nbr;
     };
 }
-
-#endif //SUNSETCRAFT_TEXTURE_H

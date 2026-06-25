@@ -15,7 +15,6 @@ namespace Sunset
     public:
         UIImage();
 
-        void Arrange(const Rectangle& parentRect) override;
         void Paint(UIRenderList& out) override;
 
         void LoadImage(const std::string_view& fileName);
