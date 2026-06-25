@@ -66,8 +66,6 @@ namespace Sunset
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(UIVertex), (void*)offsetof(UIVertex, TexCoord));
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(UIVertex), (void*)offsetof(UIVertex, Color));
-        glEnableVertexAttribArray(3);
-        glVertexAttribIPointer(3, 1, GL_UNSIGNED_INT, sizeof(UIVertex), (void*)offsetof(UIVertex, TextureIndex));
 
         glBindVertexArray(0);
     }
