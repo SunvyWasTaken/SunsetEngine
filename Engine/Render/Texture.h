@@ -24,7 +24,7 @@ namespace Sunset
 
     private:
 
-        uint32_t m_Id;
+        uint32_t m_Id = 0;
     };
 
     class Textures

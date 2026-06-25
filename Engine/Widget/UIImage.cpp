@@ -13,6 +13,12 @@ namespace Sunset
     {
     }
 
+    void UIImage::Arrange(const Rectangle& parentRect)
+    {
+        m_Bounds.position = glm::clamp(m_Bounds.position, parentRect.position, parentRect.position + parentRect.size);
+        m_Bounds.size = m_DesiredSize;
+    }
+
     void UIImage::Paint(UIRenderList &out)
     {
         if (!bIsVisible)
