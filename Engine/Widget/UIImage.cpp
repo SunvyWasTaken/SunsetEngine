@@ -25,6 +25,7 @@ namespace Sunset
     void UIImage::LoadImage(const std::string_view &fileName)
     {
         m_Texture.reset();
+        m_Texture = std::make_shared<Texture>();
         m_Texture->LoadImage(fileName);
     }
 } // Sunset

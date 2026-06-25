@@ -82,7 +82,6 @@ namespace Sunset
         Vertices.clear();
         std::vector<std::shared_ptr<Texture>> textureSlots;
         textureSlots.reserve(MaxTextureSlots);
-        textureSlots.emplace_back(nullptr);
 
         if (RenderList.IsEmpty())
             return;
@@ -124,11 +123,13 @@ namespace Sunset
 
         m_Shader->Use();
         m_Shader->SetMat4("u_Projection", projection);
-        for (uint32_t i = 0; i < MaxTextureSlots; ++i)
+        size_t i = 0;
+        for (const auto& texture : textureSlots)
         {
             glActiveTexture(GL_TEXTURE0 + i);
-            textureSlots[i]->Use();
+            texture->Use();
             m_Shader->SetInt(std::format("u_Textures[{}]", i), static_cast<int>(i));
+            ++i;
         }
 
         glBindVertexArray(VAO);
