@@ -4,6 +4,8 @@
 
 #include "UIRenderList.h"
 
+#include "Render/Texture.h"
+
 namespace Sunset
 {
     void UIRenderList::Clear()
@@ -17,7 +19,7 @@ namespace Sunset
     }
 
     void UIRenderList::AddImage(const glm::ivec2 &position, const glm::ivec2 &size, const glm::vec4 &color,
-        uint32_t textureId, const glm::vec4 &uv)
+        const std::shared_ptr<Texture>& textureId, const glm::vec4 &uv)
     {
         m_UIDrawList.emplace_back(UIDraw::Image{position, size, color, textureId, uv});
     }

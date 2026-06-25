@@ -5,7 +5,6 @@
 #include "Texture.h"
 
 #include "Image.h"
-#include "Shader.h"
 
 #include <glad/glad.h>
 
@@ -29,6 +28,26 @@ namespace
 namespace Sunset
 {
     /// Texture
+
+    Texture::Texture()
+    {
+    }
+
+    Texture::~Texture()
+    {
+        glDeleteTextures(1, &m_Id);
+    }
+
+    void Texture::LoadImage(const std::string_view &fileName)
+    {
+        Image img{fileName};
+        SendTextureToGpu(m_Id, img.width, img.height, img.m_Data);
+    }
+
+    void Texture::Use() const
+    {
+        glBindTexture(GL_TEXTURE_2D, m_Id);
+    }
 
     Textures::Textures(const std::string_view& name, const int width, const int height)
         : m_Width(width)
