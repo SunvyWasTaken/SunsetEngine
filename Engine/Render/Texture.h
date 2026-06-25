@@ -11,6 +11,22 @@ namespace Sunset
     class Shader;
     struct Image;
 
+    class Texture
+    {
+    public:
+        Texture();
+
+        ~Texture();
+
+        void LoadImage(const std::string_view& fileName);
+
+        void Use() const;
+
+    private:
+
+        uint32_t m_Id;
+    };
+
     class Textures
     {
     public:
