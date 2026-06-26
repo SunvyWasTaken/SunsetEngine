@@ -10,7 +10,7 @@
 
 namespace
 {
-    void SendTextureToGpu(std::uint32_t& id, const int width, const int height, void* data = nullptr)
+    void SendTextureToGpu(std::uint32_t& id, const int width, const int height, void* data = nullptr, GLenum format = GL_RGB)
     {
         glGenTextures(1, &id);
         glBindTexture(GL_TEXTURE_2D, id);
@@ -20,7 +20,8 @@ namespace
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 }

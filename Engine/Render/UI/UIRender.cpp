@@ -7,6 +7,9 @@
 #include <glad/glad.h>
 #include <glm/ext/matrix_clip_space.hpp>
 
+#include <algorithm>
+#include <iterator>
+
 #include "Core/Application.h"
 #include "Core/ApplicationSetting.h"
 #include "Render/Shader.h"
@@ -66,6 +69,8 @@ namespace Sunset
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(UIVertex), (void*)offsetof(UIVertex, TexCoord));
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(UIVertex), (void*)offsetof(UIVertex, Color));
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(UIVertex), (void*)offsetof(UIVertex, TextureIndex));
 
         glBindVertexArray(0);
     }
@@ -95,7 +100,22 @@ namespace Sunset
                 },
                 [&](const UIDraw::Image& img)
                 {
-                    PushQuad(img.Position, img.Size, img.Color, img.Uv);
+                    float textureIndex = 0.0f;
+                    if (img.TextureId)
+                    {
+                        const auto it = std::ranges::find(textureSlots, img.TextureId);
+                        if (it != textureSlots.end())
+                        {
+                            textureIndex = static_cast<float>(std::distance(textureSlots.begin(), it) + 1);
+                        }
+                        else if (textureSlots.size() < MaxTextureSlots)
+                        {
+                            textureSlots.emplace_back(img.TextureId);
+                            textureIndex = static_cast<float>(textureSlots.size());
+                        }
+                    }
+
+                    PushQuad(img.Position, img.Size, img.Color, img.Uv, textureIndex);
                 },
                 [&](const UIDraw::Text& text)
                 {
@@ -141,14 +161,14 @@ namespace Sunset
         glActiveTexture(GL_TEXTURE0);
     }
 
-    void UIRender::PushQuad(const glm::vec2 &pos, const glm::vec2 &size, const glm::vec4 &color, const glm::vec4 &uv)
+    void UIRender::PushQuad(const glm::vec2 &pos, const glm::vec2 &size, const glm::vec4 &color, const glm::vec4 &uv, float textureIndex)
     {
         if (Vertices.size() + 4 > MaxVertices)
             return;
 
-        Vertices.emplace_back(UIVertex{pos                         , glm::vec2{uv.x, uv.y}, color});
-        Vertices.emplace_back(UIVertex{pos + glm::vec2{size.x, 0}, glm::vec2{uv.z, uv.y}, color});
-        Vertices.emplace_back(UIVertex{pos + size                  , glm::vec2{uv.z, uv.w}, color});
-        Vertices.emplace_back(UIVertex{pos + glm::vec2{0, size.y}, glm::vec2{uv.x, uv.w}, color});
+        Vertices.emplace_back(UIVertex{pos                         , glm::vec2{uv.x, uv.y}, color, textureIndex});
+        Vertices.emplace_back(UIVertex{pos + glm::vec2{size.x, 0}, glm::vec2{uv.z, uv.y}, color, textureIndex});
+        Vertices.emplace_back(UIVertex{pos + size                  , glm::vec2{uv.z, uv.w}, color, textureIndex});
+        Vertices.emplace_back(UIVertex{pos + glm::vec2{0, size.y}, glm::vec2{uv.x, uv.w}, color, textureIndex});
     }
 } // Sunset

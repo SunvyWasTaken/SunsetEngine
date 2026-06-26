@@ -9,6 +9,7 @@
 
 namespace Sunset
 {
+
     void UIButton::Paint(UIRenderList &out)
     {
         Widget::Paint(out);
