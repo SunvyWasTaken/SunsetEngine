@@ -24,7 +24,11 @@ namespace Sunset
 
     void Widget::Arrange(const Rectangle &parentRect)
     {
-        m_Bounds = parentRect;
+        m_Bounds.size = glm::min(m_DesiredSize, parentRect.size);
+        m_Bounds.size = glm::max(m_Bounds.size, glm::ivec2{0, 0});
+
+        const glm::ivec2 maxPosition = parentRect.position + glm::max(parentRect.size - m_Bounds.size, glm::ivec2{0, 0});
+        m_Bounds.position = glm::clamp(m_Bounds.position, parentRect.position, maxPosition);
     }
 
     void Widget::Paint(UIRenderList& renderList)

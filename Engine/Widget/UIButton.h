@@ -15,7 +15,6 @@ namespace Sunset
     {
     public:
         void Paint(UIRenderList& out) override;
-    private:
         std::shared_ptr<Texture> m_Texture;
         glm::vec4 UV{0, 0, 1, 1};
         bool m_Pressed = false;
