@@ -27,6 +27,7 @@ namespace Sunset
         void Render(const UIRenderList& RenderList);
     private:
         void PushQuad(const glm::vec2& pos, const glm::vec2& size, const glm::vec4& color, const glm::vec4& uv, float textureIndex = 0.0f);
+        void PushText(const std::string& text, const glm::vec2& pos, const glm::vec2& glyphSize, const glm::vec4& color);
     private:
         static constexpr uint32_t MaxTextureSlots = 16;
         uint32_t VBO = 0, VAO = 0, EBO = 0;
