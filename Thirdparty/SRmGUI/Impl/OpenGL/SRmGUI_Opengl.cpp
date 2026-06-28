@@ -27,7 +27,7 @@ namespace
     std::vector<Vertex> Vertices;
 
     const char* vertexShaderSource{R"(
-        #version 330 core;
+        #version 330 core
 
         layout(location = 0) in vec2 a_Position;
         layout(location = 1) in vec4 a_Color;

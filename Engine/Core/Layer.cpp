@@ -19,7 +19,6 @@ namespace Sunset
 
     Layer::~Layer()
     {
-        SRmGUI::Shutdown();
     }
 
     void Layer::OnUpdate(float dt)
