@@ -20,17 +20,21 @@ namespace SRmGUI
         return *m_CurrentContext;
     }
 
+    Context& GetContext()
+    {
+        return *m_CurrentContext;
+    }
+
     void Shutdown()
     {
         if (m_CurrentContext)
             m_CurrentContext.reset();
     }
 
-    FormeDatas GetFormeDatas()
+    const FormeDatas& GetDrawData()
     {
         if (!m_CurrentContext)
         {
-            return {};
         }
         return m_CurrentContext->GetData();
     }

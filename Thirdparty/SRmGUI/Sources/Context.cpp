@@ -47,4 +47,9 @@ namespace SRmGUI
     {
         return m_FormeDatas;
     }
+
+    glm::vec2 Context::GetWindowSize() const
+    {
+        return m_ViewportRect.Size;
+    }
 } // SRmGUI

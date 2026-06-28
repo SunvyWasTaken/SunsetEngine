@@ -11,6 +11,6 @@ namespace SRmGUI
     void Overlay::Paint(FormeDatas &out)
     {
         Widget::Paint(out);
-        out.emplace_back(Forme::Rectangle{});
+        out.emplace_back(Forme::Rectangle{{{0,0}, {0.5, 0.5}}, 0});
     }
 } // SRmGUI

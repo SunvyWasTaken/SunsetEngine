@@ -11,7 +11,9 @@ namespace SRmGUI
 {
     Context& CreateContext();
 
+    Context& GetContext();
+
     void Shutdown();
 
-    FormeDatas& GetDrawData();
+    const FormeDatas& GetDrawData();
 }

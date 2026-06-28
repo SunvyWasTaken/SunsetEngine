@@ -21,6 +21,10 @@ namespace SRmGUI
         void SetLayout(const Rect& viewportRect);
         void Paint();
         FormeDatas& GetData();
+
+        [[nodiscard]]
+        glm::vec2 GetWindowSize() const;
+
     private:
         WidgetPtr m_Root = nullptr;
         Rect m_ViewportRect;

@@ -5,7 +5,9 @@
 #include "SRmGUI_Opengl.h"
 
 #include <glad/glad.h>
+#include <glm/ext/matrix_clip_space.hpp>
 
+#include "Sources/SRmGUI.h"
 #include "Sources/Type.h"
 
 namespace
@@ -23,8 +25,8 @@ namespace
 
     std::vector<Vertex> Vertices;
 
-    const char* vertexShaderSource{" \
-        #version 330 core \
+    const char* vertexShaderSource{""
+        "#version 330 core \
         \
         layout(location = 0) in vec2 a_Position; \
         layout(location = 1) in vec2 a_TexCoord; \
@@ -100,6 +102,19 @@ namespace
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
     }
+
+    void PushQuad(const glm::vec2 &pos, const glm::vec2 &size, const glm::vec4 &color)
+    {
+        if (Vertices.size() + 4 > MaxVertices)
+            return;
+
+        Vertices.emplace_back(Vertex{pos                         , color});
+        Vertices.emplace_back(Vertex{pos + glm::vec2{size.x, 0}, color});
+        Vertices.emplace_back(Vertex{pos + size                  , color});
+        Vertices.emplace_back(Vertex{pos + size                  , color});
+        Vertices.emplace_back(Vertex{pos + glm::vec2{0, size.y}, color});
+        Vertices.emplace_back(Vertex{pos                         , color});
+    }
 }
 
 namespace SRmGUI
@@ -115,6 +130,15 @@ namespace SRmGUI
 
         glGenBuffers(1, &VBO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+        glBufferData(GL_ARRAY_BUFFER, MaxVertices * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
+
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Position));
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Color));
+
+        glBindVertexArray(0);
     }
 
     void Opengl_Shutdown()
@@ -127,12 +151,15 @@ namespace SRmGUI
 
     void Opengl_DrawData(const FormeDatas& formesData)
     {
+        Vertices.clear();
+        Vertices.reserve(MaxVertices);
+
         for (const auto& form : formesData)
         {
             std::visit(overloads{
                 [&](const Forme::Rectangle& rect)
                 {
-
+                    PushQuad(rect.Position, rect.Size, rect.Color);
                 },
                 [&](const Forme::Image& image)
                 {
@@ -144,5 +171,26 @@ namespace SRmGUI
                 }
             }, form);
         }
+
+        if (Vertices.empty())
+            return;
+
+        const auto& windowSize = SRmGUI::GetContext().GetWindowSize();
+        const glm::mat4 projection = glm::ortho((0.f, windowSize.x, windowSize.y), 0.f, -1.f, 1.f);
+
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glUseProgram(shaderProgram);
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "u_Projection"), 1, GL_FALSE, &projection[0][0]);
+
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, static_cast<GLsizeiptr>(Vertices.size() * sizeof(Vertex)), Vertices.data());
+        glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(Vertices.size()));
+
+        glBindVertexArray(0);
     }
 }
