@@ -36,13 +36,19 @@ namespace Sunset
 
     Texture::~Texture()
     {
+        Reset();
+    }
+
+    void Texture::Reset()
+    {
         glDeleteTextures(1, &m_Id);
+        m_Id = 0;
     }
 
     void Texture::LoadImage(const std::string_view &fileName)
     {
         Image img{fileName};
-        SendTextureToGpu(m_Id, img.width, img.height, img.m_Data);
+        SendTextureToGpu(m_Id, img.width, img.height, img.m_Data, GL_R + img.nbrChannels);
     }
 
     void Texture::Use() const

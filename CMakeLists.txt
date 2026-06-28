@@ -14,6 +14,7 @@ project(SunsetEngine)
 file(GLOB_RECURSE SOURCES "*.h" "*.cpp" "*.txt")
 
 add_subdirectory(Thirdparty/FastNoiseSIMD)
+add_subdirectory(Thirdparty/SRmGUI)
 
 add_library(${PROJECT_NAME} STATIC
         ${SOURCES}
@@ -60,6 +61,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
         nlohmann_json::nlohmann_json
         fastNoiseSIMD
         EnTT::EnTT
+        SRmGUI
 )
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC

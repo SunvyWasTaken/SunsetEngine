@@ -16,6 +16,8 @@ namespace Sunset
 
         ~Texture();
 
+        void Reset();
+
         void LoadImage(const std::string_view& fileName);
 
         void Use() const;

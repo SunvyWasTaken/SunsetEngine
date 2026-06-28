@@ -2,7 +2,7 @@
 // Created by sunvy on 15/12/2025.
 //
 
-#include "Renderer.h"
+#include "Render.h"
 
 #include "Core/Application.h"
 #include "Core/ApplicationSetting.h"
@@ -15,6 +15,8 @@
 #include <GLFW/glfw3.h>
 
 #include "Core/Input.h"
+#include "Impl/OpenGL/SRmGUI_Opengl.h"
+#include "Sources/SRmGUI.h"
 
 namespace
 {
@@ -106,12 +108,14 @@ namespace
     {
         glViewport(0, 0, width, height);
         Sunset::Application::ResizeWindow({width, height});
+        if (SRmGUI::HasContext())
+            SRmGUI::GetContext().Arrange({{0, 0}, {width, height}});
     }
 }
 
 namespace Sunset
 {
-    Renderer::Renderer()
+    Render::Render()
     {
         LOG("Engine", info, "Render Create")
         const ApplicationSetting& setting = Application::GetSetting();
@@ -179,14 +183,24 @@ namespace Sunset
 
         ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
         ImGui_ImplOpenGL3_Init("#version 330");
+
+#pragma region //SRmGUI
+        SRmGUI::CreateContext();
+        SRmGUI::Opengl_Init();
+#pragma endregion //SRmGUI
     }
-    Renderer::~Renderer()
+
+    Render::~Render()
     {
         if (m_Window)
         {
             ImGui_ImplOpenGL3_Shutdown();
             ImGui_ImplGlfw_Shutdown();
             ImGui::DestroyContext();
+#pragma region // SRmGUI
+            SRmGUI::Opengl_Shutdown();
+            SRmGUI::Shutdown();
+#pragma endregion
             glfwDestroyWindow(m_Window);
             m_Window = nullptr;
         }
@@ -194,17 +208,17 @@ namespace Sunset
         LOG("Engine", info, "Render Destroy")
     }
 
-    void Renderer::BindEvent(std::function<void(Event::Type&)> func)
+    void Render::BindEvent(std::function<void(Event::Type&)> func)
     {
         EventCallback = func;
     }
 
-    bool Renderer::Valid() const
+    bool Render::Valid() const
     {
         return !glfwWindowShouldClose(m_Window);
     }
 
-    void* Renderer::Get()
+    void* Render::Get()
     {
         return m_Window;
     }

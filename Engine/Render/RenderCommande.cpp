@@ -5,7 +5,6 @@
 #include "RenderCommande.h"
 
 #include "Core/Application.h"
-#include "Core/ApplicationSetting.h"
 #include "Drawable.h"
 #include "Meshes/Mesh.h"
 #include "Shader.h"
@@ -20,6 +19,8 @@
 
 #include "Camera.h"
 #include "Material.h"
+#include "Impl/OpenGL/SRmGUI_Opengl.h"
+#include "Sources/SRmGUI.h"
 
 namespace
 {
@@ -256,15 +257,15 @@ namespace Sunset
         ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
     }
 
-    void RenderCommande::Flush()
-    {
-        FlushDrawCommand();
-    }
-
     void RenderCommande::EndFrame()
     {
+        m_DrawCommands.clear();
+
         FlushDrawCommand();
+
         ResetFrameState();
+
+        SRmGUI::Opengl_DrawData(SRmGUI::GetDrawData());
 
         if (!PrintScreen::Get().empty())
         {
