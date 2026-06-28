@@ -27,4 +27,9 @@ namespace SRmGUI
     void Context::Paint()
     {
     }
+
+    FormeDatas & Context::GetData()
+    {
+        return m_FormeDatas;
+    }
 } // SRmGUI

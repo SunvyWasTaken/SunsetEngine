@@ -4,11 +4,10 @@
 
 #pragma once
 
+#include "SRmGUI_fwd.h"
+
 namespace SRmGUI
 {
-    using WidgetPtr = std::shared_ptr<class Widget>;
-    using WidgetWeak = std::weak_ptr<Widget>;
-
     class Widget : public std::enable_shared_from_this<Widget>
     {
     public:

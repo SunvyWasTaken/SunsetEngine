@@ -20,6 +20,7 @@
 
 #include "Camera.h"
 #include "Material.h"
+#include "Impl/OpenGL/SRmGUI_Opengl.h"
 
 namespace
 {
@@ -289,6 +290,8 @@ namespace Sunset
         ImGui::Render();
 
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        SRmGUI::Opengl_DrawData(SRmGUI::GetDrawData());
 
         glfwSwapBuffers(static_cast<GLFWwindow*>(Application::GetWindow()));
     }

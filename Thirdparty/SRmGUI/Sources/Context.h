@@ -5,7 +5,7 @@
 #pragma once
 
 #include "Rect.hpp"
-#include "Widget.h"
+#include "SRmGUI_fwd.h"
 
 namespace SRmGUI
 {
@@ -18,9 +18,10 @@ namespace SRmGUI
         void HandleEvent();
         void SetLayout(const Rect& viewportRect);
         void Paint();
+        FormeDatas& GetData();
     private:
         WidgetPtr m_Root = nullptr;
-
         Rect m_ViewportRect;
+        FormeDatas m_FormeDatas;
     };
 } // SRmGUi

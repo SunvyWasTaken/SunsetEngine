@@ -1,0 +1,36 @@
+//
+// Created by sunvy on 28/06/2026.
+//
+
+#pragma once
+#include <vector>
+
+namespace SRmGUI
+{
+    namespace Forme
+    {
+        struct Base
+        {
+            glm::vec2 Position {0, 0};
+            glm::vec2 Size {0, 0};
+            glm::vec4 Color {1.0f};
+        };
+
+        struct Rectangle : Base
+        {
+            int Radius = 0;
+        };
+        struct Image : Base
+        {
+            glm::vec4 Uv{0.f, 0.f, 1.f, 1.f};
+        };
+        struct Text : Base
+        {
+            std::string text;
+        };
+
+        using Type = std::variant<Rectangle, Image, Text>;
+    }
+
+    using FormeDatas = std::vector<Forme::Type>;
+}

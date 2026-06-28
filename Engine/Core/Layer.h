@@ -5,7 +5,7 @@
 #pragma once
 
 #include "Input.h"
-#include "../../Thirdparty/SRmGUI/Sources/Context.h"
+#include "Sources/Context.h"
 
 namespace Sunset
 {
