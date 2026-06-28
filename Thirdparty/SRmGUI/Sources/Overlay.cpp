@@ -12,11 +12,10 @@ namespace SRmGUI
     void Overlay::Paint(FormeDatas &out)
     {
         Widget::Paint(out);
-        const glm::vec2 windowSize = GetContext().GetWindowSize();
 
         Forme::Rectangle rect;
-        rect.Position = {0, 0};
-        rect.Size = windowSize * 0.5f;
+        rect.Position = m_DesireParameter.Position;
+        rect.Size = m_DesireParameter.Size;
         rect.Color = {1.0f, 1.0f, 1.0f, 1.f};
         out.emplace_back(rect);
     }

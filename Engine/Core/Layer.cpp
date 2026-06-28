@@ -13,8 +13,7 @@ namespace Sunset
     Layer::Layer()
         : m_UIContext(SRmGUI::GetContext())
     {
-        const auto& setting = Application::GetSetting();
-        m_UIContext.SetLayout({{0, 0}, setting.WindowSize});
+
     }
 
     Layer::~Layer()
@@ -28,6 +27,8 @@ namespace Sunset
 
     void Layer::OnDraw()
     {
+        const auto& setting = Application::GetSetting();
+        m_UIContext.Arrange({{0, 0}, setting.WindowSize});
         m_UIContext.Paint();
     }
 

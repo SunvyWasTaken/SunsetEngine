@@ -245,7 +245,7 @@ namespace Sunset
 {
     void RenderCommande::BeginFrame()
     {
-        // ResetFrameState();
+        ResetFrameState();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glfwPollEvents();
@@ -261,9 +261,11 @@ namespace Sunset
     {
         m_DrawCommands.clear();
 
-        //FlushDrawCommand();
+        FlushDrawCommand();
 
-        // ResetFrameState();
+        ResetFrameState();
+
+        SRmGUI::Opengl_DrawData(SRmGUI::GetDrawData());
 
         if (!PrintScreen::Get().empty())
         {
@@ -287,9 +289,7 @@ namespace Sunset
         }
         ImGui::Render();
 
-        //ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        SRmGUI::Opengl_DrawData(SRmGUI::GetDrawData());
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(static_cast<GLFWwindow*>(Application::GetWindow()));
     }

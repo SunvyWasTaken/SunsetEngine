@@ -20,7 +20,22 @@ namespace SRmGUI
     {
     }
 
+    void Widget::Arrange(const Rect &viewportRect)
+    {
+
+    }
+
     void Widget::Paint(FormeDatas &out)
     {
+    }
+
+    void Widget::SetPosition(const glm::vec2 &position)
+    {
+        m_DesireParameter.Position = position;
+    }
+
+    void Widget::SetSize(const glm::vec2 &size)
+    {
+        m_DesireParameter.Size = size;
     }
 } // SRmGUI

@@ -19,7 +19,7 @@ namespace SRmGUI
 
         void Update(float dt);
         void HandleEvent();
-        void SetLayout(const Rect& viewportRect);
+        void Arrange(const Rect& viewportRect);
         void Paint();
         const FormeDatas& GetData();
 

@@ -32,9 +32,12 @@ namespace SRmGUI
     {
     }
 
-    void Context::SetLayout(const Rect&viewportRect)
+    void Context::Arrange(const Rect& viewportRect)
     {
         m_ViewportRect = viewportRect;
+
+        if (m_Root)
+            m_Root->Arrange(m_ViewportRect);
     }
 
     void Context::Paint()
