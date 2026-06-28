@@ -11,6 +11,8 @@ namespace SRmGUI
     class Widget : public std::enable_shared_from_this<Widget>
     {
     public:
+        virtual ~Widget() = default;
+
         void SetParent(const WidgetPtr& parent);
         WidgetPtr GetSelf();
 

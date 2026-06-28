@@ -11,6 +11,7 @@ namespace SRmGUI
     class Overlay : public Widget
     {
     public:
+        ~Overlay() override = default;
         void Paint(FormeDatas &out) override;
     };
 } // SRmGUi

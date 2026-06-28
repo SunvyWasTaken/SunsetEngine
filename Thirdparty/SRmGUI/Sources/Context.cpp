@@ -40,7 +40,8 @@ namespace SRmGUI
     void Context::Paint()
     {
         m_FormeDatas.clear();
-        m_Root->Paint(m_FormeDatas);
+        if (m_Root)
+            m_Root->Paint(m_FormeDatas);
     }
 
     const FormeDatas & Context::GetData()
