@@ -116,14 +116,6 @@ namespace Sunset
                 for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )
                     (*--layer)->OnDraw();
 
-                RenderCommande::Flush();
-
-                for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )
-                {
-                    auto& uiContext = (*--layer)->GetUIContext();
-                    uiContext.Paint();
-                }
-
                 RenderCommande::EndFrame();
             }
 

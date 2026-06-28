@@ -43,7 +43,7 @@ namespace SRmGUI
         m_Root->Paint(m_FormeDatas);
     }
 
-    FormeDatas & Context::GetData()
+    const FormeDatas & Context::GetData()
     {
         return m_FormeDatas;
     }

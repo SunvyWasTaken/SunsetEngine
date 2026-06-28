@@ -6,6 +6,7 @@
 
 #include "Rect.hpp"
 #include "SRmGUI_fwd.h"
+#include "Type.h"
 
 namespace SRmGUI
 {
@@ -20,7 +21,7 @@ namespace SRmGUI
         void HandleEvent();
         void SetLayout(const Rect& viewportRect);
         void Paint();
-        FormeDatas& GetData();
+        const FormeDatas& GetData();
 
         [[nodiscard]]
         glm::vec2 GetWindowSize() const;

@@ -6,13 +6,20 @@
 
 #include "Core/Application.h"
 #include "Core/ApplicationSetting.h"
+#include "Sources/SRmGUI.h"
 
 namespace Sunset
 {
     Layer::Layer()
+        : m_UIContext(SRmGUI::GetContext())
     {
         const auto& setting = Application::GetSetting();
         m_UIContext.SetLayout({{0, 0}, setting.WindowSize});
+    }
+
+    Layer::~Layer()
+    {
+        SRmGUI::Shutdown();
     }
 
     void Layer::OnUpdate(float dt)

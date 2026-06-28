@@ -13,7 +13,7 @@ namespace Sunset
     {
     public:
         Layer();
-        virtual ~Layer() = default;
+        virtual ~Layer();
 
         virtual void OnUpdate(float dt);
         virtual void OnDraw();
@@ -22,6 +22,6 @@ namespace Sunset
         void AddToViewport(const SRmGUI::WidgetPtr& widget);
         SRmGUI::Context& GetUIContext();
     private:
-        SRmGUI::Context m_UIContext;
+        SRmGUI::Context& m_UIContext;
     };
 }
