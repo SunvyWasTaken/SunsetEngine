@@ -8,11 +8,11 @@
 
 namespace Sunset
 {
-    class Renderer final
+    class Render final
     {
     public:
-        Renderer();
-        ~Renderer();
+        Render();
+        ~Render();
 
         void BindEvent(std::function<void(Event::Type&)> func);
 

@@ -19,15 +19,27 @@ namespace Sunset
     {
     public:
         virtual ~Widget() = default;
+
         virtual void Update(float dt);
+
         virtual void ComputeDesiredSize();
+
         virtual void Arrange(const Rectangle& parentRect);
+
         virtual void Paint(UIRenderList& renderList);
+
         virtual Widget* HitTest(const glm::ivec2& mouse);
+
+        virtual void OnHovered(bool hovered);
+
         void SetVisible(bool visible);
+
         [[nodiscard]] bool IsVisible() const;
+
         void SetDesiredSize(const glm::ivec2& desiredSize);
+
         [[nodiscard]] const glm::ivec2& GetDesiredSize() const;
+
         [[nodiscard]] const Rectangle& GetBounds() const;
 
         bool bIsVisible = true;

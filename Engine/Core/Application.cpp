@@ -9,7 +9,7 @@
 #include "BaseObject/BaseCube.h"
 #include "Network/NetworkService.h"
 #include "Render/RenderCommande.h"
-#include "Render/Renderer.h"
+#include "Render/Render.h"
 #include "Render/UI/UIRender.h"
 
 namespace
@@ -60,7 +60,7 @@ namespace Sunset
         IsAppRunning = true;
         if (!AppSetting.Headless)
         {
-            m_Render = std::make_unique<Renderer>();
+            m_Render = std::make_unique<Render>();
             m_Render->BindEvent([this](Event::Type& event){ OnEvent(event); });
             InputRegister::Init(SAVE_PATH "Input.json");
             m_UIRender = std::make_unique<UIRender>();
@@ -183,7 +183,7 @@ namespace Sunset
         if (!app)
             return nullptr;
 
-        return Renderer::Get();
+        return Render::Get();
     }
 
     bool Application::IsHeadless()

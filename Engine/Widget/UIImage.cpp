@@ -10,7 +10,13 @@
 namespace Sunset
 {
     UIImage::UIImage()
+        : m_Texture(std::make_shared<Texture>())
     {
+    }
+
+    void UIImage::ComputeDesiredSize()
+    {
+        LeafWidget::ComputeDesiredSize();
     }
 
     void UIImage::Arrange(const Rectangle &parentRect)
@@ -30,8 +36,7 @@ namespace Sunset
 
     void UIImage::LoadImage(const std::string_view &fileName)
     {
-        m_Texture.reset();
-        m_Texture = std::make_shared<Texture>();
+        m_Texture->Reset();
         m_Texture->LoadImage(fileName);
     }
 } // Sunset

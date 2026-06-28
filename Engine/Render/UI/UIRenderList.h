@@ -23,7 +23,7 @@ namespace Sunset
         };
         struct Image : Base
         {
-            std::shared_ptr<Texture> TextureId = 0;
+            std::shared_ptr<Texture> m_texture = nullptr;
             glm::vec4 Uv{0.f, 0.f, 1.f, 1.f};
         };
         struct Text : Base
@@ -41,7 +41,7 @@ namespace Sunset
 
         void AddRectangle(const glm::ivec2& position, const glm::ivec2& size, const glm::vec4& color, int radius = 0);
 
-        void AddImage(const glm::ivec2& position, const glm::ivec2& size, const glm::vec4& color, const std::shared_ptr<Texture>& textureId, const glm::vec4& uv);
+        void AddImage(const glm::ivec2& position, const glm::ivec2& size, const glm::vec4& color, const std::shared_ptr<Texture>& texture, const glm::vec4& uv);
 
         void AddText(const std::string& text, const glm::ivec2& position, const glm::ivec2& size = {15, 15}, const glm::vec4& color = {1.f, 1.f, 1.f, 1.f});
 

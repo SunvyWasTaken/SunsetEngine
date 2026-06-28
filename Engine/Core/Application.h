@@ -9,7 +9,7 @@
 
 namespace Sunset
 {
-    class Renderer;
+    class Render;
     class UIRender;
     struct ApplicationSetting;
     class Layer;
@@ -82,6 +82,6 @@ namespace Sunset
         LayerStack m_LayerStack;
         std::vector<std::function<void()>> m_CommandBuffer;
         std::unique_ptr<UIRender> m_UIRender;
-        std::unique_ptr<Renderer> m_Render;
+        std::unique_ptr<Render> m_Render;
     };
 }

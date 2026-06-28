@@ -19,7 +19,7 @@ namespace Sunset
         void AddWidget(const std::shared_ptr<Widget>& rootWidget);
         void Update(float dt);
         void PrePass();
-        void Arrange(float width, float height);
+        void Arrange(int width, int height);
         void ProcessInput();
         void ProcessMouseMove(const glm::ivec2& mousePosition);
         bool ProcessMouseButton(unsigned int button, Event::Action action, const glm::ivec2& mousePosition);

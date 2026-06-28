@@ -32,7 +32,7 @@ namespace Sunset
             root->ComputeDesiredSize();
     }
 
-    void UIContext::Arrange(float width, float height)
+    void UIContext::Arrange(const int width, const int height)
     {
         if (m_Roots.empty())
             return;
@@ -40,8 +40,8 @@ namespace Sunset
         Rectangle rect;
         rect.position.x = 0;
         rect.position.y = 0;
-        rect.size.x = static_cast<int>(width);
-        rect.size.y = static_cast<int>(height);
+        rect.size.x = width;
+        rect.size.y = height;
 
         for (auto& root : m_Roots)
             if (root)
@@ -61,10 +61,10 @@ namespace Sunset
                     hoveredWidget = hit;
 
         if (m_HoveredWidget && m_HoveredWidget != hoveredWidget)
-            if (auto* button = dynamic_cast<Button*>(m_HoveredWidget))
-                button->SetHovered(false);
-
-        m_HoveredWidget = hoveredWidget;
+        {
+            m_HoveredWidget = hoveredWidget;
+            m_HoveredWidget->OnHovered(false);
+        }
     }
 
     bool UIContext::ProcessMouseButton(unsigned int button, Event::Action action, const glm::ivec2& mousePosition)

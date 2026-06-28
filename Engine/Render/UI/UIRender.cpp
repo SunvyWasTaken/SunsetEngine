@@ -138,8 +138,7 @@ namespace Sunset
     void UIRender::Render(const UIRenderList &RenderList)
     {
         Vertices.clear();
-        std::vector<std::shared_ptr<Texture>> textureSlots;
-        textureSlots.reserve(MaxTextureSlots);
+        Vertices.reserve(MaxVertices);
 
         if (RenderList.IsEmpty())
             return;
@@ -153,22 +152,7 @@ namespace Sunset
                 },
                 [&](const UIDraw::Image& img)
                 {
-                    float textureIndex = 0.0f;
-                    if (img.TextureId)
-                    {
-                        const auto it = std::ranges::find(textureSlots, img.TextureId);
-                        if (it != textureSlots.end())
-                        {
-                            textureIndex = static_cast<float>(std::distance(textureSlots.begin(), it) + 1);
-                        }
-                        else if (textureSlots.size() < MaxTextureSlots)
-                        {
-                            textureSlots.emplace_back(img.TextureId);
-                            textureIndex = static_cast<float>(textureSlots.size());
-                        }
-                    }
-
-                    PushQuad(img.Position, img.Size, img.Color, img.Uv, textureIndex);
+                    PushQuad(img.Position, img.Size, img.Color, img.Uv, img.m_texture);
                 },
                 [&](const UIDraw::Text& text)
                 {
@@ -196,14 +180,8 @@ namespace Sunset
 
         m_Shader->Use();
         m_Shader->SetMat4("u_Projection", projection);
-        size_t i = 0;
-        for (const auto& texture : textureSlots)
-        {
-            glActiveTexture(GL_TEXTURE0 + i);
-            texture->Use();
-            m_Shader->SetInt(std::format("u_Textures[{}]", i), static_cast<int>(i));
-            ++i;
-        }
+
+
 
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -214,15 +192,15 @@ namespace Sunset
         glActiveTexture(GL_TEXTURE0);
     }
 
-    void UIRender::PushQuad(const glm::vec2 &pos, const glm::vec2 &size, const glm::vec4 &color, const glm::vec4 &uv, float textureIndex)
+    void UIRender::PushQuad(const glm::vec2 &pos, const glm::vec2 &size, const glm::vec4 &color, const glm::vec4 &uv, const std::shared_ptr<Texture>& texture)
     {
         if (Vertices.size() + 4 > MaxVertices)
             return;
 
-        Vertices.emplace_back(UIVertex{pos                         , glm::vec2{uv.x, uv.y}, color, textureIndex});
-        Vertices.emplace_back(UIVertex{pos + glm::vec2{size.x, 0}, glm::vec2{uv.z, uv.y}, color, textureIndex});
-        Vertices.emplace_back(UIVertex{pos + size                  , glm::vec2{uv.z, uv.w}, color, textureIndex});
-        Vertices.emplace_back(UIVertex{pos + glm::vec2{0, size.y}, glm::vec2{uv.x, uv.w}, color, textureIndex});
+        Vertices.emplace_back(UIVertex{pos                         , glm::vec2{uv.x, uv.y}, color, texture});
+        Vertices.emplace_back(UIVertex{pos + glm::vec2{size.x, 0}, glm::vec2{uv.z, uv.y}, color, texture});
+        Vertices.emplace_back(UIVertex{pos + size                  , glm::vec2{uv.z, uv.w}, color, texture});
+        Vertices.emplace_back(UIVertex{pos + glm::vec2{0, size.y}, glm::vec2{uv.x, uv.w}, color, texture});
     }
 
     void UIRender::PushText(const std::string& text, const glm::vec2& pos, const glm::vec2& glyphSize, const glm::vec4& color)
@@ -250,7 +228,7 @@ namespace Sunset
                 {
                     if ((rows[y] & (1u << (4u - x))) != 0u)
                     {
-                        PushQuad(cursor + glm::vec2{x * pixelSize.x, y * pixelSize.y}, pixelSize, color, {0, 0, 1, 1});
+                        PushQuad(cursor + glm::vec2{x * pixelSize.x, y * pixelSize.y}, pixelSize, color);
                     }
                 }
             }

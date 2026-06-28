@@ -4,7 +4,7 @@
 
 #include "Input.h"
 
-#include "Render/Renderer.h"
+#include "Render/Render.h"
 #include "Utility/UtilityFunction.h"
 
 #include <GLFW/glfw3.h>
@@ -183,7 +183,7 @@ namespace Sunset
     glm::vec2 InputRegister::GetMouseDelta()
     {
         double x, y;
-        glfwGetCursorPos(static_cast<GLFWwindow*>(Renderer::Get()), &x, &y);
+        glfwGetCursorPos(static_cast<GLFWwindow*>(Render::Get()), &x, &y);
         glm::vec2 delta = glm::vec2(x, y) - lastMousePosition;
         lastMousePosition = glm::vec2(x, y);
         return delta;
@@ -193,7 +193,7 @@ namespace Sunset
     {
         if (!keyMap.contains(name.data()))
             return false;
-        return glfwGetKey(static_cast<GLFWwindow*>(Renderer::Get()), keyMap[name.data()]);
+        return glfwGetKey(static_cast<GLFWwindow*>(Render::Get()), keyMap[name.data()]);
     }
 
     void InputRegister::RegisterAction(const std::string_view& name,
@@ -261,16 +261,16 @@ namespace Sunset
             std::visit(overloads{
                 [&](Event::KeyEvent& event)
                 {
-                    if (glfwGetKey(static_cast<GLFWwindow*>(Renderer::Get()), event.key) == GLFW_PRESS)
+                    if (glfwGetKey(static_cast<GLFWwindow*>(Render::Get()), event.key) == GLFW_PRESS)
                         event.action = Event::Action::Press;
-                    else if (glfwGetKey(static_cast<GLFWwindow*>(Renderer::Get()), event.key) == GLFW_RELEASE)
+                    else if (glfwGetKey(static_cast<GLFWwindow*>(Render::Get()), event.key) == GLFW_RELEASE)
                         event.action = Event::Action::Release;
                 },
                 [&](Event::MouseEvent& event)
                 {
-                    if (glfwGetMouseButton(static_cast<GLFWwindow*>(Renderer::Get()), event.button) == GLFW_PRESS)
+                    if (glfwGetMouseButton(static_cast<GLFWwindow*>(Render::Get()), event.button) == GLFW_PRESS)
                         event.action = Event::Action::Press;
-                    else if (glfwGetMouseButton(static_cast<GLFWwindow*>(Renderer::Get()), event.button) == GLFW_RELEASE)
+                    else if (glfwGetMouseButton(static_cast<GLFWwindow*>(Render::Get()), event.button) == GLFW_RELEASE)
                         event.action = Event::Action::Release;
                 }
             }, action);

@@ -2,7 +2,7 @@
 // Created by sunvy on 15/12/2025.
 //
 
-#include "Renderer.h"
+#include "Render.h"
 
 #include "Core/Application.h"
 #include "Core/ApplicationSetting.h"
@@ -111,7 +111,7 @@ namespace
 
 namespace Sunset
 {
-    Renderer::Renderer()
+    Render::Render()
     {
         LOG("Engine", info, "Render Create")
         const ApplicationSetting& setting = Application::GetSetting();
@@ -180,7 +180,7 @@ namespace Sunset
         ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
         ImGui_ImplOpenGL3_Init("#version 330");
     }
-    Renderer::~Renderer()
+    Render::~Render()
     {
         if (m_Window)
         {
@@ -194,17 +194,17 @@ namespace Sunset
         LOG("Engine", info, "Render Destroy")
     }
 
-    void Renderer::BindEvent(std::function<void(Event::Type&)> func)
+    void Render::BindEvent(std::function<void(Event::Type&)> func)
     {
         EventCallback = func;
     }
 
-    bool Renderer::Valid() const
+    bool Render::Valid() const
     {
         return !glfwWindowShouldClose(m_Window);
     }
 
-    void* Renderer::Get()
+    void* Render::Get()
     {
         return m_Window;
     }

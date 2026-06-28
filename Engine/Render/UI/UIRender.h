@@ -15,7 +15,7 @@ namespace Sunset
         glm::vec2 Position;
         glm::vec2 TexCoord;
         glm::vec4 Color;
-        float TextureIndex = 0.0f;
+        std::shared_ptr<Texture> TextureIndex = nullptr;
     };
 
     class UIRender
@@ -26,7 +26,7 @@ namespace Sunset
 
         void Render(const UIRenderList& RenderList);
     private:
-        void PushQuad(const glm::vec2& pos, const glm::vec2& size, const glm::vec4& color, const glm::vec4& uv, float textureIndex = 0.0f);
+        void PushQuad(const glm::vec2& pos, const glm::vec2& size, const glm::vec4& color, const glm::vec4& uv = {0, 0, 1, 1}, const std::shared_ptr<Texture>& texture = nullptr);
         void PushText(const std::string& text, const glm::vec2& pos, const glm::vec2& glyphSize, const glm::vec4& color);
     private:
         static constexpr uint32_t MaxTextureSlots = 16;

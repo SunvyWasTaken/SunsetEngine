@@ -67,4 +67,8 @@ namespace Sunset
     {
         return m_Bounds;
     }
+
+    void Widget::OnHovered(bool hovered)
+    {
+    }
 } // Sunset

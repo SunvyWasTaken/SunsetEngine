@@ -19,9 +19,9 @@ namespace Sunset
     }
 
     void UIRenderList::AddImage(const glm::ivec2 &position, const glm::ivec2 &size, const glm::vec4 &color,
-        const std::shared_ptr<Texture>& textureId, const glm::vec4 &uv)
+        const std::shared_ptr<Texture>& texture, const glm::vec4 &uv)
     {
-        m_UIDrawList.emplace_back(UIDraw::Image{position, size, color, textureId, uv});
+        m_UIDrawList.emplace_back(UIDraw::Image{position, size, color, texture, uv});
     }
 
     void UIRenderList::AddText(const std::string &text, const glm::ivec2 &position, const glm::ivec2 &size,
