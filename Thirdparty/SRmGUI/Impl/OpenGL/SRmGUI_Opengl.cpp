@@ -26,34 +26,34 @@ namespace
 
     std::vector<Vertex> Vertices;
 
-    const char* vertexShaderSource{""
-        "#version 330 core \
-        \
-        layout(location = 0) in vec2 a_Position; \
-        layout(location = 1) in vec4 a_Color; \
-        \
-        uniform mat4 u_Projection; \
-        \
-        out vec4 v_Color; \
-        \
-        void main() \
-        { \
-            v_Color = a_Color; \
-            gl_Position = u_Projection * vec4(a_Position, 0.0, 1.0); \
-        }"
-    };
+    const char* vertexShaderSource{R"(
+        #version 330 core;
 
-    const char* fragmentShaderSource{""
-        "#version 330 core \
-        \
-        in vec4 v_Color; \
-        out vec4 FragColor; \
-        \
-        void main()\
-        { \
-            FragColor = v_Color; \
-        }"
-    };
+        layout(location = 0) in vec2 a_Position;
+        layout(location = 1) in vec4 a_Color;
+
+        uniform mat4 u_Projection;
+
+        out vec4 v_Color;
+
+        void main()
+        {
+            v_Color = a_Color;
+            gl_Position = u_Projection * vec4(a_Position, 0.0, 1.0);
+        }
+    )"};
+
+    const char* fragmentShaderSource{R"(
+        #version 330 core
+
+        in vec4 v_Color;
+        out vec4 FragColor;
+
+        void main()
+        {
+            FragColor = v_Color;
+        }
+    )"};
 
     void CreateShader(const char * vertexShaderSource, const char * fragmentShaderSource, unsigned int& shaderProgram)
     {
@@ -102,12 +102,12 @@ namespace
         if (Vertices.size() + VerticesPerQuad > MaxVertices)
             return;
 
-        Vertices.emplace_back(Vertex{pos                         , color});
+        Vertices.emplace_back(Vertex{pos + size                  , color});
         Vertices.emplace_back(Vertex{pos + glm::vec2{size.x, 0}, color});
-        Vertices.emplace_back(Vertex{pos + size                  , color});
-        Vertices.emplace_back(Vertex{pos + size                  , color});
-        Vertices.emplace_back(Vertex{pos + glm::vec2{0, size.y}, color});
         Vertices.emplace_back(Vertex{pos                         , color});
+        Vertices.emplace_back(Vertex{pos                         , color});
+        Vertices.emplace_back(Vertex{pos + glm::vec2{0, size.y}, color});
+        Vertices.emplace_back(Vertex{pos + size                  , color});
     }
 }
 

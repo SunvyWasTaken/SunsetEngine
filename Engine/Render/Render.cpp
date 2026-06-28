@@ -108,6 +108,8 @@ namespace
     {
         glViewport(0, 0, width, height);
         Sunset::Application::ResizeWindow({width, height});
+        if (SRmGUI::HasContext())
+            SRmGUI::GetContext().SetLayout({{0, 0}, {width, height}});
     }
 }
 

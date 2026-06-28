@@ -25,6 +25,11 @@ namespace SRmGUI
         return *m_CurrentContext;
     }
 
+    bool HasContext()
+    {
+        return m_CurrentContext == nullptr;
+    }
+
     void Shutdown()
     {
         if (m_CurrentContext)

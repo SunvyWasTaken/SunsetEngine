@@ -13,6 +13,8 @@ namespace SRmGUI
 
     Context& GetContext();
 
+    bool HasContext();
+
     void Shutdown();
 
     const FormeDatas& GetDrawData();
