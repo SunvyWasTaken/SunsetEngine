@@ -48,12 +48,17 @@ namespace Sunset
     void Texture::LoadImage(const std::string_view &fileName)
     {
         Image img{fileName};
-        SendTextureToGpu(m_Id, img.width, img.height, img.m_Data, GL_R + img.nbrChannels);
+        SendTextureToGpu(m_Id, img.width, img.height, img.m_Data, img.nbrChannels == 3 ? GL_RGB : GL_RGBA);
     }
 
     void Texture::Use() const
     {
         glBindTexture(GL_TEXTURE_2D, m_Id);
+    }
+
+    std::uint32_t Texture::GetId() const
+    {
+        return m_Id;
     }
 
     Textures::Textures(const std::string_view& name, const int width, const int height)

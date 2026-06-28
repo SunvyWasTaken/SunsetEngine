@@ -6,6 +6,8 @@
 
 namespace SRmGUI
 {
+    using TextureID = uint32_t;
+
     namespace Forme
     {
         struct Base
@@ -21,7 +23,8 @@ namespace SRmGUI
         };
         struct Image : Base
         {
-            glm::vec4 Uv{0.f, 0.f, 1.f, 1.f};
+            TextureID texture = 0;
+            glm::vec4 Uv{1.f, 1.f, 0.f, 0.f};
         };
         struct Text : Base
         {

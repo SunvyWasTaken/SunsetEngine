@@ -21,6 +21,11 @@ namespace SRmGUI
     void Image::Paint(FormeDatas &out)
     {
         Widget::Paint(out);
-        out.emplace_back(Forme::Image{{m_DesireParameter.Position, m_DesireParameter.Size, {1.f, 1.f, 1.f, 1.f}}, {}});
+        out.emplace_back(Forme::Image{{m_DesireParameter.Position, m_DesireParameter.Size, {1.f, 1.f, 1.f, 1.f}}, m_TextureID});
+    }
+
+    void Image::SetImage(TextureID id)
+    {
+        m_TextureID = id;
     }
 } // SRmGUI

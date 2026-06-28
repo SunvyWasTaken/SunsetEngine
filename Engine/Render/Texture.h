@@ -22,6 +22,8 @@ namespace Sunset
 
         void Use() const;
 
+        std::uint32_t GetId() const;
+
     private:
 
         uint32_t m_Id = 0;

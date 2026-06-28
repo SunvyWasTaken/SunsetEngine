@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Type.h"
 #include "Widget.h"
 
 namespace SRmGUI
@@ -14,5 +15,8 @@ namespace SRmGUI
         void Update(float dt) override;
         void Arrange(const Rect& viewportRect) override;
         void Paint(FormeDatas& out) override;
+        void SetImage(TextureID id);
+    private:
+        TextureID m_TextureID = 0;
     };
 } // SRmGUI
