@@ -4,21 +4,13 @@
 
 #pragma once
 
+#include "Sources/SRmGUI_fwd.h"
+
 namespace SRmGUI
 {
-    namespace Forme
-    {
-        struct Rectangle;
-        struct Image;
-        struct Text;
-        using Type = std::variant<Rectangle, Image, Text>;
-    }
+    void Opengl_Init();
 
-    using FormeDatas = std::vector<Forme::Type>;
+    void Opengl_Shutdown();
 
-    static void Opengl_Init();
-
-    static void Opengl_Shutdown();
-
-    static void Opengl_DrawData(const FormeDatas& formesData);
+    void Opengl_DrawData(const FormeDatas& formesData);
 }

@@ -4,28 +4,43 @@
 
 #include "Context.h"
 
+#include "Type.h"
+#include "Widget.h"
+
 namespace SRmGUI
 {
-    void Context::SetRoot(const std::shared_ptr<Widget> &root)
+    Context::Context()
+    {
+    }
+
+    Context::~Context()
+    {
+    }
+
+    void Context::SetRoot(const WidgetPtr&root)
     {
         m_Root = root;
     }
 
     void Context::Update(float dt)
     {
+        if (m_Root)
+            m_Root->Update(dt);
     }
 
     void Context::HandleEvent()
     {
     }
 
-    void Context::SetLayout(const Rect &viewportRect)
+    void Context::SetLayout(const Rect&viewportRect)
     {
         m_ViewportRect = viewportRect;
     }
 
     void Context::Paint()
     {
+        m_FormeDatas.clear();
+        m_Root->Paint(m_FormeDatas);
     }
 
     FormeDatas & Context::GetData()

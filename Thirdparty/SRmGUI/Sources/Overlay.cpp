@@ -4,6 +4,13 @@
 
 #include "Overlay.h"
 
+#include "Type.h"
+
 namespace SRmGUI
 {
+    void Overlay::Paint(FormeDatas &out)
+    {
+        Widget::Paint(out);
+        out.emplace_back(Forme::Rectangle{});
+    }
 } // SRmGUI

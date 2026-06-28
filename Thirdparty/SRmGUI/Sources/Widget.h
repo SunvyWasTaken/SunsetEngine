@@ -13,6 +13,10 @@ namespace SRmGUI
     public:
         void SetParent(const WidgetPtr& parent);
         WidgetPtr GetSelf();
+
+        virtual void Update(float dt);
+
+        virtual void Paint(FormeDatas& out);
     protected:
         WidgetWeak m_Parent;
     };

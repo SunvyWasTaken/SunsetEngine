@@ -10,5 +10,7 @@ namespace SRmGUI
 {
     class Overlay : public Widget
     {
+    public:
+        void Paint(FormeDatas &out) override;
     };
 } // SRmGUi

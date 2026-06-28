@@ -5,7 +5,6 @@
 #include "RenderCommande.h"
 
 #include "Core/Application.h"
-#include "Core/ApplicationSetting.h"
 #include "Drawable.h"
 #include "Meshes/Mesh.h"
 #include "Shader.h"
@@ -21,6 +20,7 @@
 #include "Camera.h"
 #include "Material.h"
 #include "Impl/OpenGL/SRmGUI_Opengl.h"
+#include "Sources/SRmGUI.h"
 
 namespace
 {

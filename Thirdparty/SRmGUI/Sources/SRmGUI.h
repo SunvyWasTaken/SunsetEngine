@@ -9,7 +9,9 @@
 
 namespace SRmGUI
 {
-    static Context& CreateContext();
-    static void Shutdown();
-    static FormeDatas& GetDrawData();
+    Context& CreateContext();
+
+    void Shutdown();
+
+    FormeDatas& GetDrawData();
 }

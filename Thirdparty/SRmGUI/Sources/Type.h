@@ -3,7 +3,6 @@
 //
 
 #pragma once
-#include <vector>
 
 namespace SRmGUI
 {
@@ -33,4 +32,7 @@ namespace SRmGUI
     }
 
     using FormeDatas = std::vector<Forme::Type>;
+
+    template<class... Ts>
+    struct overloads : Ts... { using Ts::operator()...; };
 }

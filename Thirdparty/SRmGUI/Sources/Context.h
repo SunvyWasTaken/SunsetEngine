@@ -12,6 +12,8 @@ namespace SRmGUI
     class Context
     {
     public:
+        Context();
+        ~Context();
         void SetRoot(const WidgetPtr& root);
 
         void Update(float dt);

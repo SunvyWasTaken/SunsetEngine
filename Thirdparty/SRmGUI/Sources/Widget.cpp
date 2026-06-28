@@ -15,4 +15,12 @@ namespace SRmGUI
     {
         return shared_from_this();
     }
+
+    void Widget::Update(float dt)
+    {
+    }
+
+    void Widget::Paint(FormeDatas &out)
+    {
+    }
 } // SRmGUI

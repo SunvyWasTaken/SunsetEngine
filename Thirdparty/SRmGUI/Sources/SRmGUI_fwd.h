@@ -8,6 +8,7 @@ namespace SRmGUI
 {
     namespace Forme
     {
+        struct Base;
         struct Rectangle;
         struct Image;
         struct Text;
