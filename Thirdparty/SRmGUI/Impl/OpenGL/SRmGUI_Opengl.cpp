@@ -13,7 +13,8 @@
 namespace
 {
     constexpr uint32_t MaxQuads = 10000;
-    constexpr uint32_t MaxVertices = MaxQuads * 4;
+    constexpr uint32_t VerticesPerQuad = 6;
+    constexpr uint32_t MaxVertices = MaxQuads * VerticesPerQuad;
 
     unsigned int VAO = 0, VBO = 0, shaderProgram = 0;
 
@@ -29,21 +30,15 @@ namespace
         "#version 330 core \
         \
         layout(location = 0) in vec2 a_Position; \
-        layout(location = 1) in vec2 a_TexCoord; \
-        layout(location = 2) in vec4 a_Color; \
-        layout(location = 3) in float a_TextureIndex; \
+        layout(location = 1) in vec4 a_Color; \
         \
         uniform mat4 u_Projection; \
         \
-        out vec2 v_TexCoord; \
         out vec4 v_Color; \
-        out float v_TextureIndex; \
         \
         void main() \
         { \
-            v_TexCoord = a_TexCoord; \
             v_Color = a_Color; \
-            v_TextureIndex = a_TextureIndex; \
             gl_Position = u_Projection * vec4(a_Position, 0.0, 1.0); \
         }"
     };
@@ -51,7 +46,6 @@ namespace
     const char* fragmentShaderSource{""
         "#version 330 core \
         \
-        in vec2 v_TexCoord;\
         in vec4 v_Color; \
         out vec4 FragColor; \
         \
@@ -105,7 +99,7 @@ namespace
 
     void PushQuad(const glm::vec2 &pos, const glm::vec2 &size, const glm::vec4 &color)
     {
-        if (Vertices.size() + 4 > MaxVertices)
+        if (Vertices.size() + VerticesPerQuad > MaxVertices)
             return;
 
         Vertices.emplace_back(Vertex{pos                         , color});
@@ -176,7 +170,7 @@ namespace SRmGUI
             return;
 
         const auto& windowSize = SRmGUI::GetContext().GetWindowSize();
-        const glm::mat4 projection = glm::ortho((0.f, windowSize.x, windowSize.y), 0.f, -1.f, 1.f);
+        const glm::mat4 projection = glm::ortho(0.f, windowSize.x, windowSize.y, 0.f, -1.f, 1.f);
 
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
