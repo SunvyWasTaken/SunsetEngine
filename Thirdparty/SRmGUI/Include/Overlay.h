@@ -15,4 +15,9 @@ namespace SRmGUI
         void Arrange(const Rect &viewportRect) override;
         void Paint(FormeDatas &out) override;
     };
+
+    template <>
+    class WidgetBuilder<Overlay> : public WidgetBuilderBase<Overlay, WidgetBuilder<Overlay>>
+    {
+    };
 } // SRmGUi

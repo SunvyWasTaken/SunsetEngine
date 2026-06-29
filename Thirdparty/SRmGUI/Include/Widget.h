@@ -34,6 +34,8 @@ namespace SRmGUI
 
         void SetSize(const glm::vec2& size);
 
+        void SetVisibility(bool visible);
+
     protected:
         WidgetWeak m_Parent;
         Rect m_DesireParameter;

@@ -18,6 +18,9 @@ namespace SRmGUI
 
     void Overlay::Paint(FormeDatas &out)
     {
+        if (!m_IsVisible)
+            return;
+
         Widget::Paint(out);
         for (const auto& c : childs)
             c->Paint(out);

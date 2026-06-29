@@ -60,4 +60,9 @@ namespace SRmGUI
     {
         m_DesireParameter.Size = size;
     }
+
+    void Widget::SetVisibility(const bool visible)
+    {
+        m_IsVisible = visible;
+    }
 } // SRmGUI
