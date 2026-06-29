@@ -1,6 +1,6 @@
 # SunsetEngine
 
-> SunsetEngine is a C++20 game-engine library built around OpenGL rendering, a layer-based application loop, an Entity Component System powered by EnTT, UI widgets, logging/profiling utilities, and an ENet-based networking layer. The project currently builds a static library named `SunsetEngine` that can be linked by a game or sandbox executable.
+> SunsetEngine is a C++20 game-engine library built around OpenGL rendering, a layer-based application loop, an Entity Component System powered by EnTT, a retained-mode GUI layer through SRmGUI, logging/profiling utilities, and an ENet-based networking layer. The project currently builds a static library named `SunsetEngine` that can be linked by a game or sandbox executable.
 
 ---
 
@@ -11,7 +11,7 @@
 - **Game framework**: worlds, entities, controllers, and reusable components such as transforms and camera components.
 - **Input**: keyboard and mouse events, named input actions loaded from JSON, local input sources, and network input sources.
 - **Networking**: ENet transport, host/join workflow, typed message sending/broadcasting, peer connection callbacks, and packet dispatch by channel.
-- **Slate UI**: basic immediate-style UI objects including square panels, images, and horizontal boxes.
+- **SRmGUI**: retained-mode GUI toolkit with widgets such as panels, buttons, text, images, overlays, and horizontal boxes, backed by an OpenGL implementation.
 - **Utilities**: logging through spdlog, on-screen debug text, profiling scopes, math helpers, and a reusable debug cube primitive.
 - **Third-party noise**: FastNoiseSIMD is included in `Thirdparty/FastNoiseSIMD` and built with the engine.
 
@@ -35,7 +35,8 @@
 │   ├── Slate/                      # UI widgets and layout primitives
 │   └── Utility/                    # Profiling and utility functions
 ├── Shaders/                        # Built-in GLSL shaders used by engine drawables and UI
-└── Thirdparty/FastNoiseSIMD/       # Vendored FastNoiseSIMD library
+├── Thirdparty/FastNoiseSIMD/       # Vendored FastNoiseSIMD library
+└── Thirdparty/SRmGUI/              # Retained-mode GUI library used by the engine
 ```
 
 ---
@@ -49,16 +50,15 @@
 
 The vcpkg manifest declares these external packages:
 
+- assimp
+- enet
+- entt
 - glad
 - glfw3
 - glm
-- opengl
-- stb
+- imgui with GLFW and OpenGL 3 bindings
 - nlohmann-json
 - spdlog
-- imgui with GLFW and OpenGL 3 bindings
-- enet
-- entt
 
 ---
 
@@ -204,7 +204,7 @@ Remember to call `NetworkService::Shutdown()` when your application is done if y
 
 - The root [`CMakeLists.txt`](CMakeLists.txt) currently uses `file(GLOB_RECURSE ...)` to collect engine sources.
 - [`Engine/SunsetPCH.h`](Engine/SunsetPCH.h) is configured as a public precompiled header for the engine target.
-- `Thirdparty/FastNoiseSIMD` is built as a subdirectory and linked publicly.
+- `Thirdparty/FastNoiseSIMD` and `Thirdparty/SRmGUI` are built as subdirectories and linked publicly.
 - The engine target exposes `Engine/` as a public include directory, so headers can be included relative to that folder.
 
 ---
