@@ -11,7 +11,7 @@ target_compile_definitions(SunsetEngine_compiler_flags INTERFACE
 
 project(SunsetEngine)
 
-file(GLOB_RECURSE SOURCES "*.h" "*.cpp" "*.txt")
+file(GLOB_RECURSE SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Engine/*.h" "${CMAKE_CURRENT_SOURCE_DIR}/Engine/*.cpp")
 
 add_subdirectory(Thirdparty/FastNoiseSIMD)
 add_subdirectory(Thirdparty/SRmGUI)
@@ -32,16 +32,11 @@ find_package(assimp CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
-find_package(Stb REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(unofficial-enet CONFIG REQUIRED)
 find_package(EnTT CONFIG REQUIRED)
-
-target_include_directories(${PROJECT_NAME} PRIVATE
-        ${Stb_INCLUDE_DIR}
-)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
         glfw
