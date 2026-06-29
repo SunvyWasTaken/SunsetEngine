@@ -12,6 +12,7 @@ namespace Sunset
     {
         enum class Action
         {
+            None,
             Press,
             Release,
             Hold

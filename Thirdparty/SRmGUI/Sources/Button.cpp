@@ -42,4 +42,24 @@ namespace SRmGUI
         else
             IsHovered = false;
     }
+
+    bool Button::OnMouseEvent(uint8_t type, uint8_t key)
+    {
+        Widget::OnMouseEvent(type, key);
+        if (IsHovered)
+        {
+            if (key == 0)
+            {
+                if (m_Callback)
+                    m_Callback();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void Button::SetCallback(const Callback& callback)
+    {
+        m_Callback = callback;
+    }
 }

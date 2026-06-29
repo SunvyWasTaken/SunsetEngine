@@ -26,6 +26,8 @@ namespace SRmGUI
 
         virtual void OnMouseMove(glm::vec2 mousePos);
 
+        virtual bool OnMouseEvent(uint8_t type, uint8_t key);
+
         Rect GetDesireRect() const;
 
         void SetPosition(const glm::vec2& position);

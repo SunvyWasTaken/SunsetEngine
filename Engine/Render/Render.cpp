@@ -83,7 +83,7 @@ namespace
 
     void CursorPositionCallback(GLFWwindow* window, double x, double y)
     {
-        Sunset::Event::Type event = Sunset::Event::MouseEvent{static_cast<unsigned int>(-1), 0, Sunset::Event::Action::Hold, {static_cast<int>(x), static_cast<int>(y)}};
+        Sunset::Event::Type event = Sunset::Event::MouseEvent{static_cast<unsigned int>(0), 0, Sunset::Event::Action::None, {static_cast<int>(x), static_cast<int>(y)}};
         EventCallback(event);
     }
 

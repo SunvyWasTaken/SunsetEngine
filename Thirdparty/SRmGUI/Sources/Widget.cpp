@@ -41,6 +41,11 @@ namespace SRmGUI
     {
     }
 
+    bool Widget::OnMouseEvent(uint8_t type, uint8_t key)
+    {
+        return false;
+    }
+
     Rect Widget::GetDesireRect() const
     {
         return m_DesireParameter;

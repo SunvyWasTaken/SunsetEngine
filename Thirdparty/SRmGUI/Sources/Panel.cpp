@@ -34,6 +34,19 @@ namespace SRmGUI
             c->OnMouseMove(mousePos);
     }
 
+    bool Panel::OnMouseEvent(uint8_t type, uint8_t key)
+    {
+        Widget::OnMouseEvent(type, key);
+
+        for (const auto& c : childs)
+        {
+            if (c->OnMouseEvent(type, key))
+                return true;
+        }
+
+        return false;
+    }
+
     void Panel::AddChild(const std::shared_ptr<Widget> &child)
     {
         childs.emplace_back(child);

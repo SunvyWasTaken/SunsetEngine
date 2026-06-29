@@ -19,7 +19,8 @@ namespace SRmGUI
 
         void Update(float dt);
         void HandleEvent();
-        void HandleMouseEvent(const glm::vec2& mousePos);
+        void HandleMousePos(const glm::vec2& mousePos);
+        bool HandleMouseEvent(uint8_t type, uint8_t key);
         void Arrange(const Rect& viewportRect);
         void Paint();
         const FormeDatas& GetData();

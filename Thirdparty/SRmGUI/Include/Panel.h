@@ -15,6 +15,7 @@ namespace SRmGUI
         void Arrange(const Rect &viewportRect) override;
         void Paint(FormeDatas &out) override;
         void OnMouseMove(glm::vec2 mousePos) override;
+        bool OnMouseEvent(uint8_t type, uint8_t key) override;
 
         virtual void AddChild(const std::shared_ptr<Widget>& child);
     protected:
