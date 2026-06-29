@@ -19,10 +19,17 @@ namespace SRmGUI
         WidgetPtr GetSelf();
 
         virtual void Update(float dt);
+
         virtual void Arrange(const Rect& viewportRect);
+
         virtual void Paint(FormeDatas& out);
 
+        virtual void OnMouseMove(glm::vec2 mousePos);
+
+        Rect GetDesireRect() const;
+
         void SetPosition(const glm::vec2& position);
+
         void SetSize(const glm::vec2& size);
 
     protected:

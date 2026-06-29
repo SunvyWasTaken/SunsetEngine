@@ -32,6 +32,12 @@ namespace SRmGUI
     {
     }
 
+    void Context::HandleMouseEvent(const glm::vec2 &mousePos)
+    {
+        if (m_Root)
+            m_Root->OnMouseMove(mousePos);
+    }
+
     void Context::Arrange(const Rect& viewportRect)
     {
         m_ViewportRect = viewportRect;

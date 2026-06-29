@@ -37,6 +37,15 @@ namespace SRmGUI
     {
     }
 
+    void Widget::OnMouseMove(glm::vec2 mousePos)
+    {
+    }
+
+    Rect Widget::GetDesireRect() const
+    {
+        return m_DesireParameter;
+    }
+
     void Widget::SetPosition(const glm::vec2 &position)
     {
         m_DesireParameter.Position = position;
