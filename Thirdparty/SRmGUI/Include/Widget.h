@@ -39,4 +39,56 @@ namespace SRmGUI
         Rect m_DesireParameter;
         bool m_IsVisible;
     };
+
+    template<typename T>
+    class WidgetBuilder
+    {};
+
+    template<typename T>
+    WidgetBuilder<T> SNew()
+    {
+        return WidgetBuilder<T>();
+    }
+
+    template<typename T, typename Derived>
+    class WidgetBuilderBase
+    {
+    public:
+        WidgetBuilderBase()
+            : m_Widget(std::make_shared<T>())
+        {
+        }
+
+        std::shared_ptr<T> ToShared() const
+        {
+            return m_Widget;
+        }
+
+        operator std::shared_ptr<T>() const
+        {
+            return m_Widget;
+        }
+
+        Derived& Position(glm::ivec2 position)
+        {
+            m_Widget->SetPosition(position);
+            return static_cast<Derived&>(*this);
+        }
+
+        Derived& Size(glm::ivec2 size)
+        {
+            m_Widget->SetSize(size);
+            return static_cast<Derived&>(*this);
+        }
+
+        template<typename ChildT>
+        Derived& Child(const WidgetBuilder<ChildT>& child)
+        {
+            m_Widget->AddChild(child.ToShared());
+            return static_cast<Derived&>(*this);
+        }
+
+    protected:
+        std::shared_ptr<T> m_Widget;
+    };
 } // SRmGUI

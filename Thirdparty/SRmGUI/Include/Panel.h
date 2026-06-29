@@ -21,4 +21,9 @@ namespace SRmGUI
     protected:
         std::vector<WidgetPtr> childs;
     };
+
+    template <>
+    class WidgetBuilder<Panel> : public WidgetBuilderBase<Panel, WidgetBuilder<Panel>>
+    {
+    };
 }

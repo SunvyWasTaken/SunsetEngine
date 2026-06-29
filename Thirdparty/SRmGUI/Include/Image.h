@@ -21,4 +21,16 @@ namespace SRmGUI
         TextureID m_TextureID = 0;
         glm::vec4 m_Uv;
     };
+
+    template<>
+    class WidgetBuilder<SRmGUI::Image>
+    : public WidgetBuilderBase<SRmGUI::Image, WidgetBuilder<SRmGUI::Image>>
+    {
+    public:
+        WidgetBuilder& Image(TextureID id)
+        {
+            m_Widget->SetImage(id);
+            return *this;
+        }
+    };
 } // SRmGUI
