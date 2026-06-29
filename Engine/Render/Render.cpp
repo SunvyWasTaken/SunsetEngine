@@ -47,7 +47,7 @@ namespace
         LOG("OpenGL", error, "[{}] {}", severityStr, message);
     }
 
-    GLFWwindow* CreateWindow(const Sunset::ApplicationSetting& setting)
+    GLFWwindow* CreateWin(const Sunset::ApplicationSetting& setting)
     {
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -120,7 +120,7 @@ namespace Sunset
     {
         LOG("Engine", info, "Render Create")
         const ApplicationSetting& setting = Application::GetSetting();
-        m_Window = CreateWindow(setting);
+        m_Window = CreateWin(setting);
         if (m_Window == NULL)
         {
             glfwTerminate();

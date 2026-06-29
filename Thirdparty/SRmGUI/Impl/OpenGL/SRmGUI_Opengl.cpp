@@ -10,6 +10,9 @@
 #include "SRmGUI.h"
 #include "Type.h"
 
+#define STB_TRUETYPE_IMPLEMENTATION
+#include <stb_truetype.h>
+
 namespace
 {
     constexpr uint32_t MaxQuads = 10000;
@@ -196,6 +199,124 @@ namespace
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, whitePixel);
 
         glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    struct Glyph
+    {
+        glm::vec2 UVMin;
+        glm::vec2 UVMax;
+
+        glm::vec2 Size;      // taille du quad en pixels
+        glm::vec2 Bearing;   // offset depuis la baseline
+        float Advance;       // déplacement du curseur en pixels
+    };
+
+    struct Font
+    {
+        uint32_t TextureID = 0;
+
+        int AtlasWidth = 0;
+        int AtlasHeight = 0;
+
+        float PixelSize = 16.0f;
+
+        std::array<Glyph, 128> Glyphs;
+    };
+
+    Font LoadFont(const std::string &path, float pixelSize)
+    {
+        constexpr int atlasWidth = 512;
+        constexpr int atlasHeight = 512;
+        constexpr int firstChar = 32;
+        constexpr int charCount = 96;
+
+        std::ifstream file(path, std::ios::binary | std::ios::ate);
+        if (!file)
+            throw std::runtime_error("Failed to open font file");
+
+        const std::streamsize size = file.tellg();
+        file.seekg(0, std::ios::beg);
+
+        std::vector<unsigned char> fontBuffer(size);
+        if (!file.read(reinterpret_cast<char*>(fontBuffer.data()), size))
+            throw std::runtime_error("Failed to read font file");
+
+        std::vector<unsigned char> bitmap(atlasWidth * atlasHeight);
+
+        std::array<stbtt_bakedchar, charCount> bakedChars{};
+
+        const int result = stbtt_BakeFontBitmap(
+            fontBuffer.data(),
+            0,
+            pixelSize,
+            bitmap.data(),
+            atlasWidth,
+            atlasHeight,
+            firstChar,
+            charCount,
+            bakedChars.data()
+        );
+
+        if (result <= 0)
+            throw std::runtime_error("Failed to bake font bitmap");
+
+        Font font{};
+        font.AtlasWidth = atlasWidth;
+        font.AtlasHeight = atlasHeight;
+        font.PixelSize = pixelSize;
+
+        // Upload OpenGL
+        glCreateTextures(GL_TEXTURE_2D, 1, &font.TextureID);
+        glTextureStorage2D(font.TextureID, 1, GL_R8, atlasWidth, atlasHeight);
+        glTextureSubImage2D(
+            font.TextureID,
+            0,
+            0,
+            0,
+            atlasWidth,
+            atlasHeight,
+            GL_RED,
+            GL_UNSIGNED_BYTE,
+            bitmap.data()
+        );
+
+        glTextureParameteri(font.TextureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTextureParameteri(font.TextureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTextureParameteri(font.TextureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTextureParameteri(font.TextureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        for (int i = 0; i < charCount; ++i)
+        {
+            const stbtt_bakedchar& bc = bakedChars[i];
+
+            Glyph glyph{};
+
+            glyph.UVMin = {
+                static_cast<float>(bc.x0) / static_cast<float>(atlasWidth),
+                static_cast<float>(bc.y0) / static_cast<float>(atlasHeight)
+            };
+
+            glyph.UVMax = {
+                static_cast<float>(bc.x1) / static_cast<float>(atlasWidth),
+                static_cast<float>(bc.y1) / static_cast<float>(atlasHeight)
+            };
+
+            glyph.Size = {
+                static_cast<float>(bc.x1 - bc.x0),
+                static_cast<float>(bc.y1 - bc.y0)
+            };
+
+            glyph.Bearing = {
+                bc.xoff,
+                bc.yoff
+            };
+
+            glyph.Advance = bc.xadvance;
+
+            font.Glyphs[firstChar + i] = glyph;
+        }
+
+        return font;
     }
 }
 

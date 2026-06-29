@@ -9,14 +9,21 @@
 
 namespace SRmGUI
 {
+    void Overlay::Arrange(const Rect &viewportRect)
+    {
+        Widget::Arrange(viewportRect);
+        for (const auto& c : childs)
+            c->Arrange(m_DesireParameter);
+    }
+
     void Overlay::Paint(FormeDatas &out)
     {
         Widget::Paint(out);
 
-        Forme::Rectangle rect;
-        rect.Position = m_DesireParameter.Position;
-        rect.Size = m_DesireParameter.Size;
-        rect.Color = {1.0f, 1.0f, 1.0f, 1.f};
-        out.emplace_back(rect);
+        // Forme::Rectangle rect;
+        // rect.Position = m_DesireParameter.Position;
+        // rect.Size = m_DesireParameter.Size;
+        // rect.Color = {1.0f, 1.0f, 1.0f, 1.f};
+        // out.emplace_back(rect);
     }
 } // SRmGUI

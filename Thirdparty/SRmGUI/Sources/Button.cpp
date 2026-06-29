@@ -25,7 +25,10 @@ namespace SRmGUI
     void Button::Paint(FormeDatas &out)
     {
         Widget::Paint(out);
-        const glm::vec4 Color = IsHovered ? glm::vec4(0.75f, 0.75f, 0.75f, 1.0f) : glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        if (!m_IsVisible)
+            return;
+
+        const glm::vec4 Color = m_IsHovered ? glm::vec4(0.75f, 0.75f, 0.75f, 1.0f) : glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         out.emplace_back(Forme::Rectangle{m_DesireParameter.Position, m_DesireParameter.Size, Color});
         if (child)
             child->Paint(out);
@@ -34,19 +37,25 @@ namespace SRmGUI
     void Button::OnMouseMove(glm::vec2 mousePos)
     {
         Widget::OnMouseMove(mousePos);
+        if (!m_IsVisible)
+            return;
+
         if (mousePos.x >= m_DesireParameter.Position.x && mousePos.x <= m_DesireParameter.Position.x + m_DesireParameter.Size.x &&
             mousePos.y >= m_DesireParameter.Position.y && mousePos.y <= m_DesireParameter.Position.y + m_DesireParameter.Size.y)
         {
-            IsHovered = true;
+            m_IsHovered = true;
         }
         else
-            IsHovered = false;
+            m_IsHovered = false;
     }
 
     bool Button::OnMouseEvent(uint8_t type, uint8_t key)
     {
         Widget::OnMouseEvent(type, key);
-        if (IsHovered)
+        if (!m_IsVisible)
+            return false;
+
+        if (m_IsHovered)
         {
             if (key == 0)
             {

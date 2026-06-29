@@ -17,7 +17,7 @@ namespace SRmGUI
         void OnMouseMove(glm::vec2 mousePos) override;
         bool OnMouseEvent(uint8_t type, uint8_t key) override;
         void SetCallback(const Callback& callback);
-        bool IsHovered = false;
+        bool m_IsHovered = false;
     private:
         WidgetPtr child;
         Callback m_Callback;
