@@ -7,8 +7,8 @@
 #include <glad/glad.h>
 #include <glm/ext/matrix_clip_space.hpp>
 
-#include "Sources/SRmGUI.h"
-#include "Sources/Type.h"
+#include "SRmGUI.h"
+#include "Type.h"
 
 namespace
 {
@@ -168,12 +168,17 @@ namespace
         if (Vertices.size() + VerticesPerQuad > MaxVertices)
             return;
 
+        const std::uint32_t start = static_cast<std::uint32_t>(Vertices.size());
+
         Vertices.emplace_back(Vertex{pos + size                  , {}, color});
         Vertices.emplace_back(Vertex{pos + glm::vec2{size.x, 0}, {}, color});
         Vertices.emplace_back(Vertex{pos                         , {}, color});
         Vertices.emplace_back(Vertex{pos                         , {}, color});
         Vertices.emplace_back(Vertex{pos + glm::vec2{0, size.y}, {}, color});
         Vertices.emplace_back(Vertex{pos + size                  , {}, color});
+
+        const std::uint32_t count = static_cast<std::uint32_t>(Vertices.size()) - start;
+        AddDrawCommand(WhiteTexture, count);
     }
 
     void CreateWhiteTexture()
@@ -233,9 +238,12 @@ namespace SRmGUI
 
     void Opengl_DrawData(const FormeDatas& formesData)
     {
+        // Clear all
         Vertices.clear();
         Vertices.reserve(MaxVertices);
+        Cmds.clear();
 
+        // Emplace all vertices & DrawCmds
         for (const auto& form : formesData)
         {
             std::visit(overloads{

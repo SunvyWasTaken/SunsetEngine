@@ -4,8 +4,8 @@
 
 #include "Context.h"
 
-#include "Type.h"
-#include "Widget.h"
+#include "../Include/Type.h"
+#include "../Include/Widget.h"
 
 namespace SRmGUI
 {

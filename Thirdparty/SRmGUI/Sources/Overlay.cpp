@@ -5,7 +5,7 @@
 #include "Overlay.h"
 
 #include "SRmGUI.h"
-#include "Type.h"
+#include "../Include/Type.h"
 
 namespace SRmGUI
 {

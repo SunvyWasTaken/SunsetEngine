@@ -15,8 +15,9 @@
 #include <GLFW/glfw3.h>
 
 #include "Core/Input.h"
-#include "Impl/OpenGL/SRmGUI_Opengl.h"
-#include "Sources/SRmGUI.h"
+
+#include "SRmGUI.h"
+#include "SRmGUI_Opengl.h"
 
 namespace
 {
@@ -185,7 +186,6 @@ namespace Sunset
         ImGui_ImplOpenGL3_Init("#version 330");
 
 #pragma region //SRmGUI
-        SRmGUI::CreateContext();
         SRmGUI::Opengl_Init();
 #pragma endregion //SRmGUI
     }
@@ -199,7 +199,6 @@ namespace Sunset
             ImGui::DestroyContext();
 #pragma region // SRmGUI
             SRmGUI::Opengl_Shutdown();
-            SRmGUI::Shutdown();
 #pragma endregion
             glfwDestroyWindow(m_Window);
             m_Window = nullptr;

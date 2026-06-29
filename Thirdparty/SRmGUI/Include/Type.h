@@ -24,7 +24,7 @@ namespace SRmGUI
         struct Image : Base
         {
             TextureID texture = 0;
-            glm::vec4 Uv{1.f, 1.f, 0.f, 0.f};
+            glm::vec4 Uv{0.f, 1.f, 1.f, 0.f};
         };
         struct Text : Base
         {

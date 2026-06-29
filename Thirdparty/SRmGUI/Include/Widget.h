@@ -12,6 +12,7 @@ namespace SRmGUI
     class Widget : public std::enable_shared_from_this<Widget>
     {
     public:
+        Widget();
         virtual ~Widget() = default;
 
         void SetParent(const WidgetPtr& parent);
@@ -27,5 +28,6 @@ namespace SRmGUI
     protected:
         WidgetWeak m_Parent;
         Rect m_DesireParameter;
+        bool m_IsVisible;
     };
 } // SRmGUI

@@ -4,7 +4,7 @@
 
 #include "Image.h"
 
-#include "Type.h"
+#include "../Include/Type.h"
 
 namespace SRmGUI
 {
@@ -27,5 +27,10 @@ namespace SRmGUI
     void Image::SetImage(TextureID id)
     {
         m_TextureID = id;
+    }
+
+    void Image::SetUv(const glm::vec4 &uv)
+    {
+        m_Uv = uv;
     }
 } // SRmGUI

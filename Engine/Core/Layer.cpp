@@ -6,18 +6,18 @@
 
 #include "Core/Application.h"
 #include "Core/ApplicationSetting.h"
-#include "Sources/SRmGUI.h"
+#include "../../Thirdparty/SRmGUI/Include/SRmGUI.h"
 
 namespace Sunset
 {
     Layer::Layer()
-        : m_UIContext(SRmGUI::GetContext())
+        : m_UIContext(SRmGUI::CreateContext())
     {
-
     }
 
     Layer::~Layer()
     {
+        SRmGUI::Shutdown();
     }
 
     void Layer::OnUpdate(float dt)

@@ -19,8 +19,9 @@
 
 #include "Camera.h"
 #include "Material.h"
-#include "Impl/OpenGL/SRmGUI_Opengl.h"
-#include "Sources/SRmGUI.h"
+
+#include "SRmGUI.h"
+#include "SRmGUI_Opengl.h"
 
 namespace
 {
@@ -259,8 +260,6 @@ namespace Sunset
 
     void RenderCommande::EndFrame()
     {
-        m_DrawCommands.clear();
-
         FlushDrawCommand();
 
         ResetFrameState();

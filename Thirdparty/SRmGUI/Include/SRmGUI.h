@@ -4,8 +4,7 @@
 #pragma once
 
 #include "Context.h"
-
-#include "SRmGUI_fwd.h"
+#include "Widget.h"
 
 namespace SRmGUI
 {

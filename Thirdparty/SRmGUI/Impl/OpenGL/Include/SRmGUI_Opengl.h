@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Sources/SRmGUI_fwd.h"
+#include "SRmGUI_fwd.h"
 
 namespace SRmGUI
 {

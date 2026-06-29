@@ -4,7 +4,7 @@
 
 #include "SRmGUI.h"
 
-#include "Type.h"
+#include "../Include/Type.h"
 
 namespace
 {

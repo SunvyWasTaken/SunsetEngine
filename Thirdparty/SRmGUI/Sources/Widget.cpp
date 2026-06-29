@@ -6,6 +6,13 @@
 
 namespace SRmGUI
 {
+    Widget::Widget()
+        : m_Parent()
+        , m_DesireParameter()
+        , m_IsVisible(true)
+    {
+    }
+
     void Widget::SetParent(const std::shared_ptr<Widget> &parent)
     {
         m_Parent = parent;
@@ -22,7 +29,8 @@ namespace SRmGUI
 
     void Widget::Arrange(const Rect &viewportRect)
     {
-
+        m_DesireParameter.Position = viewportRect.Position;
+        m_DesireParameter.Size = viewportRect.Size;
     }
 
     void Widget::Paint(FormeDatas &out)

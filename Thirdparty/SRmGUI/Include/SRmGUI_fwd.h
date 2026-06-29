@@ -14,6 +14,7 @@ namespace SRmGUI
         struct Text;
         using Type = std::variant<Rectangle, Image, Text>;
     }
+
     using FormeDatas = std::vector<Forme::Type>;
 
     using WidgetPtr = std::shared_ptr<class Widget>;
