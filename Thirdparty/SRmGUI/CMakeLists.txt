@@ -12,6 +12,12 @@ find_package(glad CONFIG REQUIRED)
 
 add_library(${PROJECT_NAME} STATIC ${MY_SOURCES})
 
+if(PRODUCTION_BUILD)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC SRmGUI_RESOURCES=\"./Resources/\")
+else()
+    target_compile_definitions(${PROJECT_NAME} PUBLIC SRmGUI_RESOURCES=\"${CMAKE_CURRENT_SOURCE_DIR}/Resources/\")
+endif ()
+
 target_link_libraries(${PROJECT_NAME} PRIVATE
     glm::glm
     glad::glad

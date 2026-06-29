@@ -17,9 +17,10 @@ namespace SRmGUI
         void OnMouseMove(glm::vec2 mousePos) override;
         bool OnMouseEvent(uint8_t type, uint8_t key) override;
         void SetCallback(const Callback& callback);
+        void AddChild(const std::shared_ptr<Widget> &child);
         bool m_IsHovered = false;
     private:
-        WidgetPtr child;
+        WidgetPtr m_Child;
         Callback m_Callback;
     };
 }
