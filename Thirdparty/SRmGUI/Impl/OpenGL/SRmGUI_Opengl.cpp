@@ -221,16 +221,11 @@ namespace
         float PixelSize = 16.0f;
 
         std::array<Glyph, 128> Glyphs;
-
-        ~Font()
-        {
-            glDeleteTextures(1, &TextureID);
-        }
     };
 
-    std::unique_ptr<Font> font = nullptr;
+    Font font;
 
-    std::unique_ptr<Font>& LoadFont(const std::string &path, float pixelSize)
+    Font LoadFont(const std::string &path, float pixelSize)
     {
         constexpr int atlasWidth = 512;
         constexpr int atlasHeight = 512;
@@ -267,16 +262,16 @@ namespace
         if (result <= 0)
             throw std::runtime_error("Failed to bake font bitmap");
 
-        std::unique_ptr<::Font> f = std::make_unique<::Font>();
-        f->AtlasWidth = atlasWidth;
-        f->AtlasHeight = atlasHeight;
-        f->PixelSize = pixelSize;
+        Font f {};
+        f.AtlasWidth = atlasWidth;
+        f.AtlasHeight = atlasHeight;
+        f.PixelSize = pixelSize;
 
         // Upload OpenGL
-        glCreateTextures(GL_TEXTURE_2D, 1, &(f->TextureID));
-        glTextureStorage2D(f->TextureID, 1, GL_R8, atlasWidth, atlasHeight);
+        glCreateTextures(GL_TEXTURE_2D, 1, &(f.TextureID));
+        glTextureStorage2D(f.TextureID, 1, GL_R8, atlasWidth, atlasHeight);
         glTextureSubImage2D(
-            f->TextureID,
+            f.TextureID,
             0,
             0,
             0,
@@ -287,13 +282,13 @@ namespace
             bitmap.data()
         );
 
-        glTextureParameteri(f->TextureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTextureParameteri(f->TextureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTextureParameteri(f->TextureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTextureParameteri(f->TextureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTextureParameteri(f.TextureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTextureParameteri(f.TextureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTextureParameteri(f.TextureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTextureParameteri(f.TextureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
         GLint swizzle[] = { GL_ONE, GL_ONE, GL_ONE, GL_RED };
-        glTextureParameteriv(f->TextureID, GL_TEXTURE_SWIZZLE_RGBA, swizzle);
+        glTextureParameteriv(f.TextureID, GL_TEXTURE_SWIZZLE_RGBA, swizzle);
 
         for (int i = 0; i < charCount; ++i)
         {
@@ -323,10 +318,10 @@ namespace
 
             glyph.Advance = bc.xadvance;
 
-            f->Glyphs[firstChar + i] = glyph;
+            f.Glyphs[firstChar + i] = glyph;
         }
 
-        return font;
+        return f;
     }
 
     void PushText(const SRmGUI::Forme::Text& text)
@@ -334,7 +329,7 @@ namespace
         glm::vec2 cursor = text.Position;
 
         // Si Position représente le top-left du texte :
-        const float baselineY = text.Position.y + font->PixelSize;
+        const float baselineY = text.Position.y + font.PixelSize;
 
         const std::uint32_t start = static_cast<std::uint32_t>(Vertices.size());
 
@@ -343,7 +338,7 @@ namespace
             if (c == '\n')
             {
                 cursor.x = text.Position.x;
-                cursor.y += font->PixelSize;
+                cursor.y += font.PixelSize;
                 continue;
             }
 
@@ -351,7 +346,7 @@ namespace
             if (uc < 32 || uc >= 128)
                 continue;
 
-            const Glyph& glyph = font->Glyphs[uc];
+            const Glyph& glyph = font.Glyphs[uc];
 
             const glm::vec2 glyphPos = {
                 cursor.x + glyph.Bearing.x,
@@ -370,7 +365,7 @@ namespace
                     glyph.UVMax.x,
                     glyph.UVMax.y
                 },
-                font->TextureID
+                font.TextureID
             );
 
             cursor.x += glyph.Advance;
@@ -387,7 +382,7 @@ namespace SRmGUI
 
         CreateWhiteTexture();
 
-        font = std::move(LoadFont(SRmGUI_RESOURCES "Tiny5-Regular.ttf", 15));
+        font = std::move(LoadFont(SRmGUI_RESOURCES "Tiny5-Regular.ttf", 45));
 
         // Buffer
         glGenVertexArrays(1, &VAO);
@@ -410,7 +405,7 @@ namespace SRmGUI
 
     void Opengl_Shutdown()
     {
-        font.reset();
+        glDeleteTextures(1, &font.TextureID);
         glDeleteTextures(1, &WhiteTexture);
         glDeleteProgram(shaderProgram);
 
