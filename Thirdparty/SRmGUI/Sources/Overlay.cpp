@@ -19,6 +19,8 @@ namespace SRmGUI
     void Overlay::Paint(FormeDatas &out)
     {
         Widget::Paint(out);
+        for (const auto& c : childs)
+            c->Paint(out);
 
         // Forme::Rectangle rect;
         // rect.Position = m_DesireParameter.Position;
