@@ -32,5 +32,11 @@ namespace SRmGUI
             m_Widget->SetImage(id);
             return *this;
         }
+
+        WidgetBuilder& Uv(const glm::vec4& uv)
+        {
+            m_Widget->SetUv(uv);
+            return *this;
+        }
     };
 } // SRmGUI

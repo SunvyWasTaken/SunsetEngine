@@ -5,8 +5,11 @@
 #include "RenderCommande.h"
 
 #include "Core/Application.h"
+#include "Core/ApplicationSetting.h"
+#include "Camera.h"
 #include "Drawable.h"
 #include "FrameBuffer.h"
+#include "Material.h"
 #include "Meshes/Mesh.h"
 #include "Shader.h"
 
@@ -17,9 +20,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/ext/matrix_transform.hpp>
-
-#include "Camera.h"
-#include "Material.h"
 
 #include "SRmGUI.h"
 #include "SRmGUI_Opengl.h"

@@ -10,7 +10,7 @@ namespace SRmGUI
 {
     void HorizontalBox::Arrange(const Rect &viewportRect)
     {
-        // Panel::Arrange(viewportRect);
+        Widget::Arrange(viewportRect);
 
         Rect rect = m_DesireParameter;
 
