@@ -19,7 +19,7 @@ namespace SRmGUI
         void SetUv(const glm::vec4& uv);
     private:
         TextureID m_TextureID = 0;
-        glm::vec4 m_Uv;
+        glm::vec4 m_Uv{0.f, 1.f, 1.f, 0.f};
     };
 
     template<>

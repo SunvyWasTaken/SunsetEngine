@@ -8,5 +8,7 @@
 #include "Core/Application.h"
 #include "Core/ApplicationSetting.h"
 #include "BaseObject/BaseCube.h"
+#include "Render/FrameBuffer.h"
+#include "Render/RenderCommande.h"
 
 #endif //SUNSETCRAFT_V2_SUNSETENGINE_H

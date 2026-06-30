@@ -6,6 +6,7 @@
 
 #include "Core/Application.h"
 #include "Drawable.h"
+#include "FrameBuffer.h"
 #include "Meshes/Mesh.h"
 #include "Shader.h"
 
@@ -246,6 +247,9 @@ namespace Sunset
 {
     void RenderCommande::BeginFrame()
     {
+        FrameBuffer::Unbind();
+        const glm::ivec2& windowSize = Application::GetSetting().WindowSize;
+        glViewport(0, 0, windowSize.x, windowSize.y);
         ResetFrameState();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -260,7 +264,7 @@ namespace Sunset
 
     void RenderCommande::EndFrame()
     {
-        FlushDrawCommand();
+        Flush();
 
         ResetFrameState();
 
@@ -291,6 +295,27 @@ namespace Sunset
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(static_cast<GLFWwindow*>(Application::GetWindow()));
+    }
+
+    void RenderCommande::BeginTarget(FrameBuffer& target, const glm::vec4& clearColor)
+    {
+        Flush();
+        target.Clear(clearColor);
+        ResetFrameState();
+    }
+
+    void RenderCommande::EndTarget()
+    {
+        Flush();
+        FrameBuffer::Unbind();
+        const glm::ivec2& windowSize = Application::GetSetting().WindowSize;
+        glViewport(0, 0, windowSize.x, windowSize.y);
+        ResetFrameState();
+    }
+
+    void RenderCommande::Flush()
+    {
+        FlushDrawCommand();
     }
 
     void RenderCommande::Submit(const Drawable& drawable)
