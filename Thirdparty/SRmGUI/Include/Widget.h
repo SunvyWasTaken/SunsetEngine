@@ -43,13 +43,20 @@ namespace SRmGUI
     };
 
     template<typename T>
-    class WidgetBuilder
-    {};
+    class WidgetBuilder;
 
     template<typename T>
     WidgetBuilder<T> SNew()
     {
         return WidgetBuilder<T>();
+    }
+
+    template <typename T>
+    WidgetBuilder<T> SNewAssign(std::shared_ptr<T>& obj)
+    {
+        auto truc = WidgetBuilder<T>();
+        obj = truc.ToShared();
+        return truc;
     }
 
     template<typename T, typename Derived>
@@ -83,6 +90,12 @@ namespace SRmGUI
             return static_cast<Derived&>(*this);
         }
 
+        Derived& Visibility(bool visible)
+        {
+            m_Widget->SetVisibility(visible);
+            return static_cast<Derived&>(*this);
+        }
+
         template<typename ChildT>
         Derived& Child(const WidgetBuilder<ChildT>& child)
         {
@@ -93,4 +106,8 @@ namespace SRmGUI
     protected:
         std::shared_ptr<T> m_Widget;
     };
+
+    template<typename T>
+    class WidgetBuilder : public WidgetBuilderBase<T, WidgetBuilder<T>>
+    {};
 } // SRmGUI

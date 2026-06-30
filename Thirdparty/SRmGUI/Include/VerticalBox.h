@@ -14,9 +14,4 @@ namespace SRmGUI
     private:
         int padding = 1;
     };
-
-    template <>
-    class WidgetBuilder<VerticalBox> : public WidgetBuilderBase<VerticalBox, WidgetBuilder<VerticalBox>>
-    {
-    };
 }
