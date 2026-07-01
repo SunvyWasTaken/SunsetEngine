@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include "SRmGUI_fwd.h"
 
 namespace SRmGUI
 {
@@ -38,4 +39,40 @@ namespace SRmGUI
 
     template<class... Ts>
     struct overloads : Ts... { using Ts::operator()...; };
+
+    struct MouseEvent
+    {
+        enum class Type
+        {
+            None = 0,
+            Press = 1,
+            Hold = 2,
+            Release = 3,
+        };
+
+        glm::ivec2 position{0, 0};
+        MouseEvent::Type type = MouseEvent::Type::None;
+        uint32_t key = 0;
+    };
+
+    struct DragDropPayload
+    {
+        std::string Type;
+        void* Data = nullptr;
+    };
+
+    struct DragState
+    {
+        bool IsMouseDown = false;
+        bool IsDragging = false;
+
+        WidgetPtr PressedWidget = nullptr;
+        WidgetPtr SourceWidget = nullptr;
+        WidgetPtr TargetWidget = nullptr;
+
+        glm::ivec2 PressMousePos{0, 0};
+        glm::ivec2 CurrentMousePos{0, 0};
+
+        DragDropPayload DragPayload;
+    };
 }

@@ -14,8 +14,8 @@ namespace Sunset
         {
             None,
             Press,
+            Hold,
             Release,
-            Hold
         };
 
         struct KeyEvent

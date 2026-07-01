@@ -6,6 +6,7 @@
 
 #include "Rect.hpp"
 #include "SRmGUI_fwd.h"
+#include "Type.h"
 
 namespace SRmGUI
 {
@@ -26,7 +27,15 @@ namespace SRmGUI
 
         virtual void OnMouseMove(glm::vec2 mousePos);
 
-        virtual bool OnMouseEvent(uint8_t type, uint8_t key);
+        virtual bool OnMouseEvent(MouseEvent::Type type, uint32_t key);
+
+        virtual bool OnDragDetected(DragDropPayload& payload);
+
+        virtual bool CanAcceptDrag(const DragDropPayload& dragPayload);
+
+        virtual void OnDrop(const DragDropPayload& dragPayload);
+
+        virtual WidgetPtr HitTest(const glm::vec2& mousePos);
 
         Rect GetDesireRect() const;
 
@@ -50,6 +59,10 @@ namespace SRmGUI
         // Haut/Droite/Bas/Gauche
         glm::vec4 m_Padding;
         glm::vec2 m_Offset;
+    public:
+        std::function<bool(DragDropPayload&)> m_OnDragDetected;
+        std::function<bool(const DragDropPayload&)> m_CanAcceptDrag;
+        std::function<void(const DragDropPayload&)> m_OnDrop;
     };
 
     template<typename T>
@@ -115,6 +128,24 @@ namespace SRmGUI
         Derived& Offset(const glm::vec2& offset)
         {
             m_Widget->SetOffset(offset);
+            return static_cast<Derived&>(*this);
+        }
+
+        Derived& OnDragDetect(const std::function<bool(DragDropPayload&)>& callback)
+        {
+            m_Widget->m_OnDragDetected = callback;
+            return static_cast<Derived&>(*this);
+        }
+
+        Derived& CanAcceptDrag(const std::function<bool(const DragDropPayload&)>& callback)
+        {
+            m_Widget->m_CanAcceptDrag = callback;
+            return static_cast<Derived&>(*this);
+        }
+
+        Derived& OnDrop(const std::function<void(const DragDropPayload&)>& callback)
+        {
+            m_Widget->m_OnDrop = callback;
             return static_cast<Derived&>(*this);
         }
 

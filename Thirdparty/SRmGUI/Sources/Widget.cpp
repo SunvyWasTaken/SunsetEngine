@@ -4,6 +4,8 @@
 
 #include "Widget.h"
 
+#include "Type.h"
+
 namespace SRmGUI
 {
     Widget::Widget()
@@ -50,9 +52,37 @@ namespace SRmGUI
     {
     }
 
-    bool Widget::OnMouseEvent(uint8_t type, uint8_t key)
+    bool Widget::OnMouseEvent(MouseEvent::Type type, uint32_t key)
     {
         return false;
+    }
+
+    bool Widget::OnDragDetected(DragDropPayload& payload)
+    {
+        if (m_OnDragDetected)
+            return m_OnDragDetected(payload);
+        return false;
+    }
+
+    bool Widget::CanAcceptDrag(const DragDropPayload &dragPayload)
+    {
+        if (m_CanAcceptDrag)
+            return m_CanAcceptDrag(dragPayload);
+        return false;
+    }
+
+    void Widget::OnDrop(const DragDropPayload &dragPayload)
+    {
+        if (m_OnDrop)
+            return m_OnDrop(dragPayload);
+    }
+
+    WidgetPtr Widget::HitTest(const glm::vec2 &mousePos)
+    {
+        if (m_Bounds.Position.x <= mousePos.x && mousePos.x <= m_Bounds.Position.x + m_Bounds.Size.x &&
+            m_Bounds.Position.y <= mousePos.y && mousePos.y <= m_Bounds.Position.y + m_Bounds.Size.y)
+            return shared_from_this();
+        return nullptr;
     }
 
     Rect Widget::GetDesireRect() const

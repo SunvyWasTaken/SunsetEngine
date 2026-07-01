@@ -50,7 +50,7 @@ namespace SRmGUI
             m_IsHovered = false;
     }
 
-    bool Button::OnMouseEvent(uint8_t type, uint8_t key)
+    bool Button::OnMouseEvent(MouseEvent::Type type, uint32_t key)
     {
         Widget::OnMouseEvent(type, key);
         if (!m_IsVisible)

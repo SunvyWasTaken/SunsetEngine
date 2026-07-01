@@ -37,17 +37,22 @@ namespace SRmGUI
             c->OnMouseMove(mousePos);
     }
 
-    bool Panel::OnMouseEvent(uint8_t type, uint8_t key)
+    bool Panel::OnMouseEvent(MouseEvent::Type type, uint32_t key)
     {
         Widget::OnMouseEvent(type, key);
 
-        for (const auto& c : childs)
-        {
-            if (c->OnMouseEvent(type, key))
-                return true;
-        }
+        return std::ranges::any_of(childs, [&](const auto& c){ return c->OnMouseEvent(type, key); });
+    }
 
-        return false;
+    WidgetPtr Panel::HitTest(const glm::vec2 &mousePos)
+    {
+        if (Widget::HitTest(mousePos))
+        {
+            for (const auto& c : childs)
+                if (c->HitTest(mousePos))
+                    return c;
+        }
+        return Widget::HitTest(mousePos);
     }
 
     void Panel::AddChild(const std::shared_ptr<Widget> &child)

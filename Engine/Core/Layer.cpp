@@ -37,11 +37,7 @@ namespace Sunset
         if (std::holds_alternative<Event::MouseEvent>(event))
         {
             const auto& mouseEvent = std::get<Event::MouseEvent>(event);
-            m_UIContext.HandleMousePos(mouseEvent.position);
-            if (mouseEvent.action != Event::Action::None)
-            {
-                return m_UIContext.HandleMouseEvent(static_cast<uint8_t>(mouseEvent.action), mouseEvent.button);
-            }
+            m_UIContext.HandleEvent({mouseEvent.position, static_cast<SRmGUI::MouseEvent::Type>(mouseEvent.action), mouseEvent.button});
         }
         return false;
     }

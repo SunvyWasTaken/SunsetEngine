@@ -18,9 +18,7 @@ namespace SRmGUI
         void SetRoot(const WidgetPtr& root);
 
         void Update(float dt);
-        void HandleEvent();
-        void HandleMousePos(const glm::vec2& mousePos);
-        bool HandleMouseEvent(uint8_t type, uint8_t key);
+        void HandleEvent(const MouseEvent& mouseEvent);
         void Arrange(const Rect& viewportRect);
         void Paint();
         const FormeDatas& GetData();
@@ -32,5 +30,6 @@ namespace SRmGUI
         WidgetPtr m_Root = nullptr;
         Rect m_ViewportRect;
         FormeDatas m_FormeDatas;
+        DragState m_DragState;
     };
 } // SRmGUi
