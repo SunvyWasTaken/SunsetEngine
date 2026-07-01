@@ -10,6 +10,7 @@
 
 namespace SRmGUI
 {
+    // todo : faire un canHitTest pr évité de taper sur des trucs que j'ai pas envie.
     class Widget : public std::enable_shared_from_this<Widget>
     {
     public:
