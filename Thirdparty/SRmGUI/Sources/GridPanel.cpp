@@ -13,13 +13,11 @@ namespace SRmGUI
         int cellSizeX = m_Bounds.Size.x / m_NbrGrid.x;
         int cellSizeY = m_Bounds.Size.y / m_NbrGrid.y;
 
-        auto start = m_Bounds.Position - (m_Bounds.Size / 2.f);
-
         int i = 0;
         for (const auto& c : childs)
         {
             Rect rect;
-            rect.Position = start + glm::vec2{cellSizeX * i % m_NbrGrid.y, cellSizeY * i / m_NbrGrid.y};
+            rect.Position = m_Bounds.Position + glm::vec2{cellSizeX * (i % m_NbrGrid.x), cellSizeY * (i / m_NbrGrid.x)};
             rect.Size = {cellSizeX, cellSizeY};
             c->Arrange(rect);
             ++i;
@@ -28,11 +26,11 @@ namespace SRmGUI
 
     void GridPanel::SetColumn(int32_t nbr)
     {
-        m_NbrGrid.y = nbr;
+        m_NbrGrid.x = nbr;
     }
 
     void GridPanel::SetRow(int32_t nbr)
     {
-        m_NbrGrid.x = nbr;
+        m_NbrGrid.y = nbr;
     }
 }
