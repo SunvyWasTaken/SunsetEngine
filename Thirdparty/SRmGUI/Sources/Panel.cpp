@@ -46,12 +46,10 @@ namespace SRmGUI
 
     WidgetPtr Panel::HitTest(const glm::vec2 &mousePos)
     {
-        if (Widget::HitTest(mousePos))
-        {
-            for (const auto& c : childs)
-                if (c->HitTest(mousePos))
-                    return c;
-        }
+        for (auto c = childs.end(); c != childs.begin(); )
+            if ((*--c)->HitTest(mousePos))
+                return *(c);
+
         return Widget::HitTest(mousePos);
     }
 
