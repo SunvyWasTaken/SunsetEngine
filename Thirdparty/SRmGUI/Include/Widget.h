@@ -36,10 +36,14 @@ namespace SRmGUI
 
         void SetVisibility(bool visible);
 
+        void SetPadding(const glm::vec4& padding);
+
     protected:
         WidgetWeak m_Parent;
         Rect m_DesireParameter;
         bool m_IsVisible;
+        // Haut/Droite/Bas/Gauche
+        glm::vec4 m_Padding;
     };
 
     template<typename T>
@@ -93,6 +97,12 @@ namespace SRmGUI
         Derived& Visibility(bool visible)
         {
             m_Widget->SetVisibility(visible);
+            return static_cast<Derived&>(*this);
+        }
+
+        Derived& Padding(const glm::vec4& padding)
+        {
+            m_Widget->SetPadding(padding);
             return static_cast<Derived&>(*this);
         }
 

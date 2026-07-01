@@ -12,28 +12,26 @@ namespace SRmGUI
     {
         Widget::Arrange(viewportRect);
 
-        Rect rect = m_DesireParameter;
+        auto&[Position, Size] = m_DesireParameter;
 
         const auto nbrChild = childs.size();
-        const auto objSize = (rect.Size.y - padding * nbrChild) / nbrChild;
-
-        const auto start = rect.Position.y - rect.Size.y / 2;
+        const auto objSize = Size.x / nbrChild;
 
         uint32_t i = 0;
         for (const auto& c : childs)
         {
-            c->Arrange({{start + (objSize + padding + padding) * i++, rect.Position.y}, {rect.Size.x, objSize}});
+            c->Arrange({{Position.x + objSize * i++, Position.y}, {objSize, Size.y}});
         }
     }
 
     void HorizontalBox::Paint(FormeDatas &out)
     {
-        Panel::Paint(out);
-
         // Forme::Rectangle rect;
         // rect.Position = m_DesireParameter.Position;
         // rect.Size = m_DesireParameter.Size;
         // rect.Color = {1.0f, 1.0f, 1.0f, 1.f};
         // out.emplace_back(rect);
+
+        Panel::Paint(out);
     }
 }

@@ -13,7 +13,5 @@ namespace SRmGUI
     public:
         void Arrange(const Rect &viewportRect) override;
         void Paint(FormeDatas &out) override;
-
-        float padding = 2.0f;
     };
 }

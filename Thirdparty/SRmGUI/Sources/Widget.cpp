@@ -10,6 +10,7 @@ namespace SRmGUI
         : m_Parent()
         , m_DesireParameter()
         , m_IsVisible(true)
+        , m_Padding(0, 0, 0, 0)
     {
     }
 
@@ -29,8 +30,11 @@ namespace SRmGUI
 
     void Widget::Arrange(const Rect &viewportRect)
     {
-        m_DesireParameter.Position = viewportRect.Position;
-        m_DesireParameter.Size = viewportRect.Size;
+        m_DesireParameter = viewportRect;
+
+        auto&[Position, Size] = m_DesireParameter;
+        Position += glm::ivec2{m_Padding.w, m_Padding.x};
+        Size -= glm::ivec2{m_Padding.w + m_Padding.y, m_Padding.x + m_Padding.z};
     }
 
     void Widget::Paint(FormeDatas &out)
@@ -64,5 +68,10 @@ namespace SRmGUI
     void Widget::SetVisibility(const bool visible)
     {
         m_IsVisible = visible;
+    }
+
+    void Widget::SetPadding(const glm::vec4 &padding)
+    {
+        m_Padding = padding;
     }
 } // SRmGUI

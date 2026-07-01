@@ -10,6 +10,9 @@ namespace SRmGUI
 {
     void Text::Paint(FormeDatas &out)
     {
+        if (!m_IsVisible)
+            return;
+
         Widget::Paint(out);
         out.emplace_back(Forme::Text{m_DesireParameter.Position, m_DesireParameter.Size, m_Color, m_Text});
     }
