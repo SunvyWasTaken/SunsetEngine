@@ -59,7 +59,7 @@ namespace SRmGUI
         if (m_DragState.IsMouseDown && !m_DragState.IsDragging)
         {
             float distance = glm::distance(glm::vec2{mouseEvent.position.x, mouseEvent.position.y}, glm::vec2{m_DragState.PressMousePos.x, m_DragState.PressMousePos.y});
-            if (distance > 4.f && m_DragState.PressedWidget)
+            if (distance > 3.f && m_DragState.PressedWidget)
             {
                 DragDropPayload dragPayload;
 
