@@ -11,6 +11,7 @@ namespace SRmGUI
         , m_DesireParameter()
         , m_IsVisible(true)
         , m_Padding(0, 0, 0, 0)
+        , m_Offset(0, 0)
     {
     }
 
@@ -30,9 +31,13 @@ namespace SRmGUI
 
     void Widget::Arrange(const Rect &viewportRect)
     {
-        m_DesireParameter = viewportRect;
+        auto&[Position, Size] = m_Bounds;
 
-        auto&[Position, Size] = m_DesireParameter;
+        Size = glm::min(m_DesireParameter.Size, viewportRect.Size);
+        Size = glm::max(Size, glm::vec2{0, 0});
+
+        Position = viewportRect.Position + m_Offset;
+
         Position += glm::ivec2{m_Padding.w, m_Padding.x};
         Size -= glm::ivec2{m_Padding.w + m_Padding.y, m_Padding.x + m_Padding.z};
     }
@@ -55,6 +60,11 @@ namespace SRmGUI
         return m_DesireParameter;
     }
 
+    glm::vec2 Widget::GetPosition() const
+    {
+        return m_Bounds.Position;
+    }
+
     void Widget::SetPosition(const glm::vec2 &position)
     {
         m_DesireParameter.Position = position;
@@ -73,5 +83,10 @@ namespace SRmGUI
     void Widget::SetPadding(const glm::vec4 &padding)
     {
         m_Padding = padding;
+    }
+
+    void Widget::SetOffset(const glm::vec2 &offset)
+    {
+        m_Offset = offset;
     }
 } // SRmGUI

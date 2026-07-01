@@ -11,13 +11,13 @@ namespace SRmGUI
         Widget::Arrange(viewportRect);
         const auto NbrElement = childs.size();
 
-        const auto objSize = (m_DesireParameter.Size.y - (padding * NbrElement)) / NbrElement;
-        const auto start = m_DesireParameter.Position.y - m_DesireParameter.Size.y / 2;
+        const auto objSize = m_Bounds.Size.y / NbrElement;
+        const auto start = m_Bounds.Position.y - m_Bounds.Size.y / 2;
 
         int i = 0;
         for (const auto& c : childs)
         {
-            c->Arrange({{m_DesireParameter.Position.x, start + (objSize + padding + padding) * i++}, {m_DesireParameter.Size.x, objSize}});
+            c->Arrange({{m_Bounds.Position.x, start + objSize * i++}, {m_Bounds.Size.x, objSize}});
         }
     }
 }

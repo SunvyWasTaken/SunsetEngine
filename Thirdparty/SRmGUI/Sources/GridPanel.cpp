@@ -10,10 +10,10 @@ namespace SRmGUI
     {
         Widget::Arrange(viewportRect);
 
-        int cellSizeX = m_DesireParameter.Size.x / m_NbrGrid.x;
-        int cellSizeY = m_DesireParameter.Size.y / m_NbrGrid.y;
+        int cellSizeX = m_Bounds.Size.x / m_NbrGrid.x;
+        int cellSizeY = m_Bounds.Size.y / m_NbrGrid.y;
 
-        auto start = m_DesireParameter.Position - (m_DesireParameter.Size / 2.f);
+        auto start = m_Bounds.Position - (m_Bounds.Size / 2.f);
 
         int i = 0;
         for (const auto& c : childs)

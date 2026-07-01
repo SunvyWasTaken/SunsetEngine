@@ -30,6 +30,8 @@ namespace SRmGUI
 
         Rect GetDesireRect() const;
 
+        glm::vec2 GetPosition() const;
+
         void SetPosition(const glm::vec2& position);
 
         void SetSize(const glm::vec2& size);
@@ -38,12 +40,16 @@ namespace SRmGUI
 
         void SetPadding(const glm::vec4& padding);
 
+        void SetOffset(const glm::vec2& offset);
+
     protected:
         WidgetWeak m_Parent;
         Rect m_DesireParameter;
+        Rect m_Bounds;
         bool m_IsVisible;
         // Haut/Droite/Bas/Gauche
         glm::vec4 m_Padding;
+        glm::vec2 m_Offset;
     };
 
     template<typename T>
@@ -103,6 +109,12 @@ namespace SRmGUI
         Derived& Padding(const glm::vec4& padding)
         {
             m_Widget->SetPadding(padding);
+            return static_cast<Derived&>(*this);
+        }
+
+        Derived& Offset(const glm::vec2& offset)
+        {
+            m_Widget->SetOffset(offset);
             return static_cast<Derived&>(*this);
         }
 

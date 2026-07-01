@@ -19,7 +19,7 @@ namespace SRmGUI
     {
         Widget::Arrange(viewportRect);
         if (m_Child)
-            m_Child->Arrange(m_DesireParameter);
+            m_Child->Arrange(m_Bounds);
     }
 
     void Button::Paint(FormeDatas &out)
@@ -29,7 +29,7 @@ namespace SRmGUI
             return;
 
         const glm::vec4 Color = m_IsHovered ? glm::vec4(0.75f, 0.75f, 0.75f, 1.0f) : glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-        out.emplace_back(Forme::Rectangle{m_DesireParameter.Position, m_DesireParameter.Size, Color});
+        out.emplace_back(Forme::Rectangle{m_Bounds.Position, m_Bounds.Size, Color});
 
         if (m_Child)
             m_Child->Paint(out);
@@ -41,8 +41,8 @@ namespace SRmGUI
         if (!m_IsVisible)
             return;
 
-        if (mousePos.x >= m_DesireParameter.Position.x && mousePos.x <= m_DesireParameter.Position.x + m_DesireParameter.Size.x &&
-            mousePos.y >= m_DesireParameter.Position.y && mousePos.y <= m_DesireParameter.Position.y + m_DesireParameter.Size.y)
+        if (mousePos.x >= m_Bounds.Position.x && mousePos.x <= m_Bounds.Position.x + m_Bounds.Size.x &&
+            mousePos.y >= m_Bounds.Position.y && mousePos.y <= m_Bounds.Position.y + m_Bounds.Size.y)
         {
             m_IsHovered = true;
         }

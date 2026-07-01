@@ -12,8 +12,6 @@ namespace SRmGUI
     class Image : public Widget
     {
     public:
-        void Update(float dt) override;
-        void Arrange(const Rect& viewportRect) override;
         void Paint(FormeDatas& out) override;
         void SetImage(TextureID id);
         void SetUv(const glm::vec4& uv);

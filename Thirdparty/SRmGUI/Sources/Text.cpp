@@ -14,7 +14,7 @@ namespace SRmGUI
             return;
 
         Widget::Paint(out);
-        out.emplace_back(Forme::Text{m_DesireParameter.Position, m_DesireParameter.Size, m_Color, m_Text});
+        out.emplace_back(Forme::Text{m_Bounds.Position, m_Bounds.Size, m_Color, m_Text});
     }
 
     void Text::SetColor(const glm::vec4 &color)

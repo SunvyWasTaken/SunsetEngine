@@ -13,7 +13,7 @@ namespace SRmGUI
     {
         Widget::Arrange(viewportRect);
         for (const auto& c : childs)
-            c->Arrange(m_DesireParameter);
+            c->Arrange(m_Bounds);
     }
 
     void Overlay::Paint(FormeDatas &out)
