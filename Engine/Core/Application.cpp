@@ -5,6 +5,7 @@
 #include "Application.h"
 
 #include "ApplicationSetting.h"
+#include "GameInstance.h"
 #include "Layer.h"
 #include "Network/NetworkService.h"
 #include "Render/RenderCommande.h"
