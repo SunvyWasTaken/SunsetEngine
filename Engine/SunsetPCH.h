@@ -12,6 +12,7 @@
 #include <format>
 #include <filesystem>
 #include <functional>
+#include <fstream>
 #include <limits>
 #include <map>
 #include <memory>

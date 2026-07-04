@@ -6,7 +6,8 @@
 
 #include "Core/Application.h"
 #include "Core/ApplicationSetting.h"
-#include "../../Thirdparty/SRmGUI/Include/SRmGUI.h"
+#include "GameInstance.h"
+#include "SRmGUI.h"
 
 namespace Sunset
 {
@@ -50,5 +51,10 @@ namespace Sunset
     SRmGUI::Context & Layer::GetUIContext()
     {
         return m_UIContext;
+    }
+
+    void Layer::SetAppContext(GameInstance *gameInstance)
+    {
+        m_GameInstance = gameInstance;
     }
 }

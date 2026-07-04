@@ -6,7 +6,6 @@
 
 #include "ApplicationSetting.h"
 #include "Layer.h"
-#include "BaseObject/BaseCube.h"
 #include "Network/NetworkService.h"
 #include "Render/RenderCommande.h"
 #include "Render/Render.h"
@@ -47,8 +46,9 @@ namespace Sunset
 {
     Application::Application(const ApplicationSetting& setting)
         : m_LayerStack()
-        , m_CommandBuffer()
         , m_Render(nullptr)
+        , m_GameInstance(nullptr)
+        , m_CommandBuffer()
     {
         Log::Init();
         INITLOG("Engine");
@@ -70,7 +70,6 @@ namespace Sunset
 
     Application::~Application()
     {
-        DeleteBaseCube();
         m_LayerStack.Clear();
 
         m_Render.reset();

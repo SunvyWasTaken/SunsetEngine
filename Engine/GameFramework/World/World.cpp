@@ -6,7 +6,6 @@
 
 #include "GameFramework/Controller.h"
 #include "Entity.h"
-#include "BaseObject/BaseCube.h"
 #include "Core/Application.h"
 #include "Core/Input.h"
 #include "GameFramework/Components/CameraComponent.h"

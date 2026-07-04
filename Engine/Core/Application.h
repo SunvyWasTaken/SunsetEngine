@@ -27,6 +27,8 @@ namespace Sunset
         void PushOverlay(Args&& ...args)
         {
             m_LayerStack.PushOverlay<T>(std::forward<Args>(args)...);
+            m_LayerStack.LastOverlay()->SetAppContext(m_GameInstance.get());
+            m_LayerStack.LastOverlay()->Init();
         }
 
         /// Push layer will create and add the layer to the Layer Stack
@@ -34,6 +36,8 @@ namespace Sunset
         void PushLayer(Args&&... args)
         {
             m_LayerStack.PushLayer<T>(std::forward<Args>(args)...);
+            m_LayerStack.back()->SetAppContext(m_GameInstance.get());
+            m_LayerStack.back()->Init();
         }
 
         /// Add Layer will just add an existing layer to the layer stack
@@ -41,6 +45,8 @@ namespace Sunset
         void AddLayer(Layer* layer)
         {
             m_LayerStack.AddLayer(layer);
+            m_LayerStack.back()->SetAppContext(m_GameInstance.get());
+            m_LayerStack.back()->Init();
         }
 
         template <typename T, typename ...Args>
@@ -48,7 +54,7 @@ namespace Sunset
         {
             m_CommandBuffer.emplace_back([&]()->void
             {
-                m_LayerStack.PushOverlay<T>(std::forward<Args>(args)...);
+                PushOverlay<T>(std::forward<Args>(args)...);
             });
         }
 
@@ -57,7 +63,7 @@ namespace Sunset
         {
             m_CommandBuffer.emplace_back([&]()->void
             {
-                m_LayerStack.PushLayer<T>(std::forward<Args>(args)...);
+                PushLayer<T>(std::forward<Args>(args)...);
             });
         }
 
@@ -67,6 +73,12 @@ namespace Sunset
             {
                m_LayerStack.Clear();
             });
+        }
+
+        template <typename T, typename ...Args>
+        void SetGameInstance(Args&&... args)
+        {
+            m_GameInstance = std::make_unique<T>(std::forward<Args>(args)...);
         }
 
         static const ApplicationSetting& GetSetting();
@@ -79,7 +91,8 @@ namespace Sunset
 
     private:
         LayerStack m_LayerStack;
-        std::vector<std::function<void()>> m_CommandBuffer;
         std::unique_ptr<Render> m_Render;
+        std::unique_ptr<GameInstance> m_GameInstance;
+        std::vector<std::function<void()>> m_CommandBuffer;
     };
 }

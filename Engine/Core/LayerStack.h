@@ -49,6 +49,16 @@ namespace Sunset
             return m_Layers.end();
         }
 
+        std::unique_ptr<Layer>& LastOverlay()
+        {
+            return *(m_Layers.end() - (m_Layers.size() - m_OverlayPosition));
+        }
+
+        std::unique_ptr<Layer>& back()
+        {
+            return m_Layers.back();
+        }
+
     private:
         std::vector<std::unique_ptr<Layer>> m_Layers;
         uint32_t m_OverlayPosition = 0;
