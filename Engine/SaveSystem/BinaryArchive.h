@@ -6,9 +6,13 @@
 
 namespace Sunset
 {
+    template <typename>
+    inline constexpr bool always_false_v = false;
+
     template <typename Archive, typename T>
     void Serialize(Archive& ar, T& value)
     {
+        static_assert(always_false_v<T>, "Serialize<T> must be implemented for this type.");
     }
 
     class BinaryInputArchive
@@ -22,7 +26,7 @@ namespace Sunset
         template <typename T>
         void operator()(T& value)
         {
-            Read(value);
+            BinaryInputArchive::Read(value);
         }
 
     private:
@@ -50,12 +54,15 @@ namespace Sunset
 
             for (auto& value : values)
             {
-                Read(value);
+                BinaryInputArchive::Read(value);
             }
         }
     private:
         std::ifstream& m_Stream;
     };
+
+    template <>
+    void BinaryInputArchive::Read<std::string>(std::string& value);
 
     class BinaryOutputArchive
     {
@@ -101,4 +108,7 @@ namespace Sunset
             }
         }
     };
+
+    template <>
+    void BinaryOutputArchive::Write<std::string>(std::string& value);
 } // Sunset

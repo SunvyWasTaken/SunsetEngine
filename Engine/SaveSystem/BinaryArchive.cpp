@@ -7,7 +7,7 @@
 namespace Sunset
 {
     template <>
-    void BinaryInputArchive::Read(std::string& value)
+    void BinaryInputArchive::Read<std::string>(std::string& value)
     {
         size_t size = 0;
 
@@ -18,8 +18,8 @@ namespace Sunset
             m_Stream.read(value.data(), static_cast<std::streamsize>(size));
     }
 
-    template <>
-    void BinaryOutputArchive::Write(std::string& value)
+    template<>
+    void BinaryOutputArchive::Write<std::string>(std::string &value)
     {
         size_t size = value.size();
 
