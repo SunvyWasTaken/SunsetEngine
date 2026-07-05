@@ -37,5 +37,7 @@ namespace Sunset
 
             return file.good();
         }
+
+        static void CreateFolder(const std::filesystem::path& path);
     };
 } // Sunset

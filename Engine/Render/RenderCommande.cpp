@@ -360,6 +360,6 @@ namespace Sunset
 
     void RenderCommande::ShowCursor(bool show)
     {
-        glfwSetInputMode(static_cast<GLFWwindow*>(Application::GetWindow()), GLFW_CURSOR, !show ? GLFW_CURSOR_CAPTURED : GLFW_CURSOR_NORMAL);
+        glfwSetInputMode(static_cast<GLFWwindow*>(Application::GetWindow()), GLFW_CURSOR, !show ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
     }
 }

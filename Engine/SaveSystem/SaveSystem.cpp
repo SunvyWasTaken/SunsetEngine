@@ -6,4 +6,11 @@
 
 namespace Sunset
 {
+    void SaveSystem::CreateFolder(const std::filesystem::path &path)
+    {
+        if (exists(path))
+            return;
+
+        std::filesystem::create_directories(path);
+    }
 } // Sunset
