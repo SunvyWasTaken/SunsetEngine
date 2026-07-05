@@ -79,6 +79,9 @@ namespace SRmGUI
 
     WidgetPtr Widget::HitTest(const glm::vec2 &mousePos)
     {
+        if (!m_IsVisible)
+            return nullptr;
+
         if (m_Bounds.Position.x <= mousePos.x && mousePos.x <= m_Bounds.Position.x + m_Bounds.Size.x &&
             m_Bounds.Position.y <= mousePos.y && mousePos.y <= m_Bounds.Position.y + m_Bounds.Size.y)
             return shared_from_this();

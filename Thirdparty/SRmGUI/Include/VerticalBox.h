@@ -11,7 +11,5 @@ namespace SRmGUI
     {
     public:
         void Arrange(const Rect &viewportRect) override;
-    private:
-        int padding = 1;
     };
 }

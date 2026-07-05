@@ -8,6 +8,8 @@ namespace SRmGUI
 {
     void Panel::Update(float dt)
     {
+        if (!m_IsVisible)
+            return;
         Widget::Update(dt);
         for (const auto& c : childs)
             c->Update(dt);
@@ -16,6 +18,10 @@ namespace SRmGUI
     void Panel::Arrange(const Rect &viewportRect)
     {
         Widget::Arrange(viewportRect);
+
+        if (!m_IsVisible)
+            return;
+
         for (const auto& c : childs)
             c->Arrange(c->GetDesireRect());
     }
@@ -32,6 +38,9 @@ namespace SRmGUI
 
     void Panel::OnMouseMove(glm::vec2 mousePos)
     {
+        if (!m_IsVisible)
+            return;
+
         Widget::OnMouseMove(mousePos);
         for (const auto& c : childs)
             c->OnMouseMove(mousePos);
@@ -39,6 +48,9 @@ namespace SRmGUI
 
     bool Panel::OnMouseEvent(MouseEvent::Type type, uint32_t key)
     {
+        if (!m_IsVisible)
+            return false;
+
         Widget::OnMouseEvent(type, key);
 
         return std::ranges::any_of(childs, [&](const auto& c){ return c->OnMouseEvent(type, key); });
