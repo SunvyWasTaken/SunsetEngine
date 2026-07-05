@@ -61,9 +61,14 @@ namespace Sunset
         template <typename T, typename ...Args>
         void LoadLayer(Args&& ...args)
         {
-            m_CommandBuffer.emplace_back([&]()->void
+            using ArgsTuple = std::tuple<std::decay_t<Args>...>;
+            m_CommandBuffer.emplace_back([this, storedArgs = ArgsTuple(std::forward<Args>(args)...)]() mutable ->void
             {
-                PushLayer<T>(std::forward<Args>(args)...);
+                std::apply(
+                    [this](auto&... values)
+                    {
+                        PushLayer<T>(std::move(values)...);
+                    }, storedArgs);
             });
         }
 

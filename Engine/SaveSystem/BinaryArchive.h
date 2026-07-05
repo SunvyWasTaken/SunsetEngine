@@ -15,6 +15,30 @@ namespace Sunset
         static_assert(always_false_v<T>, "Serialize<T> must be implemented for this type.");
     }
 
+    template <typename Archive, typename T>
+    void Serialize(Archive& ar, glm::vec<2, T, glm::defaultp>& value)
+    {
+        ar(value.x);
+        ar(value.y);
+    }
+
+    template <typename Archive, typename T>
+    void Serialize(Archive& ar, glm::vec<3, T, glm::defaultp>& value)
+    {
+        ar(value.x);
+        ar(value.y);
+        ar(value.z);
+    }
+
+    template <typename Archive, typename T>
+    void Serialize(Archive& ar, glm::vec<4, T, glm::defaultp>& value)
+    {
+        ar(value.x);
+        ar(value.y);
+        ar(value.z);
+        ar(value.w);
+    }
+
     class BinaryInputArchive
     {
     public:
@@ -39,7 +63,7 @@ namespace Sunset
             }
             else
             {
-                Sunset::Serialize(*this, value);
+                Serialize(*this, value);
             }
         }
 
@@ -57,6 +81,16 @@ namespace Sunset
                 BinaryInputArchive::Read(value);
             }
         }
+
+        template <typename T, std::size_t N>
+        void Read(std::array<T, N>& values)
+        {
+            for (auto& value : values)
+            {
+                Read(value);
+            }
+        }
+
     private:
         std::ifstream& m_Stream;
     };
@@ -91,7 +125,7 @@ namespace Sunset
             }
             else
             {
-                Sunset::Serialize(*this, value);
+                Serialize(*this, value);
             }
         }
 
@@ -102,6 +136,15 @@ namespace Sunset
 
             Write(size);
 
+            for (auto& value : values)
+            {
+                Write(value);
+            }
+        }
+
+        template <typename T, std::size_t N>
+        void Write(std::array<T, N>& values)
+        {
             for (auto& value : values)
             {
                 Write(value);
