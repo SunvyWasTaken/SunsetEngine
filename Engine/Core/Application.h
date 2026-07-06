@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "ApplicationSetting.h"
 #include "Input.h"
 #include "LayerStack.h"
 
@@ -16,7 +17,7 @@ namespace Sunset
     class Application
     {
     public:
-        explicit Application(const ApplicationSetting& setting);
+        explicit Application(const ApplicationSetting& setting = ApplicationSetting{});
         virtual ~Application();
 
         void Run();
