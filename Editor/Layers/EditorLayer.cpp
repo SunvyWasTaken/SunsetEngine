@@ -4,6 +4,41 @@
 
 #include "EditorLayer.h"
 
+#include <iostream>
+
+#include "GameFramework/Components/NativeScriptComponent.h"
+#include "GameFramework/World/ScriptEntity.h"
+#include "Panels/WorldHierarchyPanel.h"
+
+namespace
+{
+    class PlayerScript : public Sunset::ScriptEntity
+    {
+    public:
+        void OnUpdate(float dt) override
+        {
+            std::cerr << "Update " << dt << std::endl;
+        }
+    };
+}
+
 namespace Sunset
 {
+    EditorLayer::EditorLayer()
+        : m_World(std::make_shared<World>())
+        , m_WorldHierarchy(std::make_unique<WorldHierarchyPanel>(m_World))
+    {
+        Entity player = m_World->CreateEntity("Player");
+        player.AddComponent<NativeScriptComponent>().Bind<PlayerScript>();
+    }
+
+    EditorLayer::~EditorLayer()
+    {
+    }
+
+    void EditorLayer::OnDraw()
+    {
+        Layer::OnDraw();
+        m_WorldHierarchy->OnImGuiRender();
+    }
 } // Sunset

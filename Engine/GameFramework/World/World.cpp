@@ -22,24 +22,24 @@ namespace Sunset
         : m_Registry()
         , m_Controllers()
     {
-        NetworkService::Get().RegisterMessage<NetworkPlayerSessionMessage>(NetworkPlayerSessionMessage::ChannelId);
-        NetworkService::Get().RegisterHandler<NetworkPlayerSessionMessage>([this](PeerId, const NetworkPlayerSessionMessage& msg)
+        if (NetworkService::IsInitialized())
         {
-            OnPlayerSessionMessage(msg);
-        });
+            NetworkService::Get().RegisterMessage<NetworkPlayerSessionMessage>(NetworkPlayerSessionMessage::ChannelId);
+            NetworkService::Get().RegisterHandler<NetworkPlayerSessionMessage>([this](PeerId, const NetworkPlayerSessionMessage& msg)
+            {
+                OnPlayerSessionMessage(msg);
+            });
 
-        NetworkService::Get().RegisterPeerConnectedHandler([this](PeerId peerId)
-        {
-            OnPeerConnected(peerId);
-        });
+            NetworkService::Get().RegisterPeerConnectedHandler([this](PeerId peerId)
+            {
+                OnPeerConnected(peerId);
+            });
 
-        NetworkService::Get().RegisterPeerDisconnectedHandler([this](PeerId peerId)
-        {
-            OnPeerDisconnected(peerId);
-        });
-
-        if (!Application::IsHeadless())
-            CreatePlayer(m_LocalPeerId);
+            NetworkService::Get().RegisterPeerDisconnectedHandler([this](PeerId peerId)
+            {
+                OnPeerDisconnected(peerId);
+            });
+        }
     }
 
     World::~World()

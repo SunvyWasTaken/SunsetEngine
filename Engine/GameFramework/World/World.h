@@ -30,6 +30,7 @@ namespace Sunset
 
     class World
     {
+        friend class WorldHierarchyPanel;
     public:
         World();
 

@@ -133,11 +133,14 @@ namespace
         if (networkInputHandlerRegistered)
             return;
 
-        Sunset::NetworkService::Get().RegisterMessage<NetworkInputMessage>(1);
-        Sunset::NetworkService::Get().RegisterHandler<NetworkInputMessage>([](Sunset::PeerId peer, const NetworkInputMessage& msg)
+        if (Sunset::NetworkService::IsInitialized())
         {
-            networkInputs[peer] = msg;
-        });
+            Sunset::NetworkService::Get().RegisterMessage<NetworkInputMessage>(1);
+            Sunset::NetworkService::Get().RegisterHandler<NetworkInputMessage>([](Sunset::PeerId peer, const NetworkInputMessage& msg)
+            {
+                networkInputs[peer] = msg;
+            });
+        }
 
         networkInputHandlerRegistered = true;
     }

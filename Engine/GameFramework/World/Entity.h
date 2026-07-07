@@ -48,6 +48,21 @@ namespace Sunset
             return m_Id;
         }
 
+        operator std::uint32_t() const
+        {
+            return static_cast<std::uint32_t>(m_Id);
+        }
+
+        bool operator==(const Entity& other) const
+        {
+            return m_Id == other.m_Id && m_World == other.m_World;
+        }
+
+        bool operator!=(const Entity& other) const
+        {
+            return !(*this == other);
+        }
+
     private:
 
         World* m_World;

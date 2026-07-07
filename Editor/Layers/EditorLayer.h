@@ -8,7 +8,16 @@
 
 namespace Sunset
 {
+    class WorldHierarchyPanel;
+
     class EditorLayer : public Layer
     {
+    public:
+        EditorLayer();
+        ~EditorLayer() override;
+        void OnDraw() override;
+    private:
+        std::shared_ptr<World> m_World;
+        std::unique_ptr<WorldHierarchyPanel> m_WorldHierarchy;
     };
 } // Sunset

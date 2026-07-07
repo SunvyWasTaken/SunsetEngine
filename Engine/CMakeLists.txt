@@ -25,23 +25,9 @@ else()
     target_compile_definitions(${PROJECT_NAME} PRIVATE ENGINE_SHADERS_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/Shaders/\")
 endif()
 
-find_package(assimp CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
-find_package(glfw3 CONFIG REQUIRED)
-find_package(glad CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
-find_package(spdlog CONFIG REQUIRED)
-find_package(imgui CONFIG REQUIRED)
-find_package(unofficial-enet CONFIG REQUIRED)
 find_package(EnTT CONFIG REQUIRED)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE
-        glfw
-        glad::glad
-        spdlog::spdlog_header_only
-        imgui::imgui
-        unofficial::enet::enet
-)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
@@ -58,4 +44,18 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC
         SunsetPCH.h
+)
+
+find_package(glfw3 CONFIG REQUIRED)
+find_package(glad CONFIG REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
+find_package(imgui CONFIG REQUIRED)
+find_package(unofficial-enet CONFIG REQUIRED)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
+        glfw
+        glad::glad
+        spdlog::spdlog_header_only
+        imgui::imgui
+        unofficial::enet::enet
 )

@@ -6,4 +6,7 @@
 
 namespace Sunset
 {
+    ScriptEntity::~ScriptEntity()
+    {
+    }
 } // Sunset

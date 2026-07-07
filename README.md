@@ -42,7 +42,7 @@ SunsetEngine is a C++20 static game-engine library built around an OpenGL render
 
 ## Requirements
 
-- A C++20 compiler.
+- A C++23 compiler.
 - CMake 3.28 or newer.
 - vcpkg, recommended for dependency installation through the included manifest.
 - OpenGL-capable graphics drivers for non-headless applications.

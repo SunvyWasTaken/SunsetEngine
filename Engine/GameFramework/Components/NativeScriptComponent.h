@@ -3,12 +3,13 @@
 //
 
 #pragma once
+#include "Component.h"
 
 namespace Sunset
 {
     class ScriptEntity;
 
-    class NativeScriptComponent
+    class NativeScriptComponent : public Component
     {
     public:
         ScriptEntity* m_ScriptEntity;

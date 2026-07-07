@@ -27,14 +27,17 @@ namespace
         if (networkTransformHandlerRegistered)
             return;
 
-        Sunset::NetworkService::Get().RegisterMessage<NetworkTransformMessage>(2);
-        Sunset::NetworkService::Get().RegisterHandler<NetworkTransformMessage>([](Sunset::PeerId peer, const NetworkTransformMessage& msg)
+        if (Sunset::NetworkService::IsInitialized())
         {
-            NetworkTransformMessage transform = msg;
-            if (transform.OwnerPeerId == 0)
-                transform.OwnerPeerId = peer;
-            networkTransforms[transform.OwnerPeerId] = transform;
-        });
+            Sunset::NetworkService::Get().RegisterMessage<NetworkTransformMessage>(2);
+            Sunset::NetworkService::Get().RegisterHandler<NetworkTransformMessage>([](Sunset::PeerId peer, const NetworkTransformMessage& msg)
+            {
+                NetworkTransformMessage transform = msg;
+                if (transform.OwnerPeerId == 0)
+                    transform.OwnerPeerId = peer;
+                networkTransforms[transform.OwnerPeerId] = transform;
+            });
+        }
 
         networkTransformHandlerRegistered = true;
     }
