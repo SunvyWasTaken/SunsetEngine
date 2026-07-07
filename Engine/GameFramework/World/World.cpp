@@ -6,9 +6,11 @@
 
 #include "GameFramework/Controller.h"
 #include "Entity.h"
+#include "ScriptEntity.h"
 #include "Core/Application.h"
 #include "Core/Input.h"
 #include "GameFramework/Components/CameraComponent.h"
+#include "GameFramework/Components/NativeScriptComponent.h"
 #include "GameFramework/Components/TransformComponent.h"
 #include "Network/NetworkService.h"
 #include "Render/Camera.h"
@@ -49,6 +51,18 @@ namespace Sunset
     void World::Update(float deltatime)
     {
         SS_PROFILE_FUNCTION();
+        m_Registry.view<NativeScriptComponent>().each([&](const entt::entity entity, NativeScriptComponent& script)
+        {
+            // Todo move the instantiate to the BeingPlayScene.
+            if (!script.m_ScriptEntity)
+            {
+                script.m_ScriptEntity = script.InstantiateScriptEntity();
+                script.m_ScriptEntity->m_Entity = {this, entity};
+            }
+            if (script.m_ScriptEntity)
+                script.m_ScriptEntity->OnUpdate(deltatime);
+        });
+
         for (auto& controller : m_Controllers)
         {
             controller.Update(deltatime);
