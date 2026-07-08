@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "GameFramework/Components/NativeScriptComponent.h"
+#include "GameFramework/Components/TransformComponent.h"
 #include "GameFramework/World/ScriptEntity.h"
 #include "Panels/WorldHierarchyPanel.h"
 
@@ -30,6 +31,7 @@ namespace Sunset
     {
         Entity player = m_World->CreateEntity("Player");
         player.AddComponent<NativeScriptComponent>().Bind<PlayerScript>();
+        player.AddComponent<TransformComponent>();
     }
 
     EditorLayer::~EditorLayer()

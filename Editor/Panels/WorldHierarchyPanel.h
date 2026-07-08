@@ -18,7 +18,8 @@ namespace Sunset
 
         void OnImGuiRender();
     private:
-        void DrawNodeEntity(const Sunset::Entity& entity);
+        void DrawNodeEntity(const Entity& entity);
+        void DrawComponents(const Entity& entity);
     private:
         std::shared_ptr<World> m_Context;
         Entity m_SelectedEntity;

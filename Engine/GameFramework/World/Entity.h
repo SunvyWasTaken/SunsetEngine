@@ -40,7 +40,7 @@ namespace Sunset
 
         explicit operator bool() const
         {
-            return m_World != nullptr;
+            return m_World != nullptr && m_Id != entt::null;
         }
 
         operator entt::entity() const
