@@ -11,6 +11,7 @@
 #include "FrameBuffer.h"
 #include "Material.h"
 #include "Meshes/Mesh.h"
+#include "Render.h"
 #include "Shader.h"
 
 #include <imgui.h>
@@ -254,6 +255,7 @@ namespace Sunset
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glfwPollEvents();
+        Render::PollGamepads();
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();

@@ -106,7 +106,7 @@ namespace Sunset
     };
     enum class MouseKey : std::uint16_t
     {
-        Unknow = 0,
+        Unknown = 0,
 
         Left,
         Right,
@@ -117,6 +117,46 @@ namespace Sunset
         Button_6,
         Button_7,
         Button_8,
+
+        Count
+    };
+
+    enum class GamepadButton : std::uint16_t
+    {
+        Unknown = 0,
+
+        South,
+        East,
+        West,
+        North,
+
+        LeftBumper,
+        RightBumper,
+        Back,
+        Start,
+        Guide,
+
+        LeftThumb,
+        RightThumb,
+
+        DPadUp,
+        DPadRight,
+        DPadDown,
+        DPadLeft,
+
+        Count
+    };
+
+    enum class GamepadAxis : std::uint16_t
+    {
+        Unknown = 0,
+
+        LeftX,
+        LeftY,
+        RightX,
+        RightY,
+        LeftTrigger,
+        RightTrigger,
 
         Count
     };

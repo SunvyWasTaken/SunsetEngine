@@ -19,5 +19,6 @@ namespace Sunset
         bool Valid() const;
 
         static void* Get();
+        static void PollGamepads();
     };
 }
