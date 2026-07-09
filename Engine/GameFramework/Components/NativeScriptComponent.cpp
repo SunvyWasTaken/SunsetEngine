@@ -6,4 +6,7 @@
 
 namespace Sunset
 {
+    NativeScriptComponent::NativeScriptComponent()
+    {
+    }
 } // Sunset

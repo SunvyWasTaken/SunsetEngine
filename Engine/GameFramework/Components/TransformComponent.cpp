@@ -80,7 +80,8 @@ namespace Sunset
         msg.LocationX = location.x;
         msg.LocationY = location.y;
         msg.LocationZ = location.z;
-        NetworkService::Get().Broadcast(msg, DeliveryType::Unreliable);
+        if (NetworkService::IsInitialized())
+            NetworkService::Get().Broadcast(msg, DeliveryType::Unreliable);
     }
 
     glm::vec3 TransformComponent::GetForwardVector() const

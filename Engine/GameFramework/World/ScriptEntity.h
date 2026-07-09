@@ -19,7 +19,8 @@ namespace Sunset
         virtual void OnEndPlay() {};
 
         template <typename T>
-        T& GetComponent()
+        [[nodiscard]]
+        T* GetComponent()
         {
             return m_Entity.GetComponent<T>();
         }

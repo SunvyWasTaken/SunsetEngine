@@ -12,6 +12,7 @@ namespace Sunset
     class NativeScriptComponent : public Component
     {
     public:
+        NativeScriptComponent();
         ScriptEntity* m_ScriptEntity;
 
         ScriptEntity* (*InstantiateScriptEntity)();

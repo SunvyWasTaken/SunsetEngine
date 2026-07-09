@@ -283,7 +283,7 @@ namespace Sunset
             }
         }
 
-                if (!entity.GetComponent<InputComponent>())
+        if (!entity.GetComponent<InputComponent>())
         {
             if (ImGui::Button("Add Input Component"))
                 entity.AddComponent<InputComponent>();

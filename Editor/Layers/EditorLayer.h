@@ -8,6 +8,7 @@
 
 namespace Sunset
 {
+    class World;
     class WorldHierarchyPanel;
 
     class EditorLayer : public Layer
