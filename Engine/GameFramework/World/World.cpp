@@ -44,14 +44,23 @@ namespace Sunset
         LOG("Engine", trace, "World::~World()")
     }
 
-    bool World::OnEvent(Event::Type &event)
+    bool World::OnEvent(const Event::Type &event)
     {
+        m_Registry.view<InputComponent>().each([&](InputComponent& inputComponent)
+        {
+           inputComponent.OnEvent(event);
+        });
         return false;
     }
 
     void World::Update(float dt)
     {
         SS_PROFILE_FUNCTION();
+        m_Registry.view<InputComponent>().each([&](InputComponent& inputComponent)
+        {
+            inputComponent.BeginFrame();
+        });
+
         m_Registry.view<NativeScriptComponent>().each([&](const entt::entity entity, NativeScriptComponent& script)
         {
             // Todo move the instantiate to the BeingPlayScene.

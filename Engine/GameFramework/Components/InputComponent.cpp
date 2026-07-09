@@ -6,4 +6,22 @@
 
 namespace Sunset
 {
+    void InputComponent::BeginFrame()
+    {
+        inputSystem.Begin();
+    }
+
+    void InputComponent::OnEvent(const Event::Type &event)
+    {
+        if (std::holds_alternative<Event::Keyboard>(event))
+        {
+            const auto&[key, Press] = std::get<Event::Keyboard>(event);
+            inputSystem.SetKey(key, Press);
+        }
+    }
+
+    bool InputComponent::IsActionDown(const ActionMask action) const
+    {
+        return mapping.IsActionDown(action, inputSystem);
+    }
 } // Sunset

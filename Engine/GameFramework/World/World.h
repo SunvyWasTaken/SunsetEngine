@@ -38,7 +38,7 @@ namespace Sunset
 
         virtual ~World();
 
-        bool OnEvent(Event::Type& event);
+        bool OnEvent(const Event::Type& event);
 
         void Update(float dt);
 
