@@ -8,7 +8,7 @@
 
 namespace Sunset
 {
-   using ActionMask = std::uint64_t;
+   using InputAction = std::uint64_t;
 
    template <std::uint16_t nbr>
    struct InputState
@@ -42,9 +42,9 @@ namespace Sunset
    class InputMapping
    {
    public:
-      void Bind(Key key, ActionMask action);
-      bool IsActionDown(ActionMask action, const InputSystem& input) const;
+      void Bind(Key key, InputAction action);
+      bool IsActionDown(InputAction action, const InputSystem& input) const;
    private:
-      std::unordered_map<ActionMask, std::vector<Key>> m_Bindings;
+      std::unordered_map<InputAction, std::vector<Key>> m_Bindings;
    };
 }

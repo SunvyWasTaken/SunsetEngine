@@ -15,7 +15,7 @@ namespace Sunset
     public:
         void BeginFrame();
         void OnEvent(const Event::Type& event);
-        bool IsActionDown(ActionMask action) const;
+        bool IsActionDown(InputAction action) const;
 
     private:
         InputSystem inputSystem;

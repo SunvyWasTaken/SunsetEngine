@@ -20,7 +20,7 @@ namespace Sunset
         }
     }
 
-    bool InputComponent::IsActionDown(const ActionMask action) const
+    bool InputComponent::IsActionDown(const InputAction action) const
     {
         return mapping.IsActionDown(action, inputSystem);
     }
