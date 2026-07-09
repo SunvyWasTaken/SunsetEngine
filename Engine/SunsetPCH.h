@@ -6,9 +6,11 @@
 #define SUNSETCRAFT_SUNSETPCH_H
 
 #include <array>
+#include <bitset>
 #include <cmath>
 #include <cstdint>
 #include <cstring>
+#include <deque>
 #include <format>
 #include <filesystem>
 #include <functional>

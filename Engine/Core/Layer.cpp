@@ -35,10 +35,15 @@ namespace Sunset
 
     bool Layer::OnEvent(Event::Type& event)
     {
-        if (std::holds_alternative<Event::MouseEvent>(event))
+        if (std::holds_alternative<Event::Mouse>(event))
         {
-            const auto& mouseEvent = std::get<Event::MouseEvent>(event);
-            m_UIContext.HandleEvent({mouseEvent.position, static_cast<SRmGUI::MouseEvent::Type>(mouseEvent.action), mouseEvent.button});
+            const auto& mouseEvent = std::get<Event::Mouse>(event);
+            m_UIContext.HandleEvent({mouseEvent.position, static_cast<SRmGUI::MouseEvent::Type>(1), static_cast<std::uint16_t>(mouseEvent.key)});
+        }
+        if (std::holds_alternative<Event::Keyboard>(event))
+        {
+            const auto& keyEvent = std::get<Event::Keyboard>(event);
+            // m_UIContext.HandleEvent();
         }
         return false;
     }

@@ -2,9 +2,9 @@
 // Created by sunvy on 15/12/2025.
 //
 
-#ifndef SUNSETCRAFT_RENDERER_H
-#define SUNSETCRAFT_RENDERER_H
-#include "Core/Input.h"
+#pragma once
+
+#include "Core/Event.h"
 
 namespace Sunset
 {
@@ -21,5 +21,3 @@ namespace Sunset
         static void* Get();
     };
 }
-
-#endif //SUNSETCRAFT_RENDERER_H

@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Core/Event.h"
 #include "entt/entt.hpp"
 
 namespace Sunset
@@ -30,36 +31,28 @@ namespace Sunset
 
     class World
     {
+        friend class Entity;
         friend class WorldHierarchyPanel;
     public:
         World();
 
         virtual ~World();
 
-        void Update(float deltatime);
+        bool OnEvent(Event::Type& event);
+
+        void Update(float dt);
 
         Entity CreateEntity(const std::string& name);
-
-        entt::registry& Reg()
-        {
-            return m_Registry;
-        }
 
         void OnPeerConnected(PeerId peerId);
         void OnPeerDisconnected(PeerId peerId);
 
-        Controller& GetController(size_t index);
-
     private:
 
         void OnPlayerSessionMessage(const NetworkPlayerSessionMessage& msg);
-        void SetLocalPeerId(PeerId peerId);
-        void DestroyPlayer(PeerId peer);
-        void CreatePlayer(PeerId peer = 0, bool local = true);
 
     private:
         entt::registry m_Registry;
-        std::vector<Controller> m_Controllers;
         PeerId m_LocalPeerId = 0;
     };
 } // Sunset

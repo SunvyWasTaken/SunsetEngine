@@ -4,9 +4,6 @@
 
 #include "Render.h"
 
-#include "Core/Application.h"
-#include "Core/ApplicationSetting.h"
-
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
@@ -14,10 +11,11 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "Core/Input.h"
-
+#include "Core/Application.h"
+#include "Core/ApplicationSetting.h"
 #include "SRmGUI.h"
 #include "SRmGUI_Opengl.h"
+#include "Core/Event.h"
 
 namespace
 {
@@ -61,48 +59,87 @@ namespace
         return glfwCreateWindow(setting.WindowSize.x, setting.WindowSize.y, setting.WindowTitle.data(), NULL, NULL);
     }
 
-    Sunset::Event::Action ItoA(const int action)
-    {
-        if (action == 0)
-            return Sunset::Event::Action::Release;
+    Sunset::Key FromGLFWKey(int key)
+     {
+         switch (key)
+         {
+             case GLFW_KEY_A: return Sunset::Key::A;
+             case GLFW_KEY_B: return Sunset::Key::B;
+             case GLFW_KEY_C: return Sunset::Key::C;
+             case GLFW_KEY_D: return Sunset::Key::D;
+             case GLFW_KEY_E: return Sunset::Key::E;
+             case GLFW_KEY_F: return Sunset::Key::F;
+             case GLFW_KEY_G: return Sunset::Key::G;
+             case GLFW_KEY_H: return Sunset::Key::H;
+             case GLFW_KEY_I: return Sunset::Key::I;
+             case GLFW_KEY_J: return Sunset::Key::J;
+             case GLFW_KEY_K: return Sunset::Key::K;
+             case GLFW_KEY_L: return Sunset::Key::L;
+             case GLFW_KEY_M: return Sunset::Key::M;
+             case GLFW_KEY_N: return Sunset::Key::N;
+             case GLFW_KEY_O: return Sunset::Key::O;
+             case GLFW_KEY_P: return Sunset::Key::P;
+             case GLFW_KEY_Q: return Sunset::Key::Q;
+             case GLFW_KEY_R: return Sunset::Key::R;
+             case GLFW_KEY_S: return Sunset::Key::S;
+             case GLFW_KEY_T: return Sunset::Key::T;
+             case GLFW_KEY_U: return Sunset::Key::U;
+             case GLFW_KEY_V: return Sunset::Key::V;
+             case GLFW_KEY_W: return Sunset::Key::W;
+             case GLFW_KEY_X: return Sunset::Key::X;
+             case GLFW_KEY_Y: return Sunset::Key::Y;
+             case GLFW_KEY_Z: return Sunset::Key::Z;
 
-        if (action == 1)
-            return Sunset::Event::Action::Press;
+             case GLFW_KEY_SPACE: return Sunset::Key::Space;
+             case GLFW_KEY_ESCAPE: return Sunset::Key::Escape;
+             case GLFW_KEY_ENTER: return Sunset::Key::Enter;
+             case GLFW_KEY_TAB: return Sunset::Key::Tab;
+             case GLFW_KEY_BACKSPACE: return Sunset::Key::Backspace;
 
-        if (action == 2)
-            return Sunset::Event::Action::Hold;
+             case GLFW_KEY_LEFT: return Sunset::Key::Left;
+             case GLFW_KEY_RIGHT: return Sunset::Key::Right;
+             case GLFW_KEY_UP: return Sunset::Key::Up;
+             case GLFW_KEY_DOWN: return Sunset::Key::Down;
 
-        return Sunset::Event::Action::Release;
-    }
+             case GLFW_KEY_LEFT_SHIFT: return Sunset::Key::LeftShift;
+             case GLFW_KEY_LEFT_CONTROL: return Sunset::Key::LeftControl;
+             case GLFW_KEY_LEFT_ALT: return Sunset::Key::LeftAlt;
+             case GLFW_KEY_RIGHT_SHIFT: return Sunset::Key::RightShift;
+             case GLFW_KEY_RIGHT_CONTROL: return Sunset::Key::RightControl;
+             case GLFW_KEY_RIGHT_ALT: return Sunset::Key::RightAlt;
+
+             default: return Sunset::Key::Unknown;
+         }
+     }
 
     void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
-        Sunset::Event::Type event = Sunset::Event::KeyEvent{static_cast<unsigned int>(key), ItoA(action)};
+        Sunset::Event::Type event = Sunset::Event::Keyboard{FromGLFWKey(key), action != GLFW_RELEASE};
         EventCallback(event);
     }
 
     void CursorPositionCallback(GLFWwindow* window, double x, double y)
     {
-        Sunset::Event::Type event = Sunset::Event::MouseEvent{static_cast<unsigned int>(0), 0, Sunset::Event::Action::None, {static_cast<int>(x), static_cast<int>(y)}};
-        EventCallback(event);
+        // Sunset::Event::Type event = Sunset::Event::MouseEvent{static_cast<unsigned int>(0), 0, Sunset::Event::Action::None, {static_cast<int>(x), static_cast<int>(y)}};
+        // EventCallback(event);
     }
 
     void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
     {
-        double x = 0.0;
-        double y = 0.0;
-        glfwGetCursorPos(window, &x, &y);
-        Sunset::Event::Type event = Sunset::Event::MouseEvent{static_cast<unsigned int>(button), 0, ItoA(action), {static_cast<int>(x), static_cast<int>(y)}};
-        EventCallback(event);
+        // double x = 0.0;
+        // double y = 0.0;
+        // glfwGetCursorPos(window, &x, &y);
+        // Sunset::Event::Type event = Sunset::Event::MouseEvent{static_cast<unsigned int>(button), 0, ItoA(action), {static_cast<int>(x), static_cast<int>(y)}};
+        // EventCallback(event);
     }
 
     void CursorScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
     {
-        double x = 0.0;
-        double y = 0.0;
-        glfwGetCursorPos(window, &x, &y);
-        Sunset::Event::Type event = Sunset::Event::MouseEvent{static_cast<unsigned int>(-1), static_cast<int>(yoffset), Sunset::Event::Action::Hold, {static_cast<int>(x), static_cast<int>(y)}};
-        EventCallback(event);
+        // double x = 0.0;
+        // double y = 0.0;
+        // glfwGetCursorPos(window, &x, &y);
+        // Sunset::Event::Type event = Sunset::Event::MouseEvent{static_cast<unsigned int>(-1), static_cast<int>(yoffset), Sunset::Event::Action::Hold, {static_cast<int>(x), static_cast<int>(y)}};
+        // EventCallback(event);
     }
 
     void framebuffer_size_callback(GLFWwindow* window, int width, int height)

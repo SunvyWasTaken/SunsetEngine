@@ -5,7 +5,7 @@
 #include "WorldHierarchyPanel.h"
 
 #include <imgui.h>
-Pro#include <glm/gtc/type_ptr.inl>
+#include <glm/gtc/type_ptr.inl>
 
 #include "GameFramework/Components/Component.h"
 #include "GameFramework/Components/TransformComponent.h"

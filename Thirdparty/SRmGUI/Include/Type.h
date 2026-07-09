@@ -52,7 +52,7 @@ namespace SRmGUI
 
         glm::ivec2 position{0, 0};
         MouseEvent::Type type = MouseEvent::Type::None;
-        uint32_t key = 0;
+        uint16_t key = 0;
     };
 
     struct DragDropPayload

@@ -61,7 +61,6 @@ namespace Sunset
         {
             m_Render = std::make_unique<Render>();
             m_Render->BindEvent([this](Event::Type& event){ OnEvent(event); });
-            InputRegister::Init(SAVE_PATH "Input.json");
         }
         else
         {
@@ -140,9 +139,6 @@ namespace Sunset
 
     void Application::OnEvent(Event::Type& event)
     {
-        if (InputRegister::OnEvent(event))
-            return;
-
         for (const auto& layer : m_LayerStack)
         {
             if (layer->OnEvent(event))
