@@ -6,11 +6,6 @@
 
 #include "Keys.h"
 
-#include <cstdint>
-#include <variant>
-
-#include <glm/vec2.hpp>
-
 namespace Sunset::Event
 {
     enum class ButtonAction : std::uint8_t

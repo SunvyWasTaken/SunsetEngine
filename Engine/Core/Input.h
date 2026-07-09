@@ -7,14 +7,6 @@
 #include "Event.h"
 #include "Keys.h"
 
-#include <array>
-#include <bitset>
-#include <cstdint>
-#include <unordered_map>
-#include <vector>
-
-#include <glm/vec2.hpp>
-
 namespace Sunset
 {
    using InputAction = std::uint64_t;

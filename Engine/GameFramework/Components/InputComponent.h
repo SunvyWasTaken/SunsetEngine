@@ -26,7 +26,7 @@ namespace Sunset
 
         const InputSystem& GetInputSystem() const;
 
-    private:
+    protected:
         InputSystem inputSystem;
         InputMapping mapping;
     };

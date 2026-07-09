@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include <cstdint>
-
 namespace Sunset
 {
     enum class Key : std::uint16_t
