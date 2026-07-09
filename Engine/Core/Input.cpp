@@ -37,46 +37,40 @@ namespace Sunset
 
     void InputSystem::ProcessEvent(const Event::Type& event)
     {
-        if (std::holds_alternative<Event::Keyboard>(event))
+        std::visit(overloads{[&](const Event::Keyboard& e)
         {
-            const auto& keyboard = std::get<Event::Keyboard>(event);
-            if (keyboard.action != Event::ButtonAction::Repeat)
-                SetKey(keyboard.key, keyboard.action == Event::ButtonAction::Press);
-        }
-        else if (std::holds_alternative<Event::MouseButton>(event))
+            if (e.action != Event::ButtonAction::Repeat)
+                SetKey(e.key, e.action == Event::ButtonAction::Press);
+        },[&](const Event::TextInput& e)
         {
-            const auto& mouse = std::get<Event::MouseButton>(event);
-            SetMousePosition(mouse.position);
-            if (mouse.action != Event::ButtonAction::Repeat)
-                SetMouseButton(mouse.key, mouse.action == Event::ButtonAction::Press);
-        }
-        else if (std::holds_alternative<Event::MouseMove>(event))
+
+        },[&](const Event::MouseButton& e)
         {
-            const auto& mouse = std::get<Event::MouseMove>(event);
-            SetMousePosition(mouse.position);
-        }
-        else if (std::holds_alternative<Event::MouseScroll>(event))
+            SetMousePosition(e.position);
+            if (e.action != Event::ButtonAction::Repeat)
+                SetMouseButton(e.key, e.action == Event::ButtonAction::Press);
+        },[&](const Event::MouseMove& e)
         {
-            const auto& mouse = std::get<Event::MouseScroll>(event);
-            SetMousePosition(mouse.position);
-            AddMouseScroll(mouse.offset);
-        }
-        else if (std::holds_alternative<Event::GamepadConnection>(event))
+            SetMousePosition(e.position);
+        },[&](const Event::MouseScroll& e)
         {
-            const auto& gamepad = std::get<Event::GamepadConnection>(event);
-            SetGamepadConnected(gamepad.gamepad, gamepad.connected);
-        }
-        else if (std::holds_alternative<Event::GamepadButton>(event))
+            SetMousePosition(e.position);
+            AddMouseScroll(e.offset);
+        },[&](const Event::GamepadButton& e)
         {
-            const auto& gamepad = std::get<Event::GamepadButton>(event);
-            if (gamepad.action != Event::ButtonAction::Repeat)
-                SetGamepadButton(gamepad.gamepad, gamepad.button, gamepad.action == Event::ButtonAction::Press);
-        }
-        else if (std::holds_alternative<Event::GamepadAxis>(event))
+            if (e.action != Event::ButtonAction::Repeat)
+                SetGamepadButton(e.gamepad, e.button, e.action == Event::ButtonAction::Press);
+        },[&](const Event::GamepadAxis& e)
         {
-            const auto& gamepad = std::get<Event::GamepadAxis>(event);
-            SetGamepadAxis(gamepad.gamepad, gamepad.axis, gamepad.value);
-        }
+            SetGamepadAxis(e.gamepad, e.axis, e.value);
+        },[&](const Event::GamepadConnection& e)
+        {
+            SetGamepadConnected(e.gamepad, e.connected);
+
+        },[&](const Event::Window& e)
+        {
+
+        }}, event);
     }
 
     void InputSystem::SetKey(const Key key, const bool down)

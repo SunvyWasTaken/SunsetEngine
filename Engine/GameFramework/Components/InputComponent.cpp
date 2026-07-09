@@ -60,4 +60,52 @@ namespace Sunset
     {
         return inputSystem;
     }
+
+    std::vector<InputBindingInfo>& InputComponent::GetBindings()
+    {
+        return bindings;
+    }
+
+    const std::vector<InputBindingInfo>& InputComponent::GetBindings() const
+    {
+        return bindings;
+    }
+
+    void InputComponent::AddBinding(const InputBindingInfo& binding)
+    {
+        bindings.emplace_back(binding);
+        RebuildMapping();
+    }
+
+    void InputComponent::RemoveBinding(const std::size_t index)
+    {
+        if (index >= bindings.size())
+            return;
+
+        bindings.erase(bindings.begin() + static_cast<std::ptrdiff_t>(index));
+        RebuildMapping();
+    }
+
+    void InputComponent::RebuildMapping()
+    {
+        mapping = InputMapping{};
+        for (const auto& binding : bindings)
+        {
+            switch (binding.Type)
+            {
+                case InputBindingType::Keyboard:
+                    mapping.Bind(binding.KeyboardKey, binding.Action);
+                    break;
+                case InputBindingType::Mouse:
+                    mapping.Bind(binding.MouseButton, binding.Action);
+                    break;
+                case InputBindingType::GamepadButton:
+                    mapping.Bind(binding.PadButton, binding.Action, binding.Gamepad);
+                    break;
+                case InputBindingType::GamepadAxis:
+                    mapping.BindAxis(binding.PadAxis, binding.Action, binding.Gamepad, binding.Scale);
+                    break;
+            }
+        }
+    }
 } // Sunset

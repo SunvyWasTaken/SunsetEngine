@@ -8,12 +8,198 @@
 #include <glm/gtc/type_ptr.inl>
 
 #include "GameFramework/Components/Component.h"
+#include "GameFramework/Components/InputComponent.h"
 #include "GameFramework/Components/TransformComponent.h"
 #include "GameFramework/World/Entity.h"
 
 namespace
 {
+    const char* ToLabel(const Sunset::InputBindingType type)
+    {
+        switch (type)
+        {
+            case Sunset::InputBindingType::Keyboard: return "Keyboard";
+            case Sunset::InputBindingType::Mouse: return "Mouse";
+            case Sunset::InputBindingType::GamepadButton: return "Gamepad Button";
+            case Sunset::InputBindingType::GamepadAxis: return "Gamepad Axis";
+        }
+        return "Unknown";
+    }
 
+    const char* ToLabel(const Sunset::Key key)
+    {
+        switch (key)
+        {
+            case Sunset::Key::Unknown: return "Unknown";
+            case Sunset::Key::Space: return "Space";
+            case Sunset::Key::Apostrophe: return "Apostrophe";
+            case Sunset::Key::Comma: return "Comma";
+            case Sunset::Key::Minus: return "Minus";
+            case Sunset::Key::Period: return "Period";
+            case Sunset::Key::Slash: return "Slash";
+            case Sunset::Key::Num0: return "0";
+            case Sunset::Key::Num1: return "1";
+            case Sunset::Key::Num2: return "2";
+            case Sunset::Key::Num3: return "3";
+            case Sunset::Key::Num4: return "4";
+            case Sunset::Key::Num5: return "5";
+            case Sunset::Key::Num6: return "6";
+            case Sunset::Key::Num7: return "7";
+            case Sunset::Key::Num8: return "8";
+            case Sunset::Key::Num9: return "9";
+            case Sunset::Key::A: return "A";
+            case Sunset::Key::B: return "B";
+            case Sunset::Key::C: return "C";
+            case Sunset::Key::D: return "D";
+            case Sunset::Key::E: return "E";
+            case Sunset::Key::F: return "F";
+            case Sunset::Key::G: return "G";
+            case Sunset::Key::H: return "H";
+            case Sunset::Key::I: return "I";
+            case Sunset::Key::J: return "J";
+            case Sunset::Key::K: return "K";
+            case Sunset::Key::L: return "L";
+            case Sunset::Key::M: return "M";
+            case Sunset::Key::N: return "N";
+            case Sunset::Key::O: return "O";
+            case Sunset::Key::P: return "P";
+            case Sunset::Key::Q: return "Q";
+            case Sunset::Key::R: return "R";
+            case Sunset::Key::S: return "S";
+            case Sunset::Key::T: return "T";
+            case Sunset::Key::U: return "U";
+            case Sunset::Key::V: return "V";
+            case Sunset::Key::W: return "W";
+            case Sunset::Key::X: return "X";
+            case Sunset::Key::Y: return "Y";
+            case Sunset::Key::Z: return "Z";
+            case Sunset::Key::Escape: return "Escape";
+            case Sunset::Key::Enter: return "Enter";
+            case Sunset::Key::Tab: return "Tab";
+            case Sunset::Key::Backspace: return "Backspace";
+            case Sunset::Key::Insert: return "Insert";
+            case Sunset::Key::Delete: return "Delete";
+            case Sunset::Key::Left: return "Left";
+            case Sunset::Key::Right: return "Right";
+            case Sunset::Key::Up: return "Up";
+            case Sunset::Key::Down: return "Down";
+            case Sunset::Key::PageUp: return "Page Up";
+            case Sunset::Key::PageDown: return "Page Down";
+            case Sunset::Key::Home: return "Home";
+            case Sunset::Key::End: return "End";
+            case Sunset::Key::CapsLock: return "Caps Lock";
+            case Sunset::Key::ScrollLock: return "Scroll Lock";
+            case Sunset::Key::NumLock: return "Num Lock";
+            case Sunset::Key::PrintScreen: return "Print Screen";
+            case Sunset::Key::Pause: return "Pause";
+            case Sunset::Key::F1: return "F1";
+            case Sunset::Key::F2: return "F2";
+            case Sunset::Key::F3: return "F3";
+            case Sunset::Key::F4: return "F4";
+            case Sunset::Key::F5: return "F5";
+            case Sunset::Key::F6: return "F6";
+            case Sunset::Key::F7: return "F7";
+            case Sunset::Key::F8: return "F8";
+            case Sunset::Key::F9: return "F9";
+            case Sunset::Key::F10: return "F10";
+            case Sunset::Key::F11: return "F11";
+            case Sunset::Key::F12: return "F12";
+            case Sunset::Key::LeftShift: return "Left Shift";
+            case Sunset::Key::LeftControl: return "Left Control";
+            case Sunset::Key::LeftAlt: return "Left Alt";
+            case Sunset::Key::LeftSuper: return "Left Super";
+            case Sunset::Key::RightShift: return "Right Shift";
+            case Sunset::Key::RightControl: return "Right Control";
+            case Sunset::Key::RightAlt: return "Right Alt";
+            case Sunset::Key::RightSuper: return "Right Super";
+            case Sunset::Key::Menu: return "Menu";
+            case Sunset::Key::Count: break;
+        }
+        return "Unknown";
+    }
+
+    const char* ToLabel(const Sunset::MouseKey key)
+    {
+        switch (key)
+        {
+            case Sunset::MouseKey::Unknown: return "Unknown";
+            case Sunset::MouseKey::Left: return "Left";
+            case Sunset::MouseKey::Right: return "Right";
+            case Sunset::MouseKey::Middle: return "Middle";
+            case Sunset::MouseKey::Button_4: return "Button 4";
+            case Sunset::MouseKey::Button_5: return "Button 5";
+            case Sunset::MouseKey::Button_6: return "Button 6";
+            case Sunset::MouseKey::Button_7: return "Button 7";
+            case Sunset::MouseKey::Button_8: return "Button 8";
+            case Sunset::MouseKey::Count: break;
+        }
+        return "Unknown";
+    }
+
+    const char* ToLabel(const Sunset::GamepadButton button)
+    {
+        switch (button)
+        {
+            case Sunset::GamepadButton::Unknown: return "Unknown";
+            case Sunset::GamepadButton::South: return "South / A";
+            case Sunset::GamepadButton::East: return "East / B";
+            case Sunset::GamepadButton::West: return "West / X";
+            case Sunset::GamepadButton::North: return "North / Y";
+            case Sunset::GamepadButton::LeftBumper: return "Left Bumper";
+            case Sunset::GamepadButton::RightBumper: return "Right Bumper";
+            case Sunset::GamepadButton::Back: return "Back";
+            case Sunset::GamepadButton::Start: return "Start";
+            case Sunset::GamepadButton::Guide: return "Guide";
+            case Sunset::GamepadButton::LeftThumb: return "Left Thumb";
+            case Sunset::GamepadButton::RightThumb: return "Right Thumb";
+            case Sunset::GamepadButton::DPadUp: return "DPad Up";
+            case Sunset::GamepadButton::DPadRight: return "DPad Right";
+            case Sunset::GamepadButton::DPadDown: return "DPad Down";
+            case Sunset::GamepadButton::DPadLeft: return "DPad Left";
+            case Sunset::GamepadButton::Count: break;
+        }
+        return "Unknown";
+    }
+
+    const char* ToLabel(const Sunset::GamepadAxis axis)
+    {
+        switch (axis)
+        {
+            case Sunset::GamepadAxis::Unknown: return "Unknown";
+            case Sunset::GamepadAxis::LeftX: return "Left X";
+            case Sunset::GamepadAxis::LeftY: return "Left Y";
+            case Sunset::GamepadAxis::RightX: return "Right X";
+            case Sunset::GamepadAxis::RightY: return "Right Y";
+            case Sunset::GamepadAxis::LeftTrigger: return "Left Trigger";
+            case Sunset::GamepadAxis::RightTrigger: return "Right Trigger";
+            case Sunset::GamepadAxis::Count: break;
+        }
+        return "Unknown";
+    }
+
+    template <typename TEnum>
+    bool DrawEnumCombo(const char* label, TEnum& value, std::uint16_t count, const char* (*labeler)(TEnum))
+    {
+        bool changed = false;
+        int current = static_cast<int>(value);
+        if (ImGui::BeginCombo(label, labeler(value)))
+        {
+            for (int i = 0; i < count; ++i)
+            {
+                const auto enumValue = static_cast<TEnum>(i);
+                const bool selected = current == i;
+                if (ImGui::Selectable(labeler(enumValue), selected))
+                {
+                    value = enumValue;
+                    changed = true;
+                }
+                if (selected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+        return changed;
+    }
 }
 
 namespace Sunset
@@ -64,7 +250,7 @@ namespace Sunset
         }
     }
 
-    void WorldHierarchyPanel::DrawComponents(const Entity& entity)
+    void WorldHierarchyPanel::DrawComponents(Entity entity)
     {
         if (auto* tc = entity.GetComponent<TagComponent>())
         {
@@ -93,6 +279,117 @@ namespace Sunset
                 ImGui::DragFloat3("Position", glm::value_ptr(position));
                 ImGui::DragFloat3("Rotation", glm::value_ptr(rotation));
                 ImGui::DragFloat3("Scale", glm::value_ptr(scale));
+                ImGui::TreePop();
+            }
+        }
+
+                if (!entity.GetComponent<InputComponent>())
+        {
+            if (ImGui::Button("Add Input Component"))
+                entity.AddComponent<InputComponent>();
+        }
+
+        if (auto* input = entity.GetComponent<InputComponent>())
+        {
+            if (ImGui::TreeNodeEx((void*)typeid(InputComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Input"))
+            {
+                auto& bindings = input->GetBindings();
+                for (std::size_t i = 0; i < bindings.size(); ++i)
+                {
+                    auto& binding = bindings[i];
+                    ImGui::PushID(static_cast<int>(i));
+                    bool changed = false;
+
+                    if (ImGui::TreeNodeEx("Binding", ImGuiTreeNodeFlags_DefaultOpen, "Binding %zu", i))
+                    {
+                        int action = static_cast<int>(binding.Action);
+                        if (ImGui::InputInt("Action", &action))
+                        {
+                            binding.Action = static_cast<InputAction>(std::max(action, 0));
+                            changed = true;
+                        }
+
+                        changed |= DrawEnumCombo("Type", binding.Type, 4, ToLabel);
+
+                        if (binding.Type == InputBindingType::Keyboard)
+                            changed |= DrawEnumCombo("Key", binding.KeyboardKey, static_cast<std::uint16_t>(Key::Count), ToLabel);
+                        else if (binding.Type == InputBindingType::Mouse)
+                            changed |= DrawEnumCombo("Mouse Button", binding.MouseButton, static_cast<std::uint16_t>(MouseKey::Count), ToLabel);
+                        else if (binding.Type == InputBindingType::GamepadButton)
+                        {
+                            int gamepad = binding.Gamepad;
+                            if (ImGui::InputInt("Gamepad", &gamepad))
+                            {
+                                binding.Gamepad = static_cast<std::uint8_t>(std::clamp(gamepad, 0, static_cast<int>(MaxGamepads - 1)));
+                                changed = true;
+                            }
+                            changed |= DrawEnumCombo("Button", binding.PadButton, static_cast<std::uint16_t>(GamepadButton::Count), ToLabel);
+                        }
+                        else if (binding.Type == InputBindingType::GamepadAxis)
+                        {
+                            int gamepad = binding.Gamepad;
+                            if (ImGui::InputInt("Gamepad", &gamepad))
+                            {
+                                binding.Gamepad = static_cast<std::uint8_t>(std::clamp(gamepad, 0, static_cast<int>(MaxGamepads - 1)));
+                                changed = true;
+                            }
+                            changed |= DrawEnumCombo("Axis", binding.PadAxis, static_cast<std::uint16_t>(GamepadAxis::Count), ToLabel);
+                            changed |= ImGui::DragFloat("Scale", &binding.Scale, 0.05f, -10.0f, 10.0f);
+                        }
+
+                        if (ImGui::Button("Remove Binding"))
+                        {
+                            input->RemoveBinding(i);
+                            ImGui::TreePop();
+                            ImGui::PopID();
+                            break;
+                        }
+
+                        ImGui::TreePop();
+                    }
+
+                    if (changed)
+                        input->RebuildMapping();
+
+                    ImGui::PopID();
+                }
+
+                if (ImGui::Button("Add Keyboard Binding"))
+                {
+                    input->AddBinding({
+                        .Type = InputBindingType::Keyboard,
+                        .Action = 0,
+                        .KeyboardKey = Key::Unknown
+                    });
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Add Mouse Binding"))
+                {
+                    input->AddBinding({
+                        .Type = InputBindingType::Mouse,
+                        .Action = 0,
+                        .MouseButton = MouseKey::Left
+                    });
+                }
+                if (ImGui::Button("Add Gamepad Button"))
+                {
+                    input->AddBinding({
+                        .Type = InputBindingType::GamepadButton,
+                        .Action = 0,
+                        .PadButton = GamepadButton::South
+                    });
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Add Gamepad Axis"))
+                {
+                    input->AddBinding({
+                        .Type = InputBindingType::GamepadAxis,
+                        .Action = 0,
+                        .PadAxis = GamepadAxis::LeftX,
+                        .Scale = 1.0f
+                    });
+                }
+
                 ImGui::TreePop();
             }
         }
