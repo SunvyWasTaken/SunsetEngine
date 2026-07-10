@@ -6,10 +6,14 @@
 
 namespace Sunset
 {
+    class World;
+
     class GameInstance
     {
     public:
-        GameInstance() {};
-        virtual ~GameInstance() {};
+        GameInstance();
+        virtual ~GameInstance();
+
+        std::shared_ptr<World> m_ActiveWorld;
     };
 } // Sunset

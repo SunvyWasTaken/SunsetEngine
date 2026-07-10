@@ -7,6 +7,9 @@
 namespace Sunset
 {
     NativeScriptComponent::NativeScriptComponent()
+        : m_ScriptEntity(nullptr)
+        , InstantiateScriptEntity(nullptr)
+        , DestroyScriptEntity(nullptr)
     {
     }
 } // Sunset

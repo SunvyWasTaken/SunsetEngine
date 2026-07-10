@@ -63,12 +63,14 @@ namespace Sunset
 
         m_Registry.view<NativeScriptComponent>().each([&](const entt::entity entity, NativeScriptComponent& script)
         {
-            // Todo move the instantiate to the BeingPlayScene.
+            // Todo move the instantiate to the BeginPlayScene.
             if (!script.m_ScriptEntity)
             {
                 script.m_ScriptEntity = script.InstantiateScriptEntity();
                 script.m_ScriptEntity->m_Entity = {this, entity};
+                script.m_ScriptEntity->OnBeginPlay();
             }
+
             if (script.m_ScriptEntity)
                 script.m_ScriptEntity->OnUpdate(dt);
         });

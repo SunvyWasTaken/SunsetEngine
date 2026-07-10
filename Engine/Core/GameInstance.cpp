@@ -6,4 +6,12 @@
 
 namespace Sunset
 {
+    GameInstance::GameInstance()
+        : m_ActiveWorld(nullptr)
+    {
+    }
+
+    GameInstance::~GameInstance()
+    {
+    }
 } // Sunset
