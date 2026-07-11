@@ -7,6 +7,7 @@
 #include "Entity.h"
 #include "ScriptEntity.h"
 #include "Core/Application.h"
+#include "GameFramework/Components/CameraComponent.h"
 #include "GameFramework/Components/InputComponent.h"
 #include "GameFramework/Components/NativeScriptComponent.h"
 #include "GameFramework/Components/TransformComponent.h"
@@ -80,6 +81,14 @@ namespace Sunset
         {
             transformView.get<TransformComponent>(entity).Update(dt);
         }
+
+        auto view = m_Registry.view<CameraComponent>();
+        for (auto entity : view)
+        {
+            auto& cam = m_Registry.get<CameraComponent>(entity);
+            // if ()
+        }
+
         if (!Application::IsHeadless())
         {
             auto group = m_Registry.view<TransformComponent, MeshComponent>();

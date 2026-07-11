@@ -26,14 +26,12 @@ namespace Sunset
 
         virtual bool OnEvent(Event::Type& event);
 
-        template <typename T>
-        [[nodiscard]]
-        T* GetGameInstance()
+        GameInstance* GetGameInstance() const
         {
             if (!m_GameInstance)
                 return nullptr;
 
-            return static_cast<T*>(m_GameInstance);
+            return m_GameInstance;
         }
 
         void AddToViewport(const SRmGUI::WidgetPtr& widget);

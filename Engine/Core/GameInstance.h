@@ -14,6 +14,8 @@ namespace Sunset
         GameInstance();
         virtual ~GameInstance();
 
+        void Update(float dt);
+
         std::shared_ptr<World> m_ActiveWorld;
     };
 } // Sunset

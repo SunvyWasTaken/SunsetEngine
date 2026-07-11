@@ -16,9 +16,9 @@ namespace Sunset
     public:
         EditorLayer();
         ~EditorLayer() override;
+        void Init() override;
         void OnDraw() override;
     private:
-        std::shared_ptr<World> m_World;
         std::unique_ptr<WorldHierarchyPanel> m_WorldHierarchy;
     };
 } // Sunset

@@ -14,6 +14,8 @@ namespace Sunset
         CameraComponent() = default;
         ~CameraComponent() override = default;
 
+        bool Primary = false;
+
         Camera camera;
     };
 } // Sunset

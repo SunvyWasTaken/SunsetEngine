@@ -6,6 +6,7 @@
 
 #include <iostream>
 
+#include "Core/GameInstance.h"
 #include "GameFramework/Components/InputComponent.h"
 #include "GameFramework/Components/NativeScriptComponent.h"
 #include "GameFramework/Components/TransformComponent.h"
@@ -27,17 +28,18 @@ namespace
 namespace Sunset
 {
     EditorLayer::EditorLayer()
-        : m_World(std::make_shared<World>())
-        , m_WorldHierarchy(std::make_unique<WorldHierarchyPanel>(m_World))
+        : m_WorldHierarchy(nullptr)
     {
-        // Entity player = m_World->CreateEntity("Player");
-        // player.AddComponent<NativeScriptComponent>().Bind<PlayerScript>();
-        // player.AddComponent<TransformComponent>();
-        // player.AddComponent<InputComponent>();
     }
 
     EditorLayer::~EditorLayer()
     {
+    }
+
+    void EditorLayer::Init()
+    {
+        Layer::Init();
+        m_WorldHierarchy = std::make_unique<WorldHierarchyPanel>(GetGameInstance()->m_ActiveWorld);
     }
 
     void EditorLayer::OnDraw()

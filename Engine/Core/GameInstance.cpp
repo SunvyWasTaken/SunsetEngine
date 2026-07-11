@@ -4,14 +4,22 @@
 
 #include "GameInstance.h"
 
+#include "GameFramework/World/World.h"
+
 namespace Sunset
 {
     GameInstance::GameInstance()
-        : m_ActiveWorld(nullptr)
+        : m_ActiveWorld(std::make_shared<World>())
     {
     }
 
     GameInstance::~GameInstance()
     {
+    }
+
+    void GameInstance::Update(float dt)
+    {
+        if (m_ActiveWorld)
+            m_ActiveWorld->Update(dt);
     }
 } // Sunset

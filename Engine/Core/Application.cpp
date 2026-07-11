@@ -48,7 +48,7 @@ namespace Sunset
     Application::Application(const ApplicationSetting& setting)
         : m_LayerStack()
         , m_Render(nullptr)
-        , m_GameInstance(nullptr)
+        , m_GameInstance(std::make_unique<GameInstance>())
         , m_CommandBuffer()
     {
         Log::Init();
@@ -99,6 +99,8 @@ namespace Sunset
 
             if (NetworkService::IsInitialized())
                 NetworkService::Get().Update(dt.count());
+
+            m_GameInstance->Update(dt.count());
 
             {
                 SS_PROFILE_SCOPE("Logic part");
