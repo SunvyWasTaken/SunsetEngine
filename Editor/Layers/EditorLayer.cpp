@@ -4,25 +4,14 @@
 
 #include "EditorLayer.h"
 
-#include <iostream>
+#include <memory>
 
 #include "Core/GameInstance.h"
-#include "GameFramework/Components/InputComponent.h"
-#include "GameFramework/Components/NativeScriptComponent.h"
-#include "GameFramework/Components/TransformComponent.h"
-#include "GameFramework/World/ScriptEntity.h"
 #include "Panels/WorldHierarchyPanel.h"
 
 namespace
 {
-    class PlayerScript : public Sunset::ScriptEntity
-    {
-    public:
-        void OnUpdate(float dt) override
-        {
-            std::cerr << "Update " << dt << std::endl;
-        }
-    };
+
 }
 
 namespace Sunset
