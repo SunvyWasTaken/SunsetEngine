@@ -6,4 +6,8 @@
 
 namespace Sunset
 {
+    void CameraComponent::Activate(const bool active)
+    {
+        Primary = active;
+    }
 } // Sunset

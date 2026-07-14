@@ -62,6 +62,12 @@ namespace Sunset
             inputComponent.BeginFrame();
         });
 
+        m_Registry.view<CameraComponent>().each([&](CameraComponent& cameraComponent)
+        {
+            if (cameraComponent.Primary)
+                RenderCommande::UseCamera(cameraComponent.camera);
+        });
+
         m_Registry.view<NativeScriptComponent>().each([&](const entt::entity entity, NativeScriptComponent& script)
         {
             // Todo move the instantiate to the BeginPlayScene.

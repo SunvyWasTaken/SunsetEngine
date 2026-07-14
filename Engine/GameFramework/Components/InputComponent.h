@@ -44,6 +44,9 @@ namespace Sunset
         bool IsActionReleased(InputAction action) const;
         ActionValue GetActionValue(InputAction action) const;
 
+        float MoveX() const;
+        float MoveY() const;
+
         const InputSystem& GetInputSystem() const;
         std::vector<InputBindingInfo>& GetBindings();
         const std::vector<InputBindingInfo>& GetBindings() const;

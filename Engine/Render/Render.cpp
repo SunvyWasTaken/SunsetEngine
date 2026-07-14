@@ -25,6 +25,7 @@ namespace
     std::array<bool, GLFW_JOYSTICK_LAST + 1> ConnectedGamepads{};
     std::array<std::array<unsigned char, GLFW_GAMEPAD_BUTTON_LAST + 1>, GLFW_JOYSTICK_LAST + 1> PreviousGamepadButtons{};
     std::array<std::array<float, GLFW_GAMEPAD_AXIS_LAST + 1>, GLFW_JOYSTICK_LAST + 1> PreviousGamepadAxes{};
+    glm::vec2 previousPosition = glm::vec2(0.0f);
 
     void SendEvent(Sunset::Event::Type event)
     {
@@ -233,8 +234,8 @@ namespace
 
     void CursorPositionCallback(GLFWwindow* window, double x, double y)
     {
-        static glm::vec2 previousPosition = glm::vec2(0.0f);
         const glm::vec2 position{static_cast<float>(x), static_cast<float>(y)};
+        // LOG("Engine", info, "Curr {}, Prev {}", position, previousPosition);
         SendEvent(Sunset::Event::MouseMove{position, position - previousPosition});
         previousPosition = position;
     }

@@ -51,7 +51,9 @@ namespace Sunset
                 SetMouseButton(e.key, e.action == Event::ButtonAction::Press);
         },[&](const Event::MouseMove& e)
         {
-            SetMousePosition(e.position);
+            // SetMousePosition(e.position);
+            CurrentMouse.Position = e.position;
+            CurrentMouse.Delta = e.delta;
         },[&](const Event::MouseScroll& e)
         {
             SetMousePosition(e.position);
@@ -147,7 +149,7 @@ namespace Sunset
         return !CurrentMouse.Buttons.IsDown(key) && PreviousMouse.Buttons.IsDown(key);
     }
 
-    glm::vec2 InputSystem::GetMousePosition() const
+    glm::f64vec2 InputSystem::GetMousePosition() const
     {
         return CurrentMouse.Position;
     }

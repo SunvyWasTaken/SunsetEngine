@@ -56,6 +56,16 @@ namespace Sunset
         return mapping.GetActionValue(action, inputSystem);
     }
 
+    float InputComponent::MoveX() const
+    {
+        return inputSystem.GetMouseDelta().x;
+    }
+
+    float InputComponent::MoveY() const
+    {
+        return inputSystem.GetMouseDelta().y;
+    }
+
     const InputSystem& InputComponent::GetInputSystem() const
     {
         return inputSystem;

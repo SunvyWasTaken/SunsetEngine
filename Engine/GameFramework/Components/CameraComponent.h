@@ -14,6 +14,8 @@ namespace Sunset
         CameraComponent() = default;
         ~CameraComponent() override = default;
 
+        void Activate(bool active);
+
         bool Primary = false;
 
         Camera camera;
