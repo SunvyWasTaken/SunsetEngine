@@ -31,7 +31,11 @@ namespace Sunset
         Previous = Current;
         PreviousMouse = CurrentMouse;
         PreviousGamepads = CurrentGamepads;
-        CurrentMouse.Delta = glm::vec2(0.0f);
+    }
+
+    void InputSystem::EndFrame()
+    {
+        CurrentMouse.Delta = glm::f64vec2(0.0f, 0.0f);
         CurrentMouse.Scroll = glm::vec2(0.0f);
     }
 
@@ -51,9 +55,8 @@ namespace Sunset
                 SetMouseButton(e.key, e.action == Event::ButtonAction::Press);
         },[&](const Event::MouseMove& e)
         {
-            // SetMousePosition(e.position);
+            CurrentMouse.Delta = e.position - CurrentMouse.Position;
             CurrentMouse.Position = e.position;
-            CurrentMouse.Delta = e.delta;
         },[&](const Event::MouseScroll& e)
         {
             SetMousePosition(e.position);
@@ -85,9 +88,8 @@ namespace Sunset
         CurrentMouse.Buttons.SetKey(key, down);
     }
 
-    void InputSystem::SetMousePosition(const glm::vec2 position)
+    void InputSystem::SetMousePosition(const glm::f64vec2 position)
     {
-        CurrentMouse.Delta += position - CurrentMouse.Position;
         CurrentMouse.Position = position;
     }
 

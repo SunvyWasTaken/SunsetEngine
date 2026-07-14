@@ -39,7 +39,7 @@ namespace Sunset
    struct MouseState
    {
       InputState<MouseKey, static_cast<std::uint16_t>(MouseKey::Count)> Buttons;
-      glm::vec2 Position = glm::vec2(0.0f);
+      glm::f64vec2 Position = glm::f64vec2(0.0f);
       glm::vec2 Delta = glm::vec2(0.0f);
       glm::vec2 Scroll = glm::vec2(0.0f);
    };
@@ -55,11 +55,12 @@ namespace Sunset
    {
    public:
       void Begin();
+      void EndFrame();
       void ProcessEvent(const Event::Type& event);
 
       void SetKey(Key key, bool down);
       void SetMouseButton(MouseKey key, bool down);
-      void SetMousePosition(glm::vec2 position);
+      void SetMousePosition(glm::f64vec2 position);
       void AddMouseScroll(glm::vec2 offset);
       void SetGamepadConnected(std::uint8_t gamepad, bool connected);
       void SetGamepadButton(std::uint8_t gamepad, GamepadButton button, bool down);
@@ -72,7 +73,7 @@ namespace Sunset
       bool IsMouseButtonDown(MouseKey key) const;
       bool IsMouseButtonPressed(MouseKey key) const;
       bool IsMouseButtonReleased(MouseKey key) const;
-      glm::vec2 GetMousePosition() const;
+      glm::f64vec2 GetMousePosition() const;
       glm::vec2 GetMouseDelta() const;
       glm::vec2 GetMouseScroll() const;
 

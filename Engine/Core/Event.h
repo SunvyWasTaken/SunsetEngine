@@ -39,14 +39,14 @@ namespace Sunset::Event
     struct MouseButton
     {
         MouseKey key;
-        glm::vec2 position;
+        glm::f64vec2 position;
         ButtonAction action = ButtonAction::Release;
         KeyModifiers modifiers;
     };
 
     struct MouseMove
     {
-        glm::vec2 position;
+        glm::f64vec2 position;
         glm::vec2 delta;
     };
 

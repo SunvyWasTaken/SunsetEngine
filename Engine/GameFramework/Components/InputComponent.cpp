@@ -11,6 +11,11 @@ namespace Sunset
         inputSystem.Begin();
     }
 
+    void InputComponent::EndFrame()
+    {
+        inputSystem.EndFrame();
+    }
+
     void InputComponent::OnEvent(const Event::Type &event)
     {
         inputSystem.ProcessEvent(event);

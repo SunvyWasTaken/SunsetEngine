@@ -61,7 +61,6 @@ namespace Sunset
         {
             inputComponent.BeginFrame();
         });
-
         m_Registry.view<CameraComponent>().each([&](CameraComponent& cameraComponent)
         {
             if (cameraComponent.Primary)
@@ -80,6 +79,11 @@ namespace Sunset
 
             if (script.m_ScriptEntity)
                 script.m_ScriptEntity->OnUpdate(dt);
+        });
+
+        m_Registry.view<InputComponent>().each([&](InputComponent& inputComponent)
+        {
+            inputComponent.EndFrame();
         });
 
         auto transformView = m_Registry.view<TransformComponent>();

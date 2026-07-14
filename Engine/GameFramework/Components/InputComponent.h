@@ -34,6 +34,7 @@ namespace Sunset
     {
     public:
         void BeginFrame();
+        void EndFrame();
         void OnEvent(const Event::Type& event);
         void BindAction(Key key, InputAction action);
         void BindAction(MouseKey key, InputAction action);
