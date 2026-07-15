@@ -212,7 +212,7 @@ namespace
                 case Sunset::ReflectionFieldType::Float:
                 {
                     float val = *(static_cast<float*>(ptr));
-                    if (ImGui::DragFloat(type.Name.c_str(), &val, 0.01f))
+                    if (ImGui::InputFloat(type.Name.c_str(), &val, 0.01f))
                         *(static_cast<float*>(ptr)) = val;
                     break;
                 }
@@ -223,7 +223,7 @@ namespace
                 }
                 case Sunset::ReflectionFieldType::Int:
                 {
-                    ImGui::DragInt(type.Name.c_str(), static_cast<int*>(ptr));
+                    ImGui::InputInt(type.Name.c_str(), static_cast<int*>(ptr));
                     break;
                 }
                 case Sunset::ReflectionFieldType::String:
@@ -236,7 +236,15 @@ namespace
                     break;
                 }
                 case Sunset::ReflectionFieldType::Vec2:
+                {
+                    ImGui::DragFloat2(type.Name.c_str(), static_cast<float*>(ptr));
+                    break;
+                }
                 case Sunset::ReflectionFieldType::Vec3:
+                {
+                    ImGui::DragFloat3(type.Name.c_str(), static_cast<float*>(ptr));
+                    break;
+                }
                 default:
                 {
 
@@ -326,7 +334,7 @@ namespace Sunset
             if (ImGui::TreeNodeEx((void*)typeid(NativeScriptComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Script"))
             {
                 ReflectionType properties = tc->Properties();
-                DrawEditorObject(tc, properties);
+                DrawEditorObject(tc->m_ScriptEntity, properties);
                 ImGui::TreePop();
             }
         }
