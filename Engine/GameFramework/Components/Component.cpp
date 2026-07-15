@@ -6,5 +6,15 @@
 
 namespace Sunset
 {
+    ReflectionType Component::Properties()
+    {
+        return {};
+    }
 
+    ReflectionType TagComponent::Properties()
+    {
+        ReflectionType properties;
+        properties.Field("Tag", &TagComponent::Tag);
+        return properties;
+    }
 } // Sunset

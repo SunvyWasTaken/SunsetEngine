@@ -4,6 +4,8 @@
 
 #include "NativeScriptComponent.h"
 
+#include "GameFramework/World/ScriptEntity.h"
+
 namespace Sunset
 {
     NativeScriptComponent::NativeScriptComponent()
@@ -11,5 +13,13 @@ namespace Sunset
         , InstantiateScriptEntity(nullptr)
         , DestroyScriptEntity(nullptr)
     {
+    }
+
+    ReflectionType NativeScriptComponent::Properties()
+    {
+        if (!m_ScriptEntity)
+            return Component::Properties();
+
+        return m_ScriptEntity->Properties();
     }
 } // Sunset

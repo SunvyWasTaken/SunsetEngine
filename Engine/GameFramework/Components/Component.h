@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Render/Drawable.h"
+#include "Reflection/ReflectionType.h"
 
 namespace Sunset
 {
@@ -12,6 +13,8 @@ namespace Sunset
     {
         Component() = default;
         virtual ~Component() = default;
+
+        virtual ReflectionType Properties();
     };
 
     struct TagComponent : public Component
@@ -22,6 +25,7 @@ namespace Sunset
         TagComponent(const TagComponent&) = default;
         TagComponent(const std::string& tag) : Tag(tag) {}
 
+        ReflectionType Properties() override;
     };
 
     struct MeshComponent : public Component

@@ -12,6 +12,8 @@ namespace Sunset
     public:
         virtual ~ScriptEntity();
 
+        virtual ReflectionType Properties();
+
         virtual void OnBeginPlay() {};
 
         virtual void OnUpdate(float dt) {};

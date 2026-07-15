@@ -6,9 +6,6 @@
 
 namespace Sunset
 {
-    template <typename>
-    inline constexpr bool always_false_v = false;
-
     template <typename Archive, typename T>
     void Serialize(Archive& ar, T& value)
     {

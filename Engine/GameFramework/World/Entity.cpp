@@ -10,7 +10,6 @@ namespace Sunset
         : m_World(world)
         , m_Id(id)
     {
-        LOG("Engine", trace, "Entity {} created", static_cast<uint32_t>(m_Id));
     }
 
     Entity::~Entity()

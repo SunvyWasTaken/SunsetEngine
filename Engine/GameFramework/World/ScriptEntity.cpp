@@ -9,4 +9,9 @@ namespace Sunset
     ScriptEntity::~ScriptEntity()
     {
     }
+
+    ReflectionType ScriptEntity::Properties()
+    {
+        return {};
+    }
 } // Sunset

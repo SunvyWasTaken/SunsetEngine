@@ -9,6 +9,7 @@
 
 #include "GameFramework/Components/Component.h"
 #include "GameFramework/Components/InputComponent.h"
+#include "GameFramework/Components/NativeScriptComponent.h"
 #include "GameFramework/Components/TransformComponent.h"
 #include "GameFramework/World/Entity.h"
 
@@ -200,6 +201,49 @@ namespace
         }
         return changed;
     }
+
+    void DrawEditorObject(void* instance, Sunset::ReflectionType& properties)
+    {
+        for (auto& type : properties.Fields)
+        {
+            void* ptr = type.GetPtr(instance);
+            switch (type.Type)
+            {
+                case Sunset::ReflectionFieldType::Float:
+                {
+                    float val = *(static_cast<float*>(ptr));
+                    if (ImGui::DragFloat(type.Name.c_str(), &val, 0.01f))
+                        *(static_cast<float*>(ptr)) = val;
+                    break;
+                }
+                case Sunset::ReflectionFieldType::Bool:
+                {
+                    ImGui::Checkbox(type.Name.c_str(), static_cast<bool*>(ptr));
+                    break;
+                }
+                case Sunset::ReflectionFieldType::Int:
+                {
+                    ImGui::DragInt(type.Name.c_str(), static_cast<int*>(ptr));
+                    break;
+                }
+                case Sunset::ReflectionFieldType::String:
+                {
+                    char buffer[256] = {};
+                    strcpy(buffer, static_cast<std::string*>(ptr)->c_str());
+                    if (ImGui::InputText("Tag", buffer, sizeof(buffer)))
+                        static_cast<std::string*>(ptr)->assign(buffer);
+
+                    break;
+                }
+                case Sunset::ReflectionFieldType::Vec2:
+                case Sunset::ReflectionFieldType::Vec3:
+                default:
+                {
+
+                }
+            }
+        }
+    }
 }
 
 namespace Sunset
@@ -256,14 +300,8 @@ namespace Sunset
         {
             if (ImGui::TreeNodeEx((void*)typeid(TagComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Name"))
             {
-                auto& tag = tc->Tag;
-
-                char buffer[256] = {};
-                strcpy(buffer, tag.c_str());
-                if (ImGui::InputText("Tag", buffer, sizeof(buffer)))
-                {
-                    tag = std::string(buffer);
-                }
+                ReflectionType properties = tc->Properties();
+                DrawEditorObject(tc, properties);
                 ImGui::TreePop();
             }
         }
@@ -283,10 +321,14 @@ namespace Sunset
             }
         }
 
-        if (!entity.GetComponent<InputComponent>())
+        if (auto* tc = entity.GetComponent<NativeScriptComponent>())
         {
-            if (ImGui::Button("Add Input Component"))
-                entity.AddComponent<InputComponent>();
+            if (ImGui::TreeNodeEx((void*)typeid(NativeScriptComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Script"))
+            {
+                ReflectionType properties = tc->Properties();
+                DrawEditorObject(tc, properties);
+                ImGui::TreePop();
+            }
         }
 
         if (auto* input = entity.GetComponent<InputComponent>())

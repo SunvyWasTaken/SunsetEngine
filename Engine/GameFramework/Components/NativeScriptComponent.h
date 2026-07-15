@@ -15,6 +15,8 @@ namespace Sunset
         NativeScriptComponent();
         ScriptEntity* m_ScriptEntity;
 
+        ReflectionType Properties() override;
+
         ScriptEntity* (*InstantiateScriptEntity)();
         void(*DestroyScriptEntity)(NativeScriptComponent*);
 
