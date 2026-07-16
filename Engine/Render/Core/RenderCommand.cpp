@@ -2,17 +2,17 @@
 // Created by sunvy on 05/01/2026.
 //
 
-#include "RenderCommande.h"
+#include "RenderCommand.h"
 
 #include "Core/Application.h"
 #include "Core/ApplicationSetting.h"
-#include "Camera.h"
-#include "Drawable.h"
-#include "FrameBuffer.h"
-#include "Material.h"
-#include "Meshes/Mesh.h"
+#include "../Camera.h"
+#include "../Resources/Drawable.h"
+#include "../FrameBuffer.h"
+#include "../Resources/Material.h"
+#include "../Meshes/Mesh.h"
 #include "Render.h"
-#include "Shader.h"
+#include "../Backend/Shader.h"
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -246,7 +246,7 @@ namespace
 
 namespace Sunset
 {
-    void RenderCommande::BeginFrame()
+    void RenderCommand::BeginFrame()
     {
         FrameBuffer::Unbind();
         const glm::ivec2& windowSize = Application::GetSetting().WindowSize;
@@ -264,7 +264,7 @@ namespace Sunset
         ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
     }
 
-    void RenderCommande::EndFrame()
+    void RenderCommand::EndFrame()
     {
         Flush();
 
@@ -299,14 +299,14 @@ namespace Sunset
         glfwSwapBuffers(static_cast<GLFWwindow*>(Application::GetWindow()));
     }
 
-    void RenderCommande::BeginTarget(FrameBuffer& target, const glm::vec4& clearColor)
+    void RenderCommand::BeginTarget(FrameBuffer& target, const glm::vec4& clearColor)
     {
         Flush();
         target.Clear(clearColor);
         ResetFrameState();
     }
 
-    void RenderCommande::EndTarget()
+    void RenderCommand::EndTarget()
     {
         Flush();
         FrameBuffer::Unbind();
@@ -315,12 +315,12 @@ namespace Sunset
         ResetFrameState();
     }
 
-    void RenderCommande::Flush()
+    void RenderCommand::Flush()
     {
         FlushDrawCommand();
     }
 
-    void RenderCommande::Submit(const Drawable& drawable)
+    void RenderCommand::Submit(const Drawable& drawable)
     {
         DrawCommand cmd;
         if (!drawable)
@@ -338,7 +338,7 @@ namespace Sunset
         m_DrawCommands.emplace_back(cmd);
     }
 
-    void RenderCommande::Submit(const Drawable &mesh, const glm::mat4 &transform)
+    void RenderCommand::Submit(const Drawable &mesh, const glm::mat4 &transform)
     {
         DrawCommand cmd;
         if (!mesh)
@@ -353,14 +353,14 @@ namespace Sunset
         m_DrawCommands.emplace_back(cmd);
     }
 
-    void RenderCommande::UseCamera(const Camera& camera)
+    void RenderCommand::UseCamera(const Camera& camera)
     {
         m_FrameData.position = camera.GetPosition();
         m_FrameData.view = camera.GetViewMatrix();
         m_FrameData.projection = camera.GetProjection();
     }
 
-    void RenderCommande::ShowCursor(bool show)
+    void RenderCommand::ShowCursor(bool show)
     {
         glfwSetInputMode(static_cast<GLFWwindow*>(Application::GetWindow()), GLFW_CURSOR, !show ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
     }

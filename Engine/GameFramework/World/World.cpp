@@ -15,7 +15,7 @@
 #include "GameFramework/System/NativeScriptingSystem.h"
 #include "GameFramework/System/RenderMeshSystem.h"
 #include "Network/NetworkService.h"
-#include "Render/RenderCommande.h"
+#include "../../Render/Core/RenderCommand.h"
 
 namespace
 {
@@ -64,7 +64,7 @@ namespace Sunset
             {
                 if (const auto& cam = m_Registry.get<CameraComponent>(entity); cam.Primary)
                 {
-                    RenderCommande::UseCamera(cam.camera);
+                    RenderCommand::UseCamera(cam.camera);
                     break;
                 }
             }

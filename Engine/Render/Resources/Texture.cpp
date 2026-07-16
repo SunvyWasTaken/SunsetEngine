@@ -4,7 +4,7 @@
 
 #include "Texture.h"
 
-#include "Image.h"
+#include "../Image.h"
 
 #include <glad/glad.h>
 

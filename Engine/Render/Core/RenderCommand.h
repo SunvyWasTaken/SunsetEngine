@@ -11,7 +11,7 @@ namespace Sunset
     class Drawable;
     class FrameBuffer;
 
-    struct RenderCommande
+    struct RenderCommand
     {
         static void BeginFrame();
         static void EndFrame();

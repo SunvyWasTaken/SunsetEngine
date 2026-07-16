@@ -8,8 +8,8 @@
 #include "GameInstance.h"
 #include "Layer.h"
 #include "Network/NetworkService.h"
-#include "Render/RenderCommande.h"
-#include "Render/Render.h"
+#include "../Render/Core/RenderCommand.h"
+#include "../Render/Core/Render.h"
 
 namespace
 {
@@ -112,7 +112,7 @@ namespace Sunset
             if (!AppSetting.Headless)
             {
                 SS_PROFILE_SCOPE("Render part");
-                RenderCommande::BeginFrame();
+                RenderCommand::BeginFrame();
 
                 if (m_GameInstance)
                     m_GameInstance->Draw();
@@ -120,7 +120,7 @@ namespace Sunset
                 for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )
                     (*--layer)->OnDraw();
 
-                RenderCommande::EndFrame();
+                RenderCommand::EndFrame();
             }
 
             if (!m_CommandBuffer.empty())

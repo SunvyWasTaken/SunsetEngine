@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Render/Drawable.h"
+#include "../../Render/Resources/Drawable.h"
 #include "Reflection/ReflectionType.h"
 
 namespace Sunset
