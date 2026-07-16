@@ -2,7 +2,7 @@
 // Created by sunvy on 15/12/2025.
 //
 
-#include "Shader.h"
+#include "Render/Core/Shader.h"
 
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>

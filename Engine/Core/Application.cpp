@@ -9,7 +9,7 @@
 #include "Layer.h"
 #include "Network/NetworkService.h"
 #include "../Render/Core/RenderCommand.h"
-#include "../Render/Core/Render.h"
+#include "../Render/Core/RenderAPI.h"
 #include "Platform/Window.h"
 
 namespace
@@ -49,7 +49,6 @@ namespace Sunset
     Application::Application(const WindowSetting& setting)
         : m_LayerStack()
         , m_Window(nullptr)
-        , m_Render(nullptr)
         , m_GameInstance(std::make_unique<GameInstance>())
         , m_CommandBuffer()
     {
@@ -75,9 +74,9 @@ namespace Sunset
 
     Application::~Application()
     {
-        m_LayerStack.Clear();
+        OnDestroy();
 
-        m_Render.reset();
+        m_LayerStack.Clear();
 
         app = nullptr;
 
@@ -90,13 +89,14 @@ namespace Sunset
     {
         std::chrono::steady_clock::time_point prev = std::chrono::steady_clock::now();
 
-        while (IsAppRunning && (AppSetting.Headless || (m_Render && m_Render->Valid())))
+        while (IsAppRunning && (AppSetting.Headless || (m_Window && !m_Window->ShouldClose())))
         {
             std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
             std::chrono::duration<float> dt = now - prev;
             prev = now;
 
-            m_Window->PollEvents();
+            if (m_Window)
+                m_Window->PollEvents();
 
             if (!AppSetting.Headless)
             {
@@ -120,7 +120,7 @@ namespace Sunset
             {
                 SS_PROFILE_SCOPE("Render part");
                 RenderCommand::BeginFrame();
-
+                BeginFrame();
                 if (m_GameInstance)
                     m_GameInstance->Draw();
 
@@ -128,6 +128,7 @@ namespace Sunset
                     (*--layer)->OnDraw();
 
                 RenderCommand::EndFrame();
+                EndFrame();
                 m_Window->Present();
             }
 
@@ -148,6 +149,18 @@ namespace Sunset
                     std::this_thread::sleep_for(targetFrameTime - elapsed);
             }
         }
+    }
+
+    void Application::OnDestroy()
+    {
+    }
+
+    void Application::BeginFrame()
+    {
+    }
+
+    void Application::EndFrame()
+    {
     }
 
     void Application::OnEvent(const Event::Type& event)
@@ -179,7 +192,7 @@ namespace Sunset
         if (!app)
             return nullptr;
 
-        return Render::Get();
+        return app->m_Window->GetNativeHandle();
     }
 
     bool Application::IsHeadless()

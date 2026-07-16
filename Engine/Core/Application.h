@@ -11,7 +11,6 @@
 namespace Sunset
 {
     class Window;
-    class Render;
     struct WindowSetting;
     class Layer;
 
@@ -22,6 +21,10 @@ namespace Sunset
         virtual ~Application();
 
         void Run();
+
+        virtual void OnDestroy();
+        virtual void BeginFrame();
+        virtual void EndFrame();
 
         void OnEvent(const Event::Type& event);
 
@@ -99,7 +102,6 @@ namespace Sunset
     private:
         LayerStack m_LayerStack;
         std::unique_ptr<Window> m_Window;
-        std::unique_ptr<Render> m_Render;
         std::unique_ptr<GameInstance> m_GameInstance;
         std::vector<std::function<void()>> m_CommandBuffer;
     };

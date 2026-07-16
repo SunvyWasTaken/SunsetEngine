@@ -11,9 +11,9 @@
 #include "../FrameBuffer.h"
 #include "../Resources/Material.h"
 #include "../Meshes/Mesh.h"
-#include "Render.h"
+#include "RenderAPI.h"
 #include "Render/Core/RenderType.h"
-#include "../Backend/Shader.h"
+#include "Render/Core/Shader.h"
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -254,14 +254,6 @@ namespace Sunset
         glViewport(0, 0, windowSize.x, windowSize.y);
         ResetFrameState();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        Render::PollGamepads();
-
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
     }
 
     void RenderCommand::EndFrame()
@@ -272,29 +264,29 @@ namespace Sunset
 
         SRmGUI::Opengl_DrawData(SRmGUI::GetDrawData());
 
-        if (!PrintScreen::Get().empty())
-        {
-            ImGui::Begin("Stats", nullptr);
-            for (const auto& it : PrintScreen::Get())
-            {
-                ImGui::Text("%s", it.c_str());
-            }
-            ImGui::End();
-            PrintScreen::Clear();
-        }
-        if (!ProfileData::Get().empty())
-        {
-            ImGui::Begin("Profiling", nullptr);
-            for (const auto& it : ProfileData::Get())
-            {
-                ImGui::Text("%s", it.c_str());
-            }
-            ImGui::End();
-            ProfileData::Free();
-        }
-        ImGui::Render();
-
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        // if (!PrintScreen::Get().empty())
+        // {
+        //     ImGui::Begin("Stats", nullptr);
+        //     for (const auto& it : PrintScreen::Get())
+        //     {
+        //         ImGui::Text("%s", it.c_str());
+        //     }
+        //     ImGui::End();
+        //     PrintScreen::Clear();
+        // }
+        // if (!ProfileData::Get().empty())
+        // {
+        //     ImGui::Begin("Profiling", nullptr);
+        //     for (const auto& it : ProfileData::Get())
+        //     {
+        //         ImGui::Text("%s", it.c_str());
+        //     }
+        //     ImGui::End();
+        //     ProfileData::Free();
+        // }
+        // ImGui::Render();
+        //
+        // ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
 
     void RenderCommand::BeginTarget(FrameBuffer& target, const glm::vec4& clearColor)

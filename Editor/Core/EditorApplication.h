@@ -12,5 +12,8 @@ namespace Sunset
     {
     public:
         EditorApplication(const WindowSetting& setting = WindowSetting{});
+        void OnDestroy() override;
+        void BeginFrame() override;
+        void EndFrame() override;
     };
 } // Sunset

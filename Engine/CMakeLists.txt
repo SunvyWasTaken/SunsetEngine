@@ -49,13 +49,11 @@ target_precompile_headers(${PROJECT_NAME} PUBLIC
 find_package(glfw3 CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
-find_package(imgui CONFIG REQUIRED)
 find_package(unofficial-enet CONFIG REQUIRED)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
         glfw
         glad::glad
         spdlog::spdlog_header_only
-        imgui::imgui
         unofficial::enet::enet
 )

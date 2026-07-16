@@ -6,7 +6,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Render/Backend/OpenGL/OpenGLContext.h"
+#include "Backend/OpenGL/OpenGLContext.h"
 
 namespace
 {
@@ -304,9 +304,7 @@ namespace Sunset
             double x = 0.0, y = 0.0;
             glfwGetCursorPos(window, &x, &y);
             auto& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
-            data.EventCallback(Event::MouseScroll{
-            {xoffset, yoffset},
-            {x, y}});
+            data.EventCallback(Event::MouseScroll{{xoffset, yoffset}, {x, y}});
         });
     }
 } // Sunset
