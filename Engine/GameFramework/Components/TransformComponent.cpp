@@ -53,6 +53,13 @@ namespace Sunset
         EnsureNetworkTransformHandler();
     }
 
+    glm::mat4 TransformComponent::GetWorldMatrix() const noexcept
+    {
+        return glm::translate(glm::mat4(1.0f), Position)
+            * glm::mat4_cast(Rotation)
+            * glm::scale(glm::mat4(1.0f), Scale);
+    }
+
     void TransformComponent::Update(float deltatime)
     {
         (void)deltatime;

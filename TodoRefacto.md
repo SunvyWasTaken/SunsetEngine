@@ -228,17 +228,83 @@ Si tu veux une liste très concrète, je commencerais par ça :
 |   9   | Créer WorldSystem + déplacer script/transform/render submission progressivement |     L      |     5      |
 |  10   | Créer un format de scène minimal JSON                                           |     L      |     5      |
 
-## Conseil important
-Ne refais pas tout le renderer d’un coup.
+# Roadmap Render/ vers une architecture extensible
 
-Le bon chemin, selon moi :
-```txt
-    1. Corriger les bugs
-    2. Extraire RenderQueue
-    3. Extraire RenderState
-    4. Extraire backend OpenGL progressivement
-    5. Ajouter particules CPU instanciées
-    6. Préparer Vulkan seulement après
-```
-   Si tu pars directement sur Vulkan maintenant, tu risques de bloquer pendant longtemps. Si tu fais un bon refactor OpenGL d’abord, tu auras une architecture qui te rendra Vulkan beaucoup plus simple plus tard.
+Objectif : rendre `Engine/Render/` plus facile à faire évoluer pour ajouter de nouvelles features graphiques sans rester bloqué par l'implémentation OpenGL actuelle, puis préparer une expérimentation Vulkan en dernier.
 
+## Étape 1 — Stabiliser l'existant
+
+- Corriger les chemins de rendu qui ignorent des données ECS importantes, notamment le transform des entités rendues.
+- Ajouter des assertions ou logs pour les `Mesh`, `Material`, `Shader` et `Texture` null avant les draw calls.
+- Corriger et documenter les chemins instanciés pour éviter de mélanger vertex count, index count et instance count.
+- Centraliser les types d'état de rendu (`RenderState`, `BlendFactor`, `CullMode`, `PrimitiveType`, `RenderLayer`) dans un header de rendu commun plutôt que dans une ressource spécifique.
+- Ajouter quelques scènes ou commandes de test simples : mesh opaque, mesh transparent, texture, framebuffer, instancing, debug draw.
+
+## Étape 2 — Clarifier les frontières de Render/
+
+- Séparer clairement les responsabilités : core renderer, backend GPU, ressources assets, passes de rendu, debug, particules.
+- Extraire `DrawCommand` dans un type explicite et testable.
+- Remplacer le stockage global de commandes par une `RenderQueue` possédée par le renderer.
+- Garder une façade de compatibilité `RenderCommand::Submit(...)`, mais la faire déléguer à une instance de renderer ou à un contexte courant.
+- Déplacer les appels `gl*` restants hors du core renderer vers des classes OpenGL dédiées.
+
+## Étape 3 — Introduire un backend abstrait minimal
+
+- Ajouter un enum `GraphicsAPI` avec au minimum `OpenGL` et `Vulkan` pour rendre le choix de backend explicite.
+- Créer une interface `IGraphicsDevice` ou `GraphicsDevice` responsable de l'initialisation, des buffers, textures, shaders, pipelines et commandes de draw.
+- Définir des handles opaques (`BufferHandle`, `TextureHandle`, `ShaderHandle`, `PipelineHandle`) au lieu d'exposer des IDs OpenGL.
+- Faire d'OpenGL le premier backend concret : `OpenGLGraphicsDevice`, `OpenGLBuffer`, `OpenGLTexture`, `OpenGLShader`, `OpenGLPipeline`.
+- Ajouter une factory de backend afin que le reste du moteur ne construise jamais directement des classes OpenGL.
+
+## Étape 4 — Structurer le pipeline de rendu
+
+- Définir une interface `RenderPass` avec une entrée claire : contexte, render queue, caméra, frame data.
+- Créer au moins les passes `GeometryPass`, `TransparentPass`, `OverlayPass`, `DebugPass` et `UIPass`.
+- Rendre les queues explicites : opaque, transparent, overlay, debug, particles, UI.
+- Déplacer le tri transparent, les états de blending/culling/depth et les bindings de matériaux dans les passes concernées.
+- Préparer les passes futures : shadow maps, post-process, viewport editor, picking, gizmos.
+
+## Étape 5 — Rendre les ressources plus robustes
+
+- Séparer les assets disque (`TextureAsset`, `ShaderAsset`, `MeshAsset`) des ressources runtime GPU.
+- Introduire un `ResourceManager` ou des `AssetHandle` persistants pour éviter de passer partout des `shared_ptr` mutables.
+- Rendre `Material` moins couplé à OpenGL en séparant paramètres de matériau, textures, shader asset et pipeline state.
+- Préparer un système de shader reflection pour automatiser uniforms, samplers et layouts.
+- Ajouter un chemin de hot reload shader/texture plus tard, une fois les handles stables.
+
+## Étape 6 — Ajouter les nouvelles features sur cette base
+
+- Particules : créer `ParticleEmitterComponent`, `ParticleSystem` CPU, puis `ParticleRenderer` via instancing/billboards.
+- Viewport editor : rendre dans un framebuffer dédié au lieu de dépendre uniquement de la fenêtre principale.
+- Debug draw : isoler lignes, boxes, spheres, bounds et gizmos dans une queue ou une pass séparée.
+- Post-process : ajouter une chaîne de passes plein écran après la pass principale.
+- Shadows et lighting avancé : ajouter les ressources et passes seulement quand le pipeline est déjà découpé.
+
+## Étape 7 — Préparer Vulkan en dernier
+
+- Vérifier que le core renderer ne contient plus d'appels OpenGL directs.
+- Remplacer les chemins implicites par des objets explicites : swapchain, command buffer, render pass, framebuffer, pipeline, descriptor/bind group.
+- Compiler les shaders vers SPIR-V ou prévoir une étape de compilation cross-platform.
+- Définir les layouts de ressources par pipeline au lieu de pousser des uniforms ad hoc.
+- Ajouter un backend `VulkanGraphicsDevice` expérimental derrière la même interface que le backend OpenGL.
+- Commencer par une scène minimale Vulkan : clear screen, triangle, mesh simple, texture, puis seulement ensuite le pipeline complet.
+
+## Ordre recommandé
+
+| Ordre | Chantier                                     | Résultat attendu                                                        |
+|:-----:|:---------------------------------------------|:------------------------------------------------------------------------|
+|   1   | Stabilisation render actuelle                | Moins de bugs et de crashes lors des draw calls                         |
+|   2   | `RenderQueue` + `DrawCommand` explicite      | Les soumissions deviennent inspectables et triables                     |
+|   3   | `GraphicsDevice` abstrait                    | Le moteur ne dépend plus directement d'OpenGL                           |
+|   4   | Ressources GPU par handles                   | Les ressources deviennent compatibles avec plusieurs backends           |
+|   5   | Render passes                                | Les nouvelles features s'ajoutent sans modifier un gros renderer global |
+|   6   | Particules / viewport / debug / post-process | Les features graphiques arrivent sur une base stable                    |
+|   7   | Backend Vulkan expérimental                  | Vulkan est ajouté comme backend, pas comme refactor géant               |
+
+## Définition de terminé avant Vulkan
+
+- Le dossier `Render/Core` ne contient aucun appel direct à OpenGL.
+- Les ressources manipulées par le moteur sont des handles ou interfaces, pas des IDs OpenGL publics.
+- Les passes de rendu peuvent être ajoutées sans modifier la logique centrale de soumission.
+- OpenGL fonctionne encore comme backend de référence.
+- Une scène de test couvre opaque, transparent, texture, framebuffer, instancing et UI/debug.

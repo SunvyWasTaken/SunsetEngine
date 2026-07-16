@@ -320,25 +320,7 @@ namespace Sunset
         FlushDrawCommand();
     }
 
-    void RenderCommand::Submit(const Drawable& drawable)
-    {
-        DrawCommand cmd;
-        if (!drawable)
-            return;
-
-        cmd.vao = drawable.m_Mesh->GetVAO();
-        cmd.indexCount = drawable.m_Mesh->GetVertexCount();
-        cmd.material = drawable.m_Material;
-
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, drawable.m_Position);
-        model = glm::scale(model, drawable.m_Scale);
-        cmd.model = model;
-        cmd.state = drawable.m_RenderState;
-        m_DrawCommands.emplace_back(cmd);
-    }
-
-    void RenderCommand::Submit(const Drawable &mesh, const glm::mat4 &transform)
+    void RenderCommand::Submit(const Drawable &mesh, const glm::mat4 &model)
     {
         DrawCommand cmd;
         if (!mesh)
@@ -348,7 +330,7 @@ namespace Sunset
         cmd.indexCount = mesh.m_Mesh->GetVertexCount();
         cmd.material = mesh.m_Material;
 
-        cmd.model = transform;
+        cmd.model = model;
         cmd.state = mesh.m_RenderState;
         m_DrawCommands.emplace_back(cmd);
     }
