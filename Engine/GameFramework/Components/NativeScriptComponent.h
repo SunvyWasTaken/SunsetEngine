@@ -12,6 +12,7 @@ namespace entt
 
 namespace Sunset
 {
+    class Entity;
     class World;
     class ScriptEntity;
 
@@ -30,7 +31,7 @@ namespace Sunset
 
         std::vector<std::unique_ptr<ScriptEntity>> m_ScriptEntitys;
 
-        void Start(World* world, const entt::entity& entity);
+        void Start(World* world, const Entity& entity);
 
         std::vector<std::function<ScriptEntity*()>> InstantiateScriptEntity;
         // void(*DestroyScriptEntity)(NativeScriptComponent*);

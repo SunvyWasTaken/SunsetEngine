@@ -100,10 +100,9 @@ namespace Sunset
             if (NetworkService::IsInitialized())
                 NetworkService::Get().Update(dt.count());
 
-            m_GameInstance->Update(dt.count());
-
             {
                 SS_PROFILE_SCOPE("Logic part");
+                m_GameInstance->Update(dt.count());
                 for (const auto& layer : m_LayerStack)
                 {
                     layer->OnUpdate(dt.count());
@@ -114,6 +113,10 @@ namespace Sunset
             {
                 SS_PROFILE_SCOPE("Render part");
                 RenderCommande::BeginFrame();
+
+                if (m_GameInstance)
+                    m_GameInstance->Draw();
+
                 for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )
                     (*--layer)->OnDraw();
 

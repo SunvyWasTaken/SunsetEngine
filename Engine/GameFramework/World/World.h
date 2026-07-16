@@ -9,6 +9,7 @@
 
 namespace Sunset
 {
+    class IWorldSystem;
     class Controller;
     class Entity;
 
@@ -32,7 +33,6 @@ namespace Sunset
     class World
     {
         friend class Entity;
-        friend class WorldHierarchyPanel;
     public:
         World();
 
@@ -44,17 +44,39 @@ namespace Sunset
 
         void Draw();
 
+        template <typename T>
+        requires std::is_base_of_v<IWorldSystem, T>
+        void AddSystem()
+        {
+            auto system = std::make_unique<T>(this);
+            m_Systems.push_back(std::move(system));
+        }
+
+        template <typename Func>
+        void ForEach(Func&& func)
+        {
+            for (const auto view = m_Registry.view<entt::entity>(); auto entity : view)
+            {
+                func({this, entity});
+            }
+        }
+
+        template <typename... Components, typename Func>
+        void Each(Func&& func)
+        {
+            const auto view = m_Registry.view<Components...>();
+
+            for (auto entity : view)
+            {
+                func({this, entity}, view.template get<Components>(entity)...);
+            }
+        }
+
         Entity CreateEntity(const std::string& name);
-
-        void OnPeerConnected(PeerId peerId);
-        void OnPeerDisconnected(PeerId peerId);
-
-    private:
-
-        void OnPlayerSessionMessage(const NetworkPlayerSessionMessage& msg);
 
     private:
         entt::registry m_Registry;
         PeerId m_LocalPeerId = 0;
+        std::vector<std::unique_ptr<IWorldSystem>> m_Systems;
     };
 } // Sunset

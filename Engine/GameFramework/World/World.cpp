@@ -10,33 +10,29 @@
 #include "GameFramework/Components/CameraComponent.h"
 #include "GameFramework/Components/InputComponent.h"
 #include "GameFramework/Components/NativeScriptComponent.h"
-#include "GameFramework/Components/TransformComponent.h"
+#include "GameFramework/System/InputSystem.h"
+#include "GameFramework/System/IWorldSystem.h"
+#include "GameFramework/System/NativeScriptingSystem.h"
+#include "GameFramework/System/RenderMeshSystem.h"
 #include "Network/NetworkService.h"
 #include "Render/RenderCommande.h"
+
+namespace
+{
+    void RegisterEngineSystems(Sunset::World& world)
+    {
+        world.AddSystem<Sunset::NativeScriptingSystem>();
+        world.AddSystem<Sunset::InputWorldSystem>();
+        world.AddSystem<Sunset::RenderMeshSystem>();
+    }
+}
 
 namespace Sunset
 {
     World::World()
         : m_Registry()
     {
-        if (NetworkService::IsInitialized())
-        {
-            NetworkService::Get().RegisterMessage<NetworkPlayerSessionMessage>(NetworkPlayerSessionMessage::ChannelId);
-            NetworkService::Get().RegisterHandler<NetworkPlayerSessionMessage>([this](PeerId, const NetworkPlayerSessionMessage& msg)
-            {
-                OnPlayerSessionMessage(msg);
-            });
-
-            NetworkService::Get().RegisterPeerConnectedHandler([this](PeerId peerId)
-            {
-                OnPeerConnected(peerId);
-            });
-
-            NetworkService::Get().RegisterPeerDisconnectedHandler([this](PeerId peerId)
-            {
-                OnPeerDisconnected(peerId);
-            });
-        }
+        RegisterEngineSystems(*this);
     }
 
     World::~World()
@@ -57,45 +53,20 @@ namespace Sunset
     void World::Update(float dt)
     {
         SS_PROFILE_FUNCTION();
-        m_Registry.view<NativeScriptComponent>().each([&](const entt::entity entity, NativeScriptComponent& script)
-        {
-            // Todo move the instantiate to the BeginPlayScene.
-            if (script.m_ScriptEntitys.empty())
-            {
-                script.Start(this, entity);
-            }
 
-            for (const auto& it : script.m_ScriptEntitys)
-                it->OnUpdate(dt);
-        });
+        for (const auto& system : m_Systems)
+            system->Update(dt);
 
-        auto transformView = m_Registry.view<TransformComponent>();
-        for (auto entity : transformView)
-        {
-            transformView.get<TransformComponent>(entity).Update(dt);
-        }
-
-        m_Registry.view<InputComponent>().each([&](InputComponent& inputComponent)
-        {
-            inputComponent.EndFrame();
-        });
-
-        for (const auto view = m_Registry.view<CameraComponent>(); const auto entity : view)
-        {
-            if (const auto& cam = m_Registry.get<CameraComponent>(entity); cam.Primary)
-            {
-                RenderCommande::UseCamera(cam.camera);
-                break;
-            }
-        }
 
         if (!Application::IsHeadless())
         {
-            auto group = m_Registry.view<TransformComponent, MeshComponent>();
-            for (const auto& entity : group)
+            for (const auto view = m_Registry.view<CameraComponent>(); const auto entity : view)
             {
-                const auto& [transform, mesh] = group.get<TransformComponent, MeshComponent>(entity);
-                RenderCommande::Submit(mesh.m_mesh);
+                if (const auto& cam = m_Registry.get<CameraComponent>(entity); cam.Primary)
+                {
+                    RenderCommande::UseCamera(cam.camera);
+                    break;
+                }
             }
         }
     }
@@ -114,38 +85,5 @@ namespace Sunset
         Entity entity{this, m_Registry.create()};
         entity.AddComponent<TagComponent>(name);
         return entity;
-    }
-
-    void World::OnPeerConnected(PeerId peerId)
-    {
-        if (!NetworkService::Get().IsServer())
-            return;
-
-        NetworkPlayerSessionMessage assignMessage;
-        assignMessage.MessageType = NetworkPlayerSessionMessage::Type::AssignLocalPeer;
-        assignMessage.Peer = peerId;
-        NetworkService::Get().Send(peerId, assignMessage);
-
-        NetworkPlayerSessionMessage joinedMessage;
-        joinedMessage.MessageType = NetworkPlayerSessionMessage::Type::PlayerJoined;
-        joinedMessage.Peer = peerId;
-        NetworkService::Get().Broadcast(joinedMessage);
-    }
-
-    void World::OnPeerDisconnected(PeerId peerId)
-    {
-        if (!NetworkService::Get().IsServer())
-            return;
-
-        NetworkPlayerSessionMessage leftMessage;
-        leftMessage.MessageType = NetworkPlayerSessionMessage::Type::PlayerLeft;
-        leftMessage.Peer = peerId;
-        NetworkService::Get().Broadcast(leftMessage);
-    }
-
-    void World::OnPlayerSessionMessage(const NetworkPlayerSessionMessage& msg)
-    {
-        if (NetworkService::Get().IsServer())
-            return;
     }
 } // Sunset

@@ -15,12 +15,12 @@ namespace Sunset
     {
     }
 
-    void NativeScriptComponent::Start(World* world, const entt::entity& entity)
+    void NativeScriptComponent::Start(World* world, const Entity& entity)
     {
         for (auto& i : InstantiateScriptEntity)
         {
             m_ScriptEntitys.emplace_back(i());
-            m_ScriptEntitys.back()->m_Entity = {world, entity};
+            m_ScriptEntitys.back()->m_Entity = entity;
             m_ScriptEntitys.back()->OnBeginPlay();
         }
     }

@@ -224,14 +224,14 @@ namespace
                 }
                 case Sunset::ReflectionFieldType::UInt8:
                 {
-                    ImGui::InputInt(type.Name.c_str(), static_cast<int*>(ptr));
+                    int val = *static_cast<std::uint8_t*>(ptr);
+                    if (ImGui::InputInt(type.Name.c_str(), &val))
+                        *(static_cast<std::uint8_t*>(ptr)) = val;
                     break;
                 }
                 case Sunset::ReflectionFieldType::Int:
                 {
-                    int val = *static_cast<std::uint8_t*>(ptr);
-                    if (ImGui::InputInt(type.Name.c_str(), &val))
-                        *(static_cast<std::uint8_t*>(ptr)) = val;
+                    ImGui::InputInt(type.Name.c_str(), static_cast<int*>(ptr));
                     break;
                 }
                 case Sunset::ReflectionFieldType::String:
@@ -277,10 +277,9 @@ namespace Sunset
     void WorldHierarchyPanel::OnImGuiRender()
     {
         ImGui::Begin("Hierarchy");
-        m_Context->m_Registry.view<entt::entity>().each([&](const entt::entity entity)
+        m_Context->ForEach([&](const Entity& entity)
         {
-            const Entity entt{m_Context.get(), entity};
-            DrawNodeEntity(entt);
+            DrawNodeEntity(entity);
         });
 
         if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
@@ -331,7 +330,7 @@ namespace Sunset
                 auto& scale = tc->Scale;
 
                 ImGui::DragFloat3("Position", glm::value_ptr(position));
-                ImGui::DragFloat3("Rotation", glm::value_ptr(rotation));
+                ImGui::DragFloat4("Rotation", glm::value_ptr(rotation));
                 ImGui::DragFloat3("Scale", glm::value_ptr(scale));
                 ImGui::TreePop();
             }
@@ -344,6 +343,7 @@ namespace Sunset
                 for (auto& se : tc->m_ScriptEntitys)
                 {
                     ReflectionType properties = se->Properties();
+                    ImGui::Separator();
                     ImGui::Text(properties.Name.c_str());
                     DrawEditorObject(se.get(), properties);
                 }
