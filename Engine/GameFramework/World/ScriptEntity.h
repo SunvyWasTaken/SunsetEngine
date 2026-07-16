@@ -18,6 +18,8 @@ namespace Sunset
 
         virtual void OnUpdate(float dt) {};
 
+        virtual void OnDraw() {};
+
         virtual void OnEndPlay() {};
 
         template <typename T>
@@ -29,6 +31,6 @@ namespace Sunset
 
     private:
         Entity m_Entity;
-        friend class World;
+        friend class NativeScriptComponent;
     };
 } // Sunset

@@ -6,11 +6,6 @@
 
 namespace Sunset
 {
-    void InputComponent::BeginFrame()
-    {
-        inputSystem.Begin();
-    }
-
     void InputComponent::EndFrame()
     {
         inputSystem.EndFrame();

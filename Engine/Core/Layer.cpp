@@ -8,6 +8,7 @@
 #include "Core/ApplicationSetting.h"
 #include "GameInstance.h"
 #include "SRmGUI.h"
+#include "GameFramework/World/World.h"
 
 namespace Sunset
 {
@@ -31,6 +32,10 @@ namespace Sunset
         const auto& setting = Application::GetSetting();
         m_UIContext.Arrange({{0, 0}, setting.WindowSize});
         m_UIContext.Paint();
+
+        if (GetGameInstance())
+            if (const auto& world = GetGameInstance()->m_ActiveWorld)
+                world->Draw();
     }
 
     bool Layer::OnEvent(Event::Type& event)

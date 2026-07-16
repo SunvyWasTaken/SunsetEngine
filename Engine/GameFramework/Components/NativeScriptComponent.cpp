@@ -9,17 +9,19 @@
 namespace Sunset
 {
     NativeScriptComponent::NativeScriptComponent()
-        : m_ScriptEntity(nullptr)
-        , InstantiateScriptEntity(nullptr)
-        , DestroyScriptEntity(nullptr)
+        : m_ScriptEntitys()
+        , InstantiateScriptEntity()
+        // , DestroyScriptEntity(nullptr)
     {
     }
 
-    ReflectionType NativeScriptComponent::Properties()
+    void NativeScriptComponent::Start(World* world, const entt::entity& entity)
     {
-        if (!m_ScriptEntity)
-            return Component::Properties();
-
-        return m_ScriptEntity->Properties();
+        for (auto& i : InstantiateScriptEntity)
+        {
+            m_ScriptEntitys.emplace_back(i());
+            m_ScriptEntitys.back()->m_Entity = {world, entity};
+            m_ScriptEntitys.back()->OnBeginPlay();
+        }
     }
 } // Sunset

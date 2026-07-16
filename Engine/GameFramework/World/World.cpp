@@ -57,33 +57,16 @@ namespace Sunset
     void World::Update(float dt)
     {
         SS_PROFILE_FUNCTION();
-        m_Registry.view<InputComponent>().each([&](InputComponent& inputComponent)
-        {
-            inputComponent.BeginFrame();
-        });
-        m_Registry.view<CameraComponent>().each([&](CameraComponent& cameraComponent)
-        {
-            if (cameraComponent.Primary)
-                RenderCommande::UseCamera(cameraComponent.camera);
-        });
-
         m_Registry.view<NativeScriptComponent>().each([&](const entt::entity entity, NativeScriptComponent& script)
         {
             // Todo move the instantiate to the BeginPlayScene.
-            if (!script.m_ScriptEntity)
+            if (script.m_ScriptEntitys.empty())
             {
-                script.m_ScriptEntity = script.InstantiateScriptEntity();
-                script.m_ScriptEntity->m_Entity = {this, entity};
-                script.m_ScriptEntity->OnBeginPlay();
+                script.Start(this, entity);
             }
 
-            if (script.m_ScriptEntity)
-                script.m_ScriptEntity->OnUpdate(dt);
-        });
-
-        m_Registry.view<InputComponent>().each([&](InputComponent& inputComponent)
-        {
-            inputComponent.EndFrame();
+            for (const auto& it : script.m_ScriptEntitys)
+                it->OnUpdate(dt);
         });
 
         auto transformView = m_Registry.view<TransformComponent>();
@@ -92,11 +75,18 @@ namespace Sunset
             transformView.get<TransformComponent>(entity).Update(dt);
         }
 
-        auto view = m_Registry.view<CameraComponent>();
-        for (auto entity : view)
+        m_Registry.view<InputComponent>().each([&](InputComponent& inputComponent)
         {
-            auto& cam = m_Registry.get<CameraComponent>(entity);
-            // if ()
+            inputComponent.EndFrame();
+        });
+
+        for (const auto view = m_Registry.view<CameraComponent>(); const auto entity : view)
+        {
+            if (const auto& cam = m_Registry.get<CameraComponent>(entity); cam.Primary)
+            {
+                RenderCommande::UseCamera(cam.camera);
+                break;
+            }
         }
 
         if (!Application::IsHeadless())
@@ -108,6 +98,15 @@ namespace Sunset
                 RenderCommande::Submit(mesh.m_mesh);
             }
         }
+    }
+
+    void World::Draw()
+    {
+        m_Registry.view<NativeScriptComponent>().each([&](const entt::entity entity, NativeScriptComponent& script)
+        {
+            for (const auto& it : script.m_ScriptEntitys)
+                it->OnDraw();
+        });
     }
 
     Entity World::CreateEntity(const std::string &name)

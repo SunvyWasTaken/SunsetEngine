@@ -5,27 +5,54 @@
 #pragma once
 #include "Component.h"
 
+namespace entt
+{
+    enum class entity : std::uint32_t;
+}
+
 namespace Sunset
 {
+    class World;
     class ScriptEntity;
 
     class NativeScriptComponent : public Component
     {
     public:
         NativeScriptComponent();
-        ScriptEntity* m_ScriptEntity;
 
-        ReflectionType Properties() override;
+        NativeScriptComponent(const NativeScriptComponent&) = delete;
 
-        ScriptEntity* (*InstantiateScriptEntity)();
-        void(*DestroyScriptEntity)(NativeScriptComponent*);
+        NativeScriptComponent& operator=(const NativeScriptComponent&) = delete;
 
-        template <typename T>
+        NativeScriptComponent(NativeScriptComponent&&) noexcept = default;
+
+        NativeScriptComponent& operator=(NativeScriptComponent&&) noexcept = default;
+
+        std::vector<std::unique_ptr<ScriptEntity>> m_ScriptEntitys;
+
+        void Start(World* world, const entt::entity& entity);
+
+        std::vector<std::function<ScriptEntity*()>> InstantiateScriptEntity;
+        // void(*DestroyScriptEntity)(NativeScriptComponent*);
+
+        template <typename T, typename ...Args>
         requires(std::is_base_of_v<ScriptEntity, T>)
-        void Bind()
+        void Bind(Args&&... args)
         {
-            InstantiateScriptEntity = [](){ return static_cast<ScriptEntity*>(new T()); };
-            DestroyScriptEntity = [](NativeScriptComponent* self){ delete static_cast<T*>(self->m_ScriptEntity); };
+            using ArgsTuple = std::tuple<std::decay_t<Args>...>;
+            InstantiateScriptEntity.emplace_back([storedArgs = ArgsTuple{std::forward<Args>(args)...}]() mutable
+            {
+                return std::apply(
+                    []<typename... T0>(T0&&... unpackedArgs) -> ScriptEntity*
+                    {
+                        return new T(
+                            std::forward<T0>(unpackedArgs)...
+                        );
+                    },
+                    storedArgs
+                );
+            });
+            // DestroyScriptEntity = [](NativeScriptComponent* self){ delete static_cast<T*>(self->m_ScriptEntitys); };
         }
     };
 } // Sunset

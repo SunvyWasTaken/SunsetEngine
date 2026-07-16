@@ -42,6 +42,8 @@ namespace Sunset
 
         void Update(float dt);
 
+        void Draw();
+
         Entity CreateEntity(const std::string& name);
 
         void OnPeerConnected(PeerId peerId);

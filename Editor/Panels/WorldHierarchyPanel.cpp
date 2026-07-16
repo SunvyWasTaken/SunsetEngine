@@ -12,6 +12,7 @@
 #include "GameFramework/Components/NativeScriptComponent.h"
 #include "GameFramework/Components/TransformComponent.h"
 #include "GameFramework/World/Entity.h"
+#include "GameFramework/World/ScriptEntity.h"
 
 namespace
 {
@@ -221,9 +222,16 @@ namespace
                     ImGui::Checkbox(type.Name.c_str(), static_cast<bool*>(ptr));
                     break;
                 }
-                case Sunset::ReflectionFieldType::Int:
+                case Sunset::ReflectionFieldType::UInt8:
                 {
                     ImGui::InputInt(type.Name.c_str(), static_cast<int*>(ptr));
+                    break;
+                }
+                case Sunset::ReflectionFieldType::Int:
+                {
+                    int val = *static_cast<std::uint8_t*>(ptr);
+                    if (ImGui::InputInt(type.Name.c_str(), &val))
+                        *(static_cast<std::uint8_t*>(ptr)) = val;
                     break;
                 }
                 case Sunset::ReflectionFieldType::String:
@@ -333,8 +341,12 @@ namespace Sunset
         {
             if (ImGui::TreeNodeEx((void*)typeid(NativeScriptComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Script"))
             {
-                ReflectionType properties = tc->Properties();
-                DrawEditorObject(tc->m_ScriptEntity, properties);
+                for (auto& se : tc->m_ScriptEntitys)
+                {
+                    ReflectionType properties = se->Properties();
+                    ImGui::Text(properties.Name.c_str());
+                    DrawEditorObject(se.get(), properties);
+                }
                 ImGui::TreePop();
             }
         }

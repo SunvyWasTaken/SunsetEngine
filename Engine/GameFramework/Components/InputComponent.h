@@ -33,7 +33,6 @@ namespace Sunset
     class InputComponent : public Component
     {
     public:
-        void BeginFrame();
         void EndFrame();
         void OnEvent(const Event::Type& event);
         void BindAction(Key key, InputAction action);

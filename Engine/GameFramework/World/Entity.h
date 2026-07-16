@@ -17,9 +17,9 @@ namespace Sunset
         virtual ~Entity();
 
         template <typename T, typename ...Args>
+        requires(std::is_base_of_v<Component, T>)
         T& AddComponent(Args&&... args)
         {
-            static_assert(std::is_base_of_v<Component, T>, "The class should be derived from Component");
             return m_World->m_Registry.emplace<T>(m_Id, std::forward<Args>(args)...);
         }
 

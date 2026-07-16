@@ -26,15 +26,11 @@ namespace Sunset
         return value;
     }
 
-    void InputSystem::Begin()
+    void InputSystem::EndFrame()
     {
         Previous = Current;
         PreviousMouse = CurrentMouse;
         PreviousGamepads = CurrentGamepads;
-    }
-
-    void InputSystem::EndFrame()
-    {
         CurrentMouse.Delta = glm::f64vec2(0.0f, 0.0f);
         CurrentMouse.Scroll = glm::vec2(0.0f);
     }

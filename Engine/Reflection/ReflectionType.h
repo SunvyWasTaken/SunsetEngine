@@ -9,6 +9,7 @@ namespace Sunset
     enum class ReflectionFieldType
     {
         Float,
+        UInt8,
         Int,
         Bool,
         Vec2,
@@ -21,6 +22,12 @@ namespace Sunset
     {
         static_assert(always_false_v<T>, "ReflectionFieldType<T> is not implemented");
         return ReflectionFieldType::Float;
+    }
+
+    template <>
+    constexpr ReflectionFieldType GetReflectionFieldType<std::uint8_t>()
+    {
+        return ReflectionFieldType::UInt8;
     }
 
     template <>
@@ -68,6 +75,7 @@ namespace Sunset
 
     struct ReflectionType
     {
+        std::string Name;
         std::vector<ReflectionField> Fields;
 
         template <typename Class, typename F>
