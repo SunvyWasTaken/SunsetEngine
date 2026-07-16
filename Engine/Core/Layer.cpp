@@ -5,7 +5,7 @@
 #include "Layer.h"
 
 #include "Core/Application.h"
-#include "Core/ApplicationSetting.h"
+#include "Core/WindowSetting.h"
 #include "GameInstance.h"
 #include "SRmGUI.h"
 #include "GameFramework/World/World.h"
@@ -34,7 +34,7 @@ namespace Sunset
         m_UIContext.Paint();
     }
 
-    bool Layer::OnEvent(Event::Type& event)
+    bool Layer::OnEvent(const Event::Type& event)
     {
         if (std::holds_alternative<Event::Mouse>(event))
         {

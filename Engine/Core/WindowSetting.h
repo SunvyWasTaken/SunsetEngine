@@ -6,11 +6,12 @@
 
 namespace Sunset
 {
-    struct ApplicationSetting
+    struct WindowSetting
     {
         std::string_view WindowTitle{"SunsetEngine"};
         glm::ivec2 WindowSize{1280, 720};
-        float HeadlessTickRate = 60.0f;
-        bool Headless = false;
+        bool vSync{true};
+        float HeadlessTickRate{60.0f};
+        bool Headless{false};
     };
 }

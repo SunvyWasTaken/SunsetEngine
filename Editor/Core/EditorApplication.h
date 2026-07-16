@@ -11,6 +11,6 @@ namespace Sunset
     class EditorApplication : public Application
     {
     public:
-        EditorApplication(const ApplicationSetting& setting = ApplicationSetting{});
+        EditorApplication(const WindowSetting& setting = WindowSetting{});
     };
 } // Sunset

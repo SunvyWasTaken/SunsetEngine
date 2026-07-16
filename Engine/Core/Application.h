@@ -4,25 +4,26 @@
 
 #pragma once
 
-#include "ApplicationSetting.h"
+#include "WindowSetting.h"
 #include "Input.h"
 #include "LayerStack.h"
 
 namespace Sunset
 {
+    class Window;
     class Render;
-    struct ApplicationSetting;
+    struct WindowSetting;
     class Layer;
 
     class Application
     {
     public:
-        explicit Application(const ApplicationSetting& setting = ApplicationSetting{});
+        explicit Application(const WindowSetting& setting = WindowSetting{});
         virtual ~Application();
 
         void Run();
 
-        void OnEvent(Event::Type& event);
+        void OnEvent(const Event::Type& event);
 
         template <typename T, typename ...Args>
         void PushOverlay(Args&& ...args)
@@ -87,7 +88,7 @@ namespace Sunset
             m_GameInstance = std::make_unique<T>(std::forward<Args>(args)...);
         }
 
-        static const ApplicationSetting& GetSetting();
+        static const WindowSetting& GetSetting();
         static Application& GetApplication();
         static void ResizeWindow(const glm::ivec2& setting);
         static void* GetWindow();
@@ -97,6 +98,7 @@ namespace Sunset
 
     private:
         LayerStack m_LayerStack;
+        std::unique_ptr<Window> m_Window;
         std::unique_ptr<Render> m_Render;
         std::unique_ptr<GameInstance> m_GameInstance;
         std::vector<std::function<void()>> m_CommandBuffer;

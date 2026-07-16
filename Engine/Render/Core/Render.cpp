@@ -12,7 +12,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Core/Application.h"
-#include "Core/ApplicationSetting.h"
+#include "Core/WindowSetting.h"
 #include "SRmGUI.h"
 #include "SRmGUI_Opengl.h"
 #include "Core/Event.h"
@@ -55,7 +55,7 @@ namespace
         LOG("OpenGL", error, "[{}] {}", severityStr, message);
     }
 
-    GLFWwindow* CreateWin(const Sunset::ApplicationSetting& setting)
+    GLFWwindow* CreateWin(const Sunset::WindowSetting& setting)
     {
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -277,7 +277,7 @@ namespace Sunset
     Render::Render()
     {
         LOG("Engine", info, "Render Create")
-        const ApplicationSetting& setting = Application::GetSetting();
+        const WindowSetting& setting = Application::GetSetting();
         m_Window = CreateWin(setting);
         if (m_Window == NULL)
         {

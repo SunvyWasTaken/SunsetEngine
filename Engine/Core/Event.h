@@ -52,8 +52,8 @@ namespace Sunset::Event
 
     struct MouseScroll
     {
-        glm::vec2 offset;
-        glm::vec2 position;
+        glm::f64vec2 offset;
+        glm::f64vec2 position;
     };
 
     struct GamepadButton
@@ -78,7 +78,7 @@ namespace Sunset::Event
 
     struct Window
     {
-        glm::vec2 size;
+        glm::ivec2 size;
     };
 
     using Mouse = MouseButton;

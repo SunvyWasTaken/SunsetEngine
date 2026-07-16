@@ -4,17 +4,18 @@
 
 #include "Application.h"
 
-#include "ApplicationSetting.h"
+#include "WindowSetting.h"
 #include "GameInstance.h"
 #include "Layer.h"
 #include "Network/NetworkService.h"
 #include "../Render/Core/RenderCommand.h"
 #include "../Render/Core/Render.h"
+#include "Platform/Window.h"
 
 namespace
 {
     Sunset::Application* app = nullptr;
-    Sunset::ApplicationSetting AppSetting;
+    Sunset::WindowSetting AppSetting;
     bool IsAppRunning = true;
 
     struct EMA
@@ -45,8 +46,9 @@ namespace
 
 namespace Sunset
 {
-    Application::Application(const ApplicationSetting& setting)
+    Application::Application(const WindowSetting& setting)
         : m_LayerStack()
+        , m_Window(nullptr)
         , m_Render(nullptr)
         , m_GameInstance(std::make_unique<GameInstance>())
         , m_CommandBuffer()
@@ -57,10 +59,13 @@ namespace Sunset
         app = this;
         AppSetting = setting;
         IsAppRunning = true;
+
         if (!AppSetting.Headless)
         {
-            m_Render = std::make_unique<Render>();
-            m_Render->BindEvent([this](Event::Type& event){ OnEvent(event); });
+            m_Window = std::move(Window::CreateWindow(AppSetting));
+            m_Window->BindEvent([this](const Event::Type& event){OnEvent(event); });
+            // m_Render = std::make_unique<Render>();
+            // m_Render->BindEvent([this](Event::Type& event){ OnEvent(event); });
         }
         else
         {
@@ -90,6 +95,8 @@ namespace Sunset
             std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
             std::chrono::duration<float> dt = now - prev;
             prev = now;
+
+            m_Window->PollEvents();
 
             if (!AppSetting.Headless)
             {
@@ -121,6 +128,7 @@ namespace Sunset
                     (*--layer)->OnDraw();
 
                 RenderCommand::EndFrame();
+                m_Window->Present();
             }
 
             if (!m_CommandBuffer.empty())
@@ -142,7 +150,7 @@ namespace Sunset
         }
     }
 
-    void Application::OnEvent(Event::Type& event)
+    void Application::OnEvent(const Event::Type& event)
     {
         for (const auto& layer : m_LayerStack)
         {
@@ -151,7 +159,7 @@ namespace Sunset
         }
     }
 
-    const ApplicationSetting& Application::GetSetting()
+    const WindowSetting& Application::GetSetting()
     {
         return AppSetting;
     }

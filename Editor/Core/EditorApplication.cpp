@@ -6,7 +6,7 @@
 
 namespace Sunset
 {
-    EditorApplication::EditorApplication(const ApplicationSetting &setting)
+    EditorApplication::EditorApplication(const WindowSetting &setting)
         : Application(setting)
     {
     }

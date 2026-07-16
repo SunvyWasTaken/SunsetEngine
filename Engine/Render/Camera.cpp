@@ -5,7 +5,7 @@
 #include "Camera.h"
 
 #include "Core/Application.h"
-#include "Core/ApplicationSetting.h"
+#include "Core/WindowSetting.h"
 #include "Math/AABB.h"
 
 #include <glm/gtc/matrix_transform.hpp>

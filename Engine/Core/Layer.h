@@ -24,8 +24,9 @@ namespace Sunset
 
         virtual void OnDraw();
 
-        virtual bool OnEvent(Event::Type& event);
+        virtual bool OnEvent(const Event::Type& event);
 
+        [[nodiscard]]
         GameInstance* GetGameInstance() const
         {
             if (!m_GameInstance)

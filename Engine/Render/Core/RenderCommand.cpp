@@ -5,13 +5,14 @@
 #include "RenderCommand.h"
 
 #include "Core/Application.h"
-#include "Core/ApplicationSetting.h"
+#include "Core/WindowSetting.h"
 #include "../Camera.h"
 #include "../Resources/Drawable.h"
 #include "../FrameBuffer.h"
 #include "../Resources/Material.h"
 #include "../Meshes/Mesh.h"
 #include "Render.h"
+#include "Render/Core/RenderType.h"
 #include "../Backend/Shader.h"
 
 #include <imgui.h>
@@ -80,7 +81,7 @@ namespace
     {
         switch (type)
         {
-        case Sunset::PrimitiveType::Points:           return GL_POINT;
+        case Sunset::PrimitiveType::Points:           return GL_POINTS;
         case Sunset::PrimitiveType::Lines:            return GL_LINES;
         case Sunset::PrimitiveType::LineStrip:        return GL_LINE_STRIP;
         case Sunset::PrimitiveType::Triangles:        return GL_TRIANGLES;
@@ -254,7 +255,6 @@ namespace Sunset
         ResetFrameState();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glfwPollEvents();
         Render::PollGamepads();
 
         ImGui_ImplOpenGL3_NewFrame();
@@ -295,8 +295,6 @@ namespace Sunset
         ImGui::Render();
 
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        glfwSwapBuffers(static_cast<GLFWwindow*>(Application::GetWindow()));
     }
 
     void RenderCommand::BeginTarget(FrameBuffer& target, const glm::vec4& clearColor)
