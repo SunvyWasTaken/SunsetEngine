@@ -52,6 +52,7 @@ namespace Sunset
         , m_Yaw(-90.f)
         , m_Pitch(0.f)
         , fov(45.f)
+        , CameraDistance(50000.f)
     {
     }
 
@@ -62,7 +63,7 @@ namespace Sunset
     glm::mat4 Camera::GetProjection() const
     {
         const glm::ivec2& src = Application::GetSetting().WindowSize;
-        return glm::perspective(glm::radians(fov), static_cast<float>(src.x) / static_cast<float>(src.y), 0.1f, 1000.0f);
+        return glm::perspective(glm::radians(fov), static_cast<float>(src.x) / static_cast<float>(src.y), 0.1f, CameraDistance);
     }
 
     glm::mat4 Camera::GetViewMatrix() const
@@ -148,6 +149,11 @@ namespace Sunset
         m_Yaw += yaw;
 
         UpdateForward(m_Forward, m_Yaw, m_Pitch);
+    }
+
+    void Camera::SetCameraDistance(float distance)
+    {
+        CameraDistance = distance;
     }
 
     Frustum Camera::GetFrustum() const

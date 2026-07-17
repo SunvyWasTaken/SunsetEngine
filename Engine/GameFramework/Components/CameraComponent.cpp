@@ -6,6 +6,12 @@
 
 namespace Sunset
 {
+    ReflectionType CameraComponent::Properties()
+    {
+        ReflectionType properties;
+        return properties;
+    }
+
     void CameraComponent::Activate(const bool active)
     {
         Primary = active;

@@ -58,6 +58,8 @@ namespace Sunset
 
         void AddYaw(float yaw);
 
+        void SetCameraDistance(float distance);
+
         Frustum GetFrustum() const;
 
     private:
@@ -68,6 +70,8 @@ namespace Sunset
         float m_Yaw, m_Pitch;
 
         float fov;
+        float CameraDistance;
+        friend class CameraComponent;
     };
 }
 
