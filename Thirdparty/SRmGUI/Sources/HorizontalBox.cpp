@@ -12,7 +12,8 @@ namespace SRmGUI
     {
         Widget::Arrange(viewportRect);
 
-        auto&[Position, Size] = m_Bounds;
+        const glm::vec2& Position = m_Bounds.Position;
+        const glm::vec2& Size = m_Bounds.Size;
 
         const auto nbrChild = childs.size();
         const auto objSize = Size.x / nbrChild;

@@ -12,7 +12,7 @@ namespace Sunset
     struct Component
     {
         Component() = default;
-        virtual ~Component() = default;
+        virtual ~Component();
 
         virtual ReflectionType Properties();
     };

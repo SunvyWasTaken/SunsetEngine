@@ -15,6 +15,11 @@ namespace Sunset
     {
     }
 
+    NativeScriptComponent::~NativeScriptComponent()
+    {
+        LOG("Engine", info, "NativeScriptComponent::~NativeScriptComponent()")
+    }
+
     void NativeScriptComponent::Start(World* world, const Entity& entity)
     {
         for (auto& i : InstantiateScriptEntity)

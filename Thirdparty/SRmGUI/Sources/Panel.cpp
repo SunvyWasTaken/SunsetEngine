@@ -23,7 +23,7 @@ namespace SRmGUI
             return;
 
         for (const auto& c : childs)
-            c->Arrange(c->GetDesireRect());
+            c->Arrange(m_Bounds);
     }
 
     void Panel::Paint(FormeDatas &out)

@@ -52,6 +52,12 @@ namespace SRmGUI
 
         void SetOffset(const glm::vec2& offset);
 
+        void SetAnchors(const glm::vec2& min, const glm::vec2& max);
+
+        void SetAnchorMin(const glm::vec2& min);
+
+        void SetAnchorMax(const glm::vec2& max);
+
     protected:
         WidgetWeak m_Parent;
         Rect m_DesireParameter;
@@ -129,6 +135,32 @@ namespace SRmGUI
         Derived& Offset(const glm::vec2& offset)
         {
             m_Widget->SetOffset(offset);
+            return static_cast<Derived&>(*this);
+        }
+
+        Derived& Anchors(const glm::vec2& min, const glm::vec2& max)
+        {
+            m_Widget->SetAnchors(min, max);
+            return static_cast<Derived&>(*this);
+        }
+
+        Derived& AnchorMin(const glm::vec2& min)
+        {
+            m_Widget->SetAnchorMin(min);
+            return static_cast<Derived&>(*this);
+        }
+
+        Derived& AnchorMax(const glm::vec2& max)
+        {
+            m_Widget->SetAnchorMax(max);
+            return static_cast<Derived&>(*this);
+        }
+
+        Derived& Fill()
+        {
+            m_Widget->SetPosition({0, 0});
+            m_Widget->SetSize({0, 0});
+            m_Widget->SetAnchors({0, 0}, {1, 1});
             return static_cast<Derived&>(*this);
         }
 

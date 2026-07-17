@@ -9,5 +9,6 @@ namespace Sunset
     void LayerStack::Clear()
     {
         m_Layers.clear();
+        m_OverlayPosition = 0;
     }
 }

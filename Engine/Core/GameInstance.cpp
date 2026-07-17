@@ -15,6 +15,7 @@ namespace Sunset
 
     GameInstance::~GameInstance()
     {
+        LOG("Engine", info, "GameInstance::~GameInstance()")
     }
 
     void GameInstance::Update(float dt)

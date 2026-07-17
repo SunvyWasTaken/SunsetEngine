@@ -38,7 +38,7 @@ namespace Sunset
     World::~World()
     {
         NetworkService::Shutdown();
-        LOG("Engine", trace, "World::~World()")
+        LOG("Engine", info, "World::~World()")
     }
 
     bool World::OnEvent(const Event::Type &event)

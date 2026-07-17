@@ -15,6 +15,7 @@ namespace Sunset
     {
         static void BeginFrame();
         static void EndFrame();
+        static void Shutdown();
 
         static void BeginTarget(FrameBuffer& target, const glm::vec4& clearColor = glm::vec4(0.0f));
         static void EndTarget();
@@ -23,5 +24,6 @@ namespace Sunset
         static void Submit(const Drawable& mesh, const glm::mat4& model);
         static void UseCamera(const Camera& camera);
         static void ShowCursor(bool show);
+        static void SetViewport(const glm::ivec2& viewport);
     };
 }

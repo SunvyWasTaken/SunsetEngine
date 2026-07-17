@@ -8,6 +8,7 @@ namespace Sunset
 {
     ScriptEntity::~ScriptEntity()
     {
+        LOG("Engine", info, "ScriptEntity::~ScriptEntity()")
     }
 
     ReflectionType ScriptEntity::Properties()

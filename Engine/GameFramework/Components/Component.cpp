@@ -6,6 +6,11 @@
 
 namespace Sunset
 {
+    Component::~Component()
+    {
+        LOG("Engine", trace, "Component::~Component()")
+    }
+
     ReflectionType Component::Properties()
     {
         return {};

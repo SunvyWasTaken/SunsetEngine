@@ -33,15 +33,24 @@ namespace SRmGUI
 
     void Widget::Arrange(const Rect &viewportRect)
     {
-        auto&[Position, Size] = m_Bounds;
+        auto& Position = m_Bounds.Position;
+        auto& Size = m_Bounds.Size;
 
-        Size = glm::min(m_DesireParameter.Size, viewportRect.Size);
+        const glm::vec2 anchorMin = glm::clamp(m_DesireParameter.AnchorMin, glm::vec2{0.0f}, m_DesireParameter.AnchorMax);
+        const glm::vec2 anchorMax = glm::clamp(m_DesireParameter.AnchorMax, anchorMin, glm::vec2{1.0f});
+
+        const glm::vec2 anchorPosition = viewportRect.Position + viewportRect.Size * anchorMin;
+        const glm::vec2 anchorSize = viewportRect.Size * (anchorMax - anchorMin);
+
+        Position = anchorPosition + m_DesireParameter.Position + m_Offset;
+        Size = anchorSize + m_DesireParameter.Size;
+
+        if (anchorMin == anchorMax)
+            Size = glm::min(Size, viewportRect.Size);
+
+        Position += glm::vec2{m_Padding.w, m_Padding.x};
+        Size -= glm::vec2{m_Padding.w + m_Padding.y, m_Padding.x + m_Padding.z};
         Size = glm::max(Size, glm::vec2{0, 0});
-
-        Position = viewportRect.Position + m_Offset;
-
-        Position += glm::ivec2{m_Padding.w, m_Padding.x};
-        Size -= glm::ivec2{m_Padding.w + m_Padding.y, m_Padding.x + m_Padding.z};
     }
 
     void Widget::Paint(FormeDatas &out)
@@ -121,5 +130,21 @@ namespace SRmGUI
     void Widget::SetOffset(const glm::vec2 &offset)
     {
         m_Offset = offset;
+    }
+
+    void Widget::SetAnchors(const glm::vec2 &min, const glm::vec2 &max)
+    {
+        SetAnchorMin(min);
+        SetAnchorMax(max);
+    }
+
+    void Widget::SetAnchorMin(const glm::vec2 &min)
+    {
+        m_DesireParameter.AnchorMin = glm::clamp(min, {0, 0}, {1, 1});
+    }
+
+    void Widget::SetAnchorMax(const glm::vec2 &max)
+    {
+        m_DesireParameter.AnchorMax = glm::clamp(max, {0, 0}, {1, 1});
     }
 } // SRmGUI

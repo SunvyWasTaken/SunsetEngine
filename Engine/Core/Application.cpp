@@ -76,8 +76,6 @@ namespace Sunset
     {
         OnDestroy();
 
-        m_LayerStack.Clear();
-
         app = nullptr;
 
         LOG("Engine", info, "App Destroy");
@@ -154,6 +152,12 @@ namespace Sunset
 
     void Application::OnDestroy()
     {
+        m_CommandBuffer.clear();
+        m_LayerStack.Clear();
+        m_GameInstance.reset();
+        RenderCommand::Shutdown();
+        NetworkService::Shutdown();
+        m_Window.reset();
     }
 
     void Application::BeginFrame()
@@ -168,6 +172,12 @@ namespace Sunset
 
     void Application::OnEvent(const Event::Type& event)
     {
+        if (std::holds_alternative<Event::Window>(event))
+        {
+            auto& window = std::get<Event::Window>(event);
+            AppSetting.WindowSize = window.size;
+            RenderCommand::SetViewport(window.size);
+        }
         for (const auto& layer : m_LayerStack)
         {
             if (layer->OnEvent(event))

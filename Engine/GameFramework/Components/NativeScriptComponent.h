@@ -29,6 +29,8 @@ namespace Sunset
 
         NativeScriptComponent& operator=(NativeScriptComponent&&) noexcept = default;
 
+        ~NativeScriptComponent() override;
+
         std::vector<std::unique_ptr<ScriptEntity>> m_ScriptEntitys;
 
         void Start(World* world, const Entity& entity);

@@ -10,5 +10,7 @@ namespace SRmGUI
     {
         glm::vec2 Position = {0, 0};
         glm::vec2 Size = {1920, 1080};
+        glm::vec2 AnchorMin = {0, 0};
+        glm::vec2 AnchorMax = {0, 0};
     };
 }

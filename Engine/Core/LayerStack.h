@@ -61,6 +61,6 @@ namespace Sunset
 
     private:
         std::vector<std::unique_ptr<Layer>> m_Layers;
-        uint32_t m_OverlayPosition = 0;
+        std::uint32_t m_OverlayPosition = 0;
     };
 }
