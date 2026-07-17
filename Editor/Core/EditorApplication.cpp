@@ -49,6 +49,25 @@ namespace Sunset
     {
         Application::EndFrame();
 
+        if (!PrintScreen::Get().empty())
+        {
+            ImGui::Begin("Stats", nullptr);
+            for (const auto& it : PrintScreen::Get())
+            {
+                ImGui::Text("%s", it.c_str());
+            }
+            ImGui::End();
+        }
+        if (!ProfileData::Get().empty())
+        {
+            ImGui::Begin("Profiling", nullptr);
+            for (const auto& it : ProfileData::Get())
+            {
+                ImGui::Text("%s", it.c_str());
+            }
+            ImGui::End();
+        }
+
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }

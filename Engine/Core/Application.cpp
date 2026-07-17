@@ -119,7 +119,6 @@ namespace Sunset
             if (!AppSetting.Headless)
             {
                 SS_PROFILE_SCOPE("Render part");
-                RenderCommand::BeginFrame();
                 BeginFrame();
                 if (m_GameInstance)
                     m_GameInstance->Draw();
@@ -127,7 +126,6 @@ namespace Sunset
                 for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )
                     (*--layer)->OnDraw();
 
-                RenderCommand::EndFrame();
                 EndFrame();
                 m_Window->Present();
             }
@@ -140,6 +138,9 @@ namespace Sunset
                 }
                 m_CommandBuffer.clear();
             }
+
+            PrintScreen::Clear();
+            ProfileData::Free();
 
             if (AppSetting.Headless && AppSetting.HeadlessTickRate > 0.0f)
             {
@@ -157,10 +158,12 @@ namespace Sunset
 
     void Application::BeginFrame()
     {
+        RenderCommand::BeginFrame();
     }
 
     void Application::EndFrame()
     {
+        RenderCommand::EndFrame();
     }
 
     void Application::OnEvent(const Event::Type& event)

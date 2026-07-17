@@ -15,6 +15,7 @@ namespace Sunset
     {
     public:
         explicit OpenGLContext(GLFWwindow* windowHandle);
+        ~OpenGLContext() override;
 
         void Init() override;
         void MakeCurrent() override;

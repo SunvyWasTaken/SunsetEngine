@@ -7,7 +7,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "Platform/GLFW/GLFWWindow.h"
+#include "SRmGUI.h"
+#include "SRmGUI_Opengl.h"
 
 namespace Sunset
 {
@@ -19,11 +20,18 @@ namespace Sunset
             throw std::runtime_error("OpenGLContext received a null windowHandle");
     }
 
+    OpenGLContext::~OpenGLContext()
+    {
+        SRmGUI::Opengl_Shutdown();
+    }
+
     void OpenGLContext::Init()
     {
         MakeCurrent();
 
         const int loader = gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+
+        SRmGUI::Opengl_Init();
 
         if (loader == GL_FALSE)
             throw std::runtime_error("Failed to initialize GLAD");
@@ -36,6 +44,7 @@ namespace Sunset
 
     void OpenGLContext::SwapBuffers()
     {
+        SRmGUI::Opengl_DrawData(SRmGUI::GetDrawData());
         glfwSwapBuffers(m_WindowHandle);
     }
 } // Sunset
