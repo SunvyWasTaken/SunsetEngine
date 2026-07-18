@@ -131,6 +131,41 @@ cmake -S . -B build \
 
 La cible est liée uniquement à `SunsetEditor`; `SunsetEngine` reste indépendant du projet. Une erreur de configuration explicite est émise si le nom de cible sélectionné n'existe pas.
 
+#### Exemple : intégrer SunsetCraft
+
+Supposons que le projet `SunsetCraft` expose déjà `GameModule::InitGame`, comme c'était le cas lorsque l'éditeur le liait directement. Déplacez cet appel dans un fichier du projet, par exemple `SunsetCraftEditorEntrypoint.cpp` :
+
+```cpp
+#include <Core/EditorApplication.h>
+#include "SunsetCraftModule.h"
+
+namespace Sunset
+{
+    void ConfigureEditorApplication(EditorApplication& app)
+    {
+        GameModule::InitGame(app);
+    }
+}
+```
+
+Ajoutez ce fichier et les en-têtes de l'éditeur à la cible `SunsetCraft` :
+
+```cmake
+target_sources(SunsetCraft PRIVATE SunsetCraftEditorEntrypoint.cpp)
+target_include_directories(SunsetCraft PRIVATE "${SUNSET_EDITOR_SOURCE_DIR}")
+```
+
+Configurez ensuite le workspace en indiquant où se trouve le projet et quelle cible doit être chargée par l'éditeur :
+
+```bash
+cmake -S . -B build \
+  -DSUNSET_EDITOR_APPLICATION_PATH=/chemin/vers/SunsetCraft \
+  -DSUNSET_EDITOR_APPLICATION_TARGET=SunsetCraft
+cmake --build build --target SunsetEditor
+```
+
+`SunsetEditor` lie alors `SunsetCraft`, appelle son point d'entrée générique, et `GameModule::InitGame(app)` est exécuté sans que le code de l'éditeur ne connaisse le projet `SunsetCraft`.
+
 ---
 
 ## Intégration dans un projet CMake
