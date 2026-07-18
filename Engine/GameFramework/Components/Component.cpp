@@ -4,11 +4,18 @@
 
 #include "Component.h"
 
+#include "GameFramework/World/Entity.h"
+
 namespace Sunset
 {
     Component::~Component()
     {
         LOG("Engine", trace, "Component::~Component()")
+    }
+
+    Entity Component::GetOwner() const
+    {
+        return Entity{m_world, m_owner};
     }
 
     ReflectionType Component::Properties()

@@ -54,7 +54,7 @@ namespace Sunset
    class InputSystem
    {
    public:
-      void EndFrame();
+      void BeginFrame();
       void ProcessEvent(const Event::Type& event);
 
       void SetKey(Key key, bool down);

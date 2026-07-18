@@ -18,8 +18,6 @@ namespace Sunset
 
         virtual void OnUpdate(float dt) {};
 
-        virtual void OnDraw() {};
-
         virtual void OnEndPlay() {};
 
         template <typename T>

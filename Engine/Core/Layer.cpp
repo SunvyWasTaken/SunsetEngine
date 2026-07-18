@@ -49,6 +49,11 @@ namespace Sunset
         return false;
     }
 
+    World* Layer::GetWorld() const
+    {
+        return m_GameInstance->m_ActiveWorld.get();
+    }
+
     void Layer::AddToViewport(const SRmGUI::WidgetPtr &widget)
     {
         m_UIContext.SetRoot(widget);

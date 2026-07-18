@@ -93,7 +93,6 @@ namespace Sunset
 
         static const WindowSetting& GetSetting();
         static Application& GetApplication();
-        static void ResizeWindow(const glm::ivec2& setting);
         static void* GetWindow();
         static bool IsHeadless();
 

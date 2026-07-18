@@ -9,6 +9,7 @@
 
 namespace Sunset
 {
+    class World;
     class GameInstance;
 
     class Layer
@@ -34,6 +35,9 @@ namespace Sunset
 
             return m_GameInstance;
         }
+
+        [[nodiscard]]
+        World* GetWorld() const;
 
         void AddToViewport(const SRmGUI::WidgetPtr& widget);
         SRmGUI::Context& GetUIContext();

@@ -26,7 +26,7 @@ namespace Sunset
         return value;
     }
 
-    void InputSystem::EndFrame()
+    void InputSystem::BeginFrame()
     {
         Previous = Current;
         PreviousMouse = CurrentMouse;

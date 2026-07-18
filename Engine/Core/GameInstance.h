@@ -16,8 +16,6 @@ namespace Sunset
 
         void Update(float dt);
 
-        void Draw();
-
         std::shared_ptr<World> m_ActiveWorld;
     };
 } // Sunset

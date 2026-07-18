@@ -10,19 +10,17 @@
 #include "GameFramework/Components/CameraComponent.h"
 #include "GameFramework/Components/InputComponent.h"
 #include "GameFramework/Components/NativeScriptComponent.h"
-#include "GameFramework/System/InputSystem.h"
 #include "GameFramework/System/IWorldSystem.h"
 #include "GameFramework/System/NativeScriptingSystem.h"
 #include "GameFramework/System/RenderMeshSystem.h"
 #include "Network/NetworkService.h"
-#include "../../Render/Core/RenderCommand.h"
+#include "Render/Core/RenderCommand.h"
 
 namespace
 {
     void RegisterEngineSystems(Sunset::World& world)
     {
         world.AddSystem<Sunset::NativeScriptingSystem>();
-        world.AddSystem<Sunset::InputWorldSystem>();
         world.AddSystem<Sunset::RenderMeshSystem>();
     }
 }
@@ -39,6 +37,14 @@ namespace Sunset
     {
         NetworkService::Shutdown();
         LOG("Engine", info, "World::~World()")
+    }
+
+    void World::BeginInput()
+    {
+        m_Registry.view<InputComponent>().each([&](InputComponent& inputComponent)
+        {
+           inputComponent.BeginFrame();
+        });
     }
 
     bool World::OnEvent(const Event::Type &event)
@@ -69,15 +75,6 @@ namespace Sunset
                 }
             }
         }
-    }
-
-    void World::Draw()
-    {
-        m_Registry.view<NativeScriptComponent>().each([&](const entt::entity entity, NativeScriptComponent& script)
-        {
-            for (const auto& it : script.m_ScriptEntitys)
-                it->OnDraw();
-        });
     }
 
     Entity World::CreateEntity(const std::string &name)

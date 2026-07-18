@@ -4,15 +4,31 @@
 
 #pragma once
 
-#include "../../Render/Resources/Drawable.h"
+#include <entt/entity/entity.hpp>
+
+#include "Render/Resources/Drawable.h"
 #include "Reflection/ReflectionType.h"
 
 namespace Sunset
 {
+    class World;
+    class Entity;
+
     struct Component
     {
+    private:
+        friend class Entity;
+        World* m_world = nullptr;
+        entt::entity m_owner = entt::null;
+    public:
         Component() = default;
         virtual ~Component();
+
+        Entity GetOwner() const;
+
+        template <typename T>
+        requires std::is_base_of_v<Component, T>
+        T* GetComponent() const;
 
         virtual ReflectionType Properties();
     };

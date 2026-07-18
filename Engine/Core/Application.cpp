@@ -10,6 +10,7 @@
 #include "Network/NetworkService.h"
 #include "../Render/Core/RenderCommand.h"
 #include "../Render/Core/RenderAPI.h"
+#include "GameFramework/World/World.h"
 #include "Platform/Window.h"
 
 namespace
@@ -20,7 +21,14 @@ namespace
 
     struct EMA
     {
-        std::deque<float> dts;
+        std::vector<float> dts;
+        size_t currentIndex = 0;
+        const size_t nbrFrame = 60;
+
+        EMA()
+        {
+            dts.reserve(nbrFrame);
+        }
 
         void Display() const
         {
@@ -35,13 +43,23 @@ namespace
 
         void Add(const float dt)
         {
-            if (dts.size() >= 180)
+            if (dts.size() < nbrFrame)
+                dts.emplace_back(dt);
+            else
             {
-                dts.pop_front();
+                dts[currentIndex++] = dt;
+                if (currentIndex >= nbrFrame)
+                    currentIndex = 0;
             }
-            dts.push_back(dt);
+
         }
     }fpsema;
+
+    void ResizeWindow(const glm::ivec2& setting)
+    {
+        AppSetting.WindowSize = setting;
+        Sunset::RenderCommand::SetViewport(setting);
+    }
 }
 
 namespace Sunset
@@ -94,7 +112,10 @@ namespace Sunset
             prev = now;
 
             if (m_Window)
+            {
+                m_GameInstance->m_ActiveWorld->BeginInput();
                 m_Window->PollEvents();
+            }
 
             if (!AppSetting.Headless)
             {
@@ -118,9 +139,6 @@ namespace Sunset
             {
                 SS_PROFILE_SCOPE("Render part");
                 BeginFrame();
-                if (m_GameInstance)
-                    m_GameInstance->Draw();
-
                 for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )
                     (*--layer)->OnDraw();
 
@@ -174,9 +192,8 @@ namespace Sunset
     {
         if (std::holds_alternative<Event::Window>(event))
         {
-            auto& window = std::get<Event::Window>(event);
-            AppSetting.WindowSize = window.size;
-            RenderCommand::SetViewport(window.size);
+            const auto&[size] = std::get<Event::Window>(event);
+            ResizeWindow(size);
         }
         for (const auto& layer : m_LayerStack)
         {
@@ -193,11 +210,6 @@ namespace Sunset
     Application& Application::GetApplication()
     {
         return *app;
-    }
-
-    void Application::ResizeWindow(const glm::ivec2& setting)
-    {
-        AppSetting.WindowSize = setting;
     }
 
     void* Application::GetWindow()

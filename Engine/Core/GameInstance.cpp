@@ -23,10 +23,4 @@ namespace Sunset
         if (m_ActiveWorld)
             m_ActiveWorld->Update(dt);
     }
-
-    void GameInstance::Draw()
-    {
-        if (m_ActiveWorld)
-            m_ActiveWorld->Draw();
-    }
 } // Sunset

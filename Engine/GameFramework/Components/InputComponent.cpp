@@ -6,9 +6,9 @@
 
 namespace Sunset
 {
-    void InputComponent::EndFrame()
+    void InputComponent::BeginFrame()
     {
-        inputSystem.EndFrame();
+        inputSystem.BeginFrame();
     }
 
     void InputComponent::OnEvent(const Event::Type &event)

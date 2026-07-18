@@ -38,11 +38,11 @@ namespace Sunset
 
         virtual ~World();
 
+        void BeginInput();
+
         bool OnEvent(const Event::Type& event);
 
         void Update(float dt);
-
-        void Draw();
 
         template <typename T>
         requires std::is_base_of_v<IWorldSystem, T>

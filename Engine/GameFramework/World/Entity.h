@@ -20,7 +20,10 @@ namespace Sunset
         requires(std::is_base_of_v<Component, T>)
         T& AddComponent(Args&&... args)
         {
-            return m_World->m_Registry.emplace<T>(m_Id, std::forward<Args>(args)...);
+            auto& comp = m_World->m_Registry.emplace<T>(m_Id, std::forward<Args>(args)...);
+            comp.m_world = m_World;
+            comp.m_owner = m_Id;
+            return comp;
         }
 
         template <typename T>
@@ -33,7 +36,7 @@ namespace Sunset
         }
 
         template <typename T>
-        void RemoveComponent()
+        void RemoveComponent() const
         {
             m_World->m_Registry.remove<T>(m_Id);
         }
@@ -43,12 +46,12 @@ namespace Sunset
             return m_World != nullptr && m_Id != entt::null;
         }
 
-        operator entt::entity() const
+        explicit operator entt::entity() const
         {
             return m_Id;
         }
 
-        operator std::uint32_t() const
+        explicit operator std::uint32_t() const
         {
             return static_cast<std::uint32_t>(m_Id);
         }
@@ -69,4 +72,11 @@ namespace Sunset
 
         entt::entity m_Id;
     };
+
+    template <typename T>
+    requires std::is_base_of_v<Component, T>
+    T* Component::GetComponent() const
+    {
+        return GetOwner().GetComponent<T>();
+    }
 } // Sunset
