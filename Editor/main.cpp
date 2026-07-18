@@ -2,9 +2,9 @@
 // Created by sunvy on 06/07/2026.
 //
 
-#include "SunsetCraftModule.h"
 #include "SunsetEngine.h"
 #include "Core/EditorApplication.h"
+#include "Core/EditorApplicationEntrypoint.h"
 
 #include "Layers/EditorLayer.h"
 
@@ -12,6 +12,6 @@ int main()
 {
     Sunset::EditorApplication app;
     app.PushLayer<Sunset::EditorLayer>();
-    GameModule::InitGame(app);
+    Sunset::ConfigureEditorApplication(app);
     app.Run();
 }

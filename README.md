@@ -93,7 +93,43 @@ cmake --build build
 
 Pour des chemins d'exécution proches d'un build distribué, configurez avec `-DPRODUCTION_BUILD=ON`. Dans ce mode, `SAVE_PATH` vaut `./Save/` et `ENGINE_SHADERS_PATH` vaut `./Shaders/`. En développement, ces chemins pointent vers l'arborescence source.
 
-> Note : l'éditeur est une application de validation du moteur. Selon l'intégration locale du module de jeu, il peut nécessiter des cibles supplémentaires au moment du link.
+### Choisir l'application ouverte par l'éditeur
+
+L'éditeur ne dépend d'aucun jeu par défaut : il démarre avec sa couche d'édition et une configuration d'application vide. Pour lui faire ouvrir/configurer une application, le projet doit fournir une bibliothèque CMake et définir le point d'entrée suivant :
+
+Ajoutez d'abord `${SUNSET_EDITOR_SOURCE_DIR}` aux répertoires d'inclusion privés de cette bibliothèque afin qu'elle puisse inclure l'API de l'éditeur :
+
+```cmake
+target_include_directories(MyGame PRIVATE "${SUNSET_EDITOR_SOURCE_DIR}")
+```
+
+```cpp
+#include <Core/EditorApplication.h>
+
+namespace Sunset
+{
+    void ConfigureEditorApplication(EditorApplication& app)
+    {
+        // Ajoutez ici les layers, le monde ou toute configuration du projet.
+    }
+}
+```
+
+Sélectionnez cette cible lors de la configuration. Si le projet est déjà ajouté au build parent, indiquez seulement son nom de cible :
+
+```bash
+cmake -S . -B build -DSUNSET_EDITOR_APPLICATION_TARGET=MyGame
+```
+
+Sinon, fournissez aussi le répertoire contenant son `CMakeLists.txt` (il doit définir la cible indiquée) :
+
+```bash
+cmake -S . -B build \
+  -DSUNSET_EDITOR_APPLICATION_PATH=/chemin/vers/MyGame \
+  -DSUNSET_EDITOR_APPLICATION_TARGET=MyGame
+```
+
+La cible est liée uniquement à `SunsetEditor`; `SunsetEngine` reste indépendant du projet. Une erreur de configuration explicite est émise si le nom de cible sélectionné n'existe pas.
 
 ---
 
