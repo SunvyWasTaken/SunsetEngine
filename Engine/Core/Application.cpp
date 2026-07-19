@@ -92,6 +92,14 @@ namespace Sunset
     void Application::SetWindow(std::unique_ptr<Window> window)
     {
         m_Window = std::move(window);
+        m_Window->BindEvent([this](const Event::Type& event) { OnEvent(event); });
+    }
+
+    void Application::InitializeWindow()
+    {
+        if (!m_Window)
+            throw std::runtime_error("Application window has not been configured");
+        OnWindowReady();
     }
 
     void Application::Run()
@@ -179,6 +187,10 @@ namespace Sunset
     void Application::EndFrame()
     {
         RenderCommand::EndFrame();
+    }
+
+    void Application::OnWindowReady()
+    {
     }
 
     void Application::OnEvent(const Event::Type& event)

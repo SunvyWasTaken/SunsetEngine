@@ -8,15 +8,9 @@
 
 namespace
 {
-    std::unique_ptr<Sunset::RenderAPI> CreateRenderAPI()
-    {
-        return nullptr;
-        // return std::make_unique<Sunset::OpenGLGraphicsDevice>();
-    }
-
     std::unique_ptr<Sunset::RenderAPI>& GetRenderAPIStorage()
     {
-        static std::unique_ptr<Sunset::RenderAPI> api = CreateRenderAPI();
+        static std::unique_ptr<Sunset::RenderAPI> api;
         return api;
     }
 
@@ -24,7 +18,7 @@ namespace
     {
         auto& api = GetRenderAPIStorage();
         if (!api)
-            api = CreateRenderAPI();
+            throw std::runtime_error("Sunset Render API not available");
 
         return *api;
     }
@@ -32,6 +26,15 @@ namespace
 
 namespace Sunset
 {
+    void RenderCommand::SetRenderAPI(std::unique_ptr<RenderAPI> api)
+    {
+        if (!api)
+            return;
+
+        api->Init();
+        GetRenderAPIStorage() = std::move(api);
+    }
+
     void RenderCommand::BeginFrame() { GetRenderAPI().BeginFrame(); }
     void RenderCommand::EndFrame() { GetRenderAPI().EndFrame(); }
     void RenderCommand::Shutdown(){  GetRenderAPIStorage().reset(); }

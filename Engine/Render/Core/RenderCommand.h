@@ -6,6 +6,7 @@
 
 namespace Sunset
 {
+    class RenderAPI;
     class Mesh;
     class Camera;
     class Drawable;
@@ -13,6 +14,8 @@ namespace Sunset
 
     struct RenderCommand
     {
+        static void SetRenderAPI(std::unique_ptr<RenderAPI> api);
+
         static void BeginFrame();
         static void EndFrame();
         static void Shutdown();

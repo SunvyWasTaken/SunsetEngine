@@ -2,15 +2,13 @@ cmake_minimum_required(VERSION 3.28)
 
 project(SRmGUI)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
 find_package(glm CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 
 add_library(${PROJECT_NAME} STATIC ${MY_SOURCES})
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)
 
 if(PRODUCTION_BUILD)
     target_compile_definitions(${PROJECT_NAME} PUBLIC SRmGUI_RESOURCES=\"./Resources/\")

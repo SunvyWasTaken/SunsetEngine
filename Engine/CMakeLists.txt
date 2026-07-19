@@ -17,21 +17,12 @@ target_include_directories(
 )
 
 if(PRODUCTION_BUILD)
-    target_compile_definitions(${PROJECT_NAME} PUBLIC SAVE_PATH=\"./Save/\")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE ENGINE_SHADERS_PATH=\"./Shaders/\")
+    target_compile_definitions(SunsetEngine PUBLIC SAVE_PATH=\"./Save/\")
+    target_compile_definitions(SunsetEngine PRIVATE ENGINE_SHADERS_PATH=\"./Shaders/\")
 else()
-    target_compile_definitions(${PROJECT_NAME} PUBLIC SAVE_PATH=\"${CMAKE_SOURCE_DIR}/Save/\")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE ENGINE_SHADERS_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/Shaders/\")
+    target_compile_definitions(SunsetEngine PUBLIC SAVE_PATH=\"${CMAKE_SOURCE_DIR}/Save/\")
+    target_compile_definitions(SunsetEngine PRIVATE ENGINE_SHADERS_PATH=\"${CMAKE_SOURCE_DIR}/Shaders/\")
 endif()
-
-find_package(glfw3 CONFIG REQUIRED)
-find_package(glad CONFIG REQUIRED)
-find_package(spdlog CONFIG REQUIRED)
-find_package(unofficial-enet CONFIG REQUIRED)
-
-find_package(glm CONFIG REQUIRED)
-find_package(nlohmann_json CONFIG REQUIRED)
-find_package(EnTT CONFIG REQUIRED)
 
 target_precompile_headers(
         SunsetEngine
@@ -39,13 +30,15 @@ target_precompile_headers(
             SunsetPCH.h
 )
 
+find_package(glm CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
+find_package(EnTT CONFIG REQUIRED)
+
+find_package(spdlog CONFIG REQUIRED)
+find_package(unofficial-enet CONFIG REQUIRED)
+
 target_link_libraries(
         SunsetEngine
-        PRIVATE
-            glfw
-            glad::glad
-            spdlog::spdlog_header_only
-            unofficial::enet::enet
         PUBLIC
             SunsetEngine_compiler_flags
             glm::glm
@@ -53,4 +46,7 @@ target_link_libraries(
             fastNoiseSIMD
             EnTT::EnTT
             SRmGUI
+        PRIVATE
+            spdlog::spdlog_header_only
+            unofficial::enet::enet
 )

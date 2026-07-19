@@ -69,7 +69,23 @@ namespace
 
 namespace Sunset
 {
-    void OpenGLGraphicsDevice::Init() {}
+    OpenGLGraphicsDevice::~OpenGLGraphicsDevice()
+    {
+        SRmGUI::Opengl_Shutdown();
+    }
+
+    void OpenGLGraphicsDevice::Init()
+    {
+        auto* window = static_cast<GLFWwindow*>(Application::GetWindow());
+        if (window == nullptr)
+            throw std::runtime_error("OpenGL requires a window with a graphics context");
+
+        glfwMakeContextCurrent(window);
+        if (gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)) == GL_FALSE)
+            throw std::runtime_error("Failed to initialize GLAD");
+
+        SRmGUI::Opengl_Init();
+    }
 
     void OpenGLGraphicsDevice::BeginFrame()
     {

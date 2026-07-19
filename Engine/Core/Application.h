@@ -22,11 +22,15 @@ namespace Sunset
 
         void SetWindow(std::unique_ptr<Window> window);
 
+        void InitializeWindow();
+
         void Run();
 
         virtual void OnDestroy();
         virtual void BeginFrame();
         virtual void EndFrame();
+
+        virtual void OnWindowReady();
 
         void OnEvent(const Event::Type& event);
 

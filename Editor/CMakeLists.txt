@@ -7,7 +7,7 @@ find_package(imgui CONFIG REQUIRED)
 add_executable(SunsetEditor ${MY_SOURCES})
 
 target_link_libraries(SunsetEditor PRIVATE
-        SunsetRuntime
+        Sunset::Runtime
         imgui::imgui
 )
 

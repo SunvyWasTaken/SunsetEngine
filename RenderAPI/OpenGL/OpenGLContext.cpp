@@ -39,12 +39,10 @@ namespace Sunset
 
     void OpenGLContext::MakeCurrent()
     {
-        glfwMakeContextCurrent(m_WindowHandle);
     }
 
     void OpenGLContext::SwapBuffers()
     {
         SRmGUI::Opengl_DrawData(SRmGUI::GetDrawData());
-        glfwSwapBuffers(m_WindowHandle);
     }
 } // Sunset

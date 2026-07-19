@@ -1,4 +1,4 @@
-//
+ //
 // Created by sunvy on 06/07/2026.
 //
 
@@ -15,5 +15,7 @@ namespace Sunset
         void OnDestroy() override;
         void BeginFrame() override;
         void EndFrame() override;
+    protected:
+        void OnWindowReady() override;
     };
 } // Sunset

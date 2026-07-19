@@ -14,6 +14,8 @@ namespace Sunset
     class OpenGLGraphicsDevice final : public RenderAPI
     {
     public:
+        ~OpenGLGraphicsDevice() override;
+
         void Init() override;
         void BeginFrame() override;
         void EndFrame() override;

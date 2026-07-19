@@ -3,15 +3,18 @@
 //
 
 #include "GLFWWindow.h"
+#include "OpenGLGraphicsDevice.h"
 #include "Core/EditorApplication.h"
-
 #include "Layers/EditorLayer.h"
+#include "Render/Core/RenderCommand.h"
 
 int main()
 {
-    const Sunset::WindowSetting& setting{"Sunset Editor"};
+    const Sunset::WindowSetting setting{"Sunset Editor"};
     Sunset::EditorApplication app{setting};
     app.SetWindow(std::make_unique<Sunset::GLFWWindow>(setting));
+    Sunset::RenderCommand::SetRenderAPI(std::make_unique<Sunset::OpenGLGraphicsDevice>());
+    app.InitializeWindow();
     app.PushLayer<Sunset::EditorLayer>();
     app.Run();
 }

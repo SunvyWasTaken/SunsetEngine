@@ -6,6 +6,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include "Render/Core/GraphicsContext.h"
+
 namespace
 {
     void GlfwErrorCallback(int errorCode, const char* description)
@@ -221,7 +223,7 @@ namespace Sunset
 
     void GLFWWindow::Present()
     {
-        // m_GraphicsContext->SwapBuffers();
+        glfwSwapBuffers(m_WindowHandle);
     }
 
     bool GLFWWindow::ShouldClose() const
@@ -236,7 +238,7 @@ namespace Sunset
 
     void GLFWWindow::SetVSync(bool enabled)
     {
-        // m_GraphicsContext->MakeCurrent();
+        glfwMakeContextCurrent(m_WindowHandle);
         glfwSwapInterval(enabled ? 1 : 0);
 
         m_Data.VSync = enabled;
