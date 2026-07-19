@@ -20,6 +20,8 @@ namespace Sunset
         explicit Application(const WindowSetting& setting = WindowSetting{});
         virtual ~Application();
 
+        void SetWindow(std::unique_ptr<Window> window);
+
         void Run();
 
         virtual void OnDestroy();

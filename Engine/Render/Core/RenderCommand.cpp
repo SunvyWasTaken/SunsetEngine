@@ -4,14 +4,14 @@
 
 #include "RenderCommand.h"
 
-#include "Backend/OpenGL/OpenGLGraphicsDevice.h"
 #include "Render/Core/RenderAPI.h"
 
 namespace
 {
     std::unique_ptr<Sunset::RenderAPI> CreateRenderAPI()
     {
-        return std::make_unique<Sunset::OpenGLGraphicsDevice>();
+        return nullptr;
+        // return std::make_unique<Sunset::OpenGLGraphicsDevice>();
     }
 
     std::unique_ptr<Sunset::RenderAPI>& GetRenderAPIStorage()

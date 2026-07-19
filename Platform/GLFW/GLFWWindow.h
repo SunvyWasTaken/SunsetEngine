@@ -5,7 +5,7 @@
 #pragma once
 
 #include "Core/Event.h"
-#include "Platform/Window.h"
+#include "Core/Window.h"
 
 class GLFWwindow;
 

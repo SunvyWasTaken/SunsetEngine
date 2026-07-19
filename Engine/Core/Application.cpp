@@ -9,9 +9,9 @@
 #include "Layer.h"
 #include "Network/NetworkService.h"
 #include "../Render/Core/RenderCommand.h"
-#include "../Render/Core/RenderAPI.h"
+#include "Render/Core/RenderAPI.h"
 #include "GameFramework/World/World.h"
-#include "Platform/Window.h"
+#include "Window.h"
 
 namespace
 {
@@ -76,18 +76,6 @@ namespace Sunset
         app = this;
         AppSetting = setting;
         IsAppRunning = true;
-
-        if (!AppSetting.Headless)
-        {
-            m_Window = std::move(Window::CreateWindow(AppSetting));
-            m_Window->BindEvent([this](const Event::Type& event){OnEvent(event); });
-            // m_Render = std::make_unique<Render>();
-            // m_Render->BindEvent([this](Event::Type& event){ OnEvent(event); });
-        }
-        else
-        {
-            LOG("Engine", info, "App Create in headless mode");
-        }
     }
 
     Application::~Application()
@@ -99,6 +87,11 @@ namespace Sunset
         LOG("Engine", info, "App Destroy");
 
         Log::Shutdown();
+    }
+
+    void Application::SetWindow(std::unique_ptr<Window> window)
+    {
+        m_Window = std::move(window);
     }
 
     void Application::Run()

@@ -1,21 +1,20 @@
-cmake_minimum_required(VERSION 3.28)
-
-add_library(SunsetEngine_compiler_flags INTERFACE)
-target_compile_features(SunsetEngine_compiler_flags INTERFACE cxx_std_23)
-
-target_compile_definitions(SunsetEngine_compiler_flags INTERFACE
-        $<$<CONFIG:Debug>:SS_PROFILING>
-        $<$<CONFIG:RelWithDebInfo>:SS_PROFILING>
-        $<$<CONFIG:Release>:SS_RELEASE>
-)
-
-project(SunsetEngine)
 
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
-add_library(${PROJECT_NAME} STATIC ${MY_SOURCES})
+add_library(SunsetEngine STATIC)
+add_library(Sunset::Engine ALIAS SunsetEngine)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_sources(
+        SunsetEngine
+        PRIVATE
+            ${MY_SOURCES}
+)
+
+target_include_directories(
+        SunsetEngine
+        PUBLIC
+            ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 if(PRODUCTION_BUILD)
     target_compile_definitions(${PROJECT_NAME} PUBLIC SAVE_PATH=\"./Save/\")
@@ -25,35 +24,33 @@ else()
     target_compile_definitions(${PROJECT_NAME} PRIVATE ENGINE_SHADERS_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/Shaders/\")
 endif()
 
-find_package(glm CONFIG REQUIRED)
-find_package(nlohmann_json CONFIG REQUIRED)
-find_package(EnTT CONFIG REQUIRED)
-
-target_include_directories(${PROJECT_NAME} PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}
-)
-
-target_link_libraries(${PROJECT_NAME} PUBLIC
-        SunsetEngine_compiler_flags
-        glm::glm
-        nlohmann_json::nlohmann_json
-        fastNoiseSIMD
-        EnTT::EnTT
-        SRmGUI
-)
-
-target_precompile_headers(${PROJECT_NAME} PUBLIC
-        SunsetPCH.h
-)
-
 find_package(glfw3 CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(unofficial-enet CONFIG REQUIRED)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
-        glfw
-        glad::glad
-        spdlog::spdlog_header_only
-        unofficial::enet::enet
+find_package(glm CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
+find_package(EnTT CONFIG REQUIRED)
+
+target_precompile_headers(
+        SunsetEngine
+        PUBLIC
+            SunsetPCH.h
+)
+
+target_link_libraries(
+        SunsetEngine
+        PRIVATE
+            glfw
+            glad::glad
+            spdlog::spdlog_header_only
+            unofficial::enet::enet
+        PUBLIC
+            SunsetEngine_compiler_flags
+            glm::glm
+            nlohmann_json::nlohmann_json
+            fastNoiseSIMD
+            EnTT::EnTT
+            SRmGUI
 )

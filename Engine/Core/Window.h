@@ -12,9 +12,6 @@ namespace Sunset
     class Window
     {
     public:
-        [[nodiscard]]
-        static std::unique_ptr<Window> CreateWindow(const WindowSetting& setting = {});
-
         virtual ~Window() { LOG("Engine", info, "Window destroy") };
 
         virtual void PollEvents() = 0;

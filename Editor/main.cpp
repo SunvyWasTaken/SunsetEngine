@@ -2,16 +2,16 @@
 // Created by sunvy on 06/07/2026.
 //
 
-#include "SunsetCraftModule.h"
-#include "SunsetEngine.h"
+#include "GLFWWindow.h"
 #include "Core/EditorApplication.h"
 
 #include "Layers/EditorLayer.h"
 
 int main()
 {
-    Sunset::EditorApplication app;
+    const Sunset::WindowSetting& setting{"Sunset Editor"};
+    Sunset::EditorApplication app{setting};
+    app.SetWindow(std::make_unique<Sunset::GLFWWindow>(setting));
     app.PushLayer<Sunset::EditorLayer>();
-    GameModule::InitGame(app);
     app.Run();
 }

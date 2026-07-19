@@ -6,8 +6,6 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Backend/OpenGL/OpenGLContext.h"
-
 namespace
 {
     void GlfwErrorCallback(int errorCode, const char* description)
@@ -187,9 +185,9 @@ namespace Sunset
 
         glfwSetWindowUserPointer(m_WindowHandle, &m_Data);
 
-        m_GraphicsContext = std::make_unique<OpenGLContext>(m_WindowHandle);
-
-        m_GraphicsContext->Init();
+        // m_GraphicsContext = std::make_unique<OpenGLContext>(m_WindowHandle);
+        //
+        // m_GraphicsContext->Init();
 
         RegisterCallbacks();
         SetVSync(m_Data.VSync);
@@ -223,7 +221,7 @@ namespace Sunset
 
     void GLFWWindow::Present()
     {
-        m_GraphicsContext->SwapBuffers();
+        // m_GraphicsContext->SwapBuffers();
     }
 
     bool GLFWWindow::ShouldClose() const
@@ -238,7 +236,7 @@ namespace Sunset
 
     void GLFWWindow::SetVSync(bool enabled)
     {
-        m_GraphicsContext->MakeCurrent();
+        // m_GraphicsContext->MakeCurrent();
         glfwSwapInterval(enabled ? 1 : 0);
 
         m_Data.VSync = enabled;
