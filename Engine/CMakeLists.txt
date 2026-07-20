@@ -1,7 +1,7 @@
 
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
-add_library(SunsetEngine STATIC)
+add_library(SunsetEngine SHARED)
 add_library(Sunset::Engine ALIAS SunsetEngine)
 
 target_sources(

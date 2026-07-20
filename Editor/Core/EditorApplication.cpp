@@ -8,11 +8,19 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include "Core/GameModuleLoader.h"
+
 namespace Sunset
 {
     EditorApplication::EditorApplication(const WindowSetting &setting)
         : Application(setting)
     {
+        GameModuleLoader loader;
+
+        if (!loader.Load("Projects/MyGame/Binaries/MyGame.so", *this))
+        {
+            throw std::runtime_error("Cannot load game module");
+        }
     }
 
     void EditorApplication::OnDestroy()

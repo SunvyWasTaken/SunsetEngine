@@ -30,7 +30,6 @@ Le dépôt contient également un exécutable d'éditeur en cours de constructio
 ├── Engine/
 │   ├── CMakeLists.txt              # Cible statique SunsetEngine
 │   ├── SunsetEngine.h              # Include d'entrée pour les APIs principales
-│   ├── Backend/OpenGL/             # Implémentation OpenGL bas niveau
 │   ├── Core/                       # Application, layers, événements, entrées, GameInstance
 │   ├── GameFramework/              # World, Entity, composants, systèmes et scripts natifs
 │   ├── Log/                        # Logs et affichage debug à l'écran
@@ -42,6 +41,8 @@ Le dépôt contient également un exécutable d'éditeur en cours de constructio
 │   ├── SaveSystem/                 # Archives binaires et helpers de sauvegarde
 │   └── Utility/                    # Profiling et fonctions utilitaires
 ├── Editor/                         # Application d'éditeur/prototype basée sur le moteur
+├── Platform/GLFW/                  # Fenêtre et événements GLFW
+├── RenderAPI/OpenGL/               # Implémentation du backend de rendu OpenGL
 ├── Shaders/                        # Shaders GLSL fournis avec le moteur
 ├── Thirdparty/FastNoiseSIMD/       # Dépendance vendoriée
 └── Thirdparty/SRmGUI/              # Bibliothèque UI retained-mode vendoriée
@@ -99,12 +100,12 @@ Pour des chemins d'exécution proches d'un build distribué, configurez avec `-D
 
 ## Intégration dans un projet CMake
 
-Ajoutez le moteur en sous-répertoire puis liez la cible `SunsetEngine` :
+Ajoutez le moteur en sous-répertoire puis liez la cible `Sunset::Runtime` :
 
 ```cmake
 add_subdirectory(path/to/SunsetEngine)
 
-target_link_libraries(MyGame PRIVATE SunsetEngine)
+target_link_libraries(MyGame PRIVATE Sunset::Engine)
 ```
 
 Exemple minimal :
@@ -134,10 +135,15 @@ int main()
     settings.WindowTitle = "Sunset Game";
 
     Sunset::Application app(settings);
+    app.SetWindow(std::make_unique<Sunset::GLFWWindow>(settings));
+    Sunset::RenderCommand::SetRenderAPI(std::make_unique<Sunset::OpenGLGraphicsDevice>());
+    app.InitializeWindow();
     app.PushLayer<GameLayer>();
     app.Run();
 }
 ```
+
+Cette initialisation explicite conserve les modules indépendants : le cœur ne dépend ni de GLFW ni d'OpenGL. Une nouvelle plateforme fournit un `Window`, tandis qu'un nouveau backend fournit une implémentation de `RenderAPI`, sélectionnée avec `RenderCommand::SetRenderAPI` après la création du contexte graphique.
 
 ---
 

@@ -31,6 +31,8 @@ add_subdirectory(RenderAPI)
 add_library(SunsetRuntime INTERFACE)
 add_library(Sunset::Runtime ALIAS SunsetRuntime)
 
+target_link_libraries(SunsetRuntime INTERFACE Sunset::Engine)
+
 if (SUNSET_USE_GLFW)
     target_link_libraries(SunsetRuntime INTERFACE Sunset::PlatformGLFW)
 endif ()
