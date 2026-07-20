@@ -2,6 +2,20 @@ file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.cp
 
 find_package(imgui CONFIG REQUIRED)
 
+set(SUNSET_EDITOR_GAME_MODULE_RELATIVE_PATH
+        "Projects/MyGame/Binaries/MyGame${CMAKE_SHARED_MODULE_SUFFIX}"
+        CACHE STRING
+        "Path to the game module, relative to the project root"
+)
+
+if(PRODUCTION_BUILD)
+    set(SUNSET_EDITOR_GAME_MODULE_PATH
+            "./${SUNSET_EDITOR_GAME_MODULE_RELATIVE_PATH}")
+else()
+    set(SUNSET_EDITOR_GAME_MODULE_PATH
+            "${CMAKE_SOURCE_DIR}/${SUNSET_EDITOR_GAME_MODULE_RELATIVE_PATH}")
+endif()
+
 add_executable(SunsetEditor ${MY_SOURCES})
 
 target_include_directories(
@@ -9,8 +23,11 @@ target_include_directories(
         PUBLIC
             ${CMAKE_CURRENT_SOURCE_DIR})
 
+target_compile_definitions(SunsetEditor PRIVATE
+        SUNSET_GAME_MODULE_PATH=\"${SUNSET_EDITOR_GAME_MODULE_PATH}\"
+)
+
 target_link_libraries(SunsetEditor PRIVATE
         Sunset::Runtime
         imgui::imgui
 )
-
