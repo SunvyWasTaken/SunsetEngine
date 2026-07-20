@@ -17,7 +17,7 @@ namespace Sunset
     {
         GameModuleLoader loader;
 
-        if (!loader.Load("Projects/MyGame/Binaries/MyGame.so", *this))
+        if (!loader.Load(SUNSET_GAME_MODULE_PATH, *this))
         {
             throw std::runtime_error("Cannot load game module");
         }
