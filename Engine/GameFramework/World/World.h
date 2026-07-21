@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Core/Event.h"
+#include "GameFramework/Components/Component.h"
 #include "entt/entt.hpp"
 
 namespace Sunset
@@ -69,6 +70,19 @@ namespace Sunset
             for (auto entity : view)
             {
                 func({this, entity}, view.template get<Components>(entity)...);
+            }
+        }
+
+        template <typename Func>
+        void ForEachComponent(const entt::entity entity, Func&& func)
+        {
+            for (auto [componentTypeId, storage] : m_Registry.storage())
+            {
+                if (!storage.contains(entity))
+                    continue;
+
+                auto* component = static_cast<Component*>(storage.value(entity));
+                func(componentTypeId, storage.info(), *component);
             }
         }
 

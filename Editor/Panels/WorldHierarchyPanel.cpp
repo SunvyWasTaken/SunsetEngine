@@ -16,6 +16,23 @@
 
 namespace
 {
+    bool HasSpecializedComponentDrawer(const entt::id_type typeId)
+    {
+        return typeId == entt::type_hash<Sunset::TagComponent>::value()
+            || typeId == entt::type_hash<Sunset::TransformComponent>::value()
+            || typeId == entt::type_hash<Sunset::NativeScriptComponent>::value()
+            || typeId == entt::type_hash<Sunset::InputComponent>::value();
+    }
+
+    std::string GetComponentLabel(const Sunset::ReflectionType& properties, const entt::type_info& typeInfo)
+    {
+        if (!properties.Name.empty())
+            return properties.Name;
+
+        const auto typeName = typeInfo.name();
+        return typeName.empty() ? "Component" : std::string{typeName};
+    }
+
     const char* ToLabel(const Sunset::InputBindingType type)
     {
         switch (type)
@@ -455,5 +472,22 @@ namespace Sunset
                 ImGui::TreePop();
             }
         }
+
+        m_Context->ForEachComponent(static_cast<entt::entity>(entity), [](const entt::id_type typeId, const entt::type_info& typeInfo, Component& component)
+        {
+            if (HasSpecializedComponentDrawer(typeId))
+                return;
+
+            ReflectionType properties = component.Properties();
+            const std::string label = GetComponentLabel(properties, typeInfo);
+
+            ImGui::PushID(static_cast<int>(typeId));
+            if (ImGui::TreeNodeEx(label.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                DrawEditorObject(&component, properties);
+                ImGui::TreePop();
+            }
+            ImGui::PopID();
+        });
     }
 } // Sunset
