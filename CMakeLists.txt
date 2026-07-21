@@ -48,3 +48,4 @@ if (SUNSET_BUILD_EDITOR)
     add_subdirectory(Editor)
 endif ()
 
+add_subdirectory(Game)
