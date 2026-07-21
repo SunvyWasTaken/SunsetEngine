@@ -16,6 +16,12 @@ target_include_directories(
             ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+set_target_properties(SunsetEngine PROPERTIES
+        PREFIX ""
+        OUTPUT_NAME "SunsetEngine"
+)
+
+
 if(PRODUCTION_BUILD)
     target_compile_definitions(SunsetEngine PUBLIC SAVE_PATH=\"./Save/\")
     target_compile_definitions(SunsetEngine PRIVATE ENGINE_SHADERS_PATH=\"./Shaders/\")
