@@ -15,17 +15,14 @@ namespace Sunset
     EditorApplication::EditorApplication(const WindowSetting &setting)
         : Application(setting)
     {
-        GameModuleLoader loader;
 
-        if (!loader.Load("Projects/MyGame/Binaries/MyGame.so", *this))
-        {
-            throw std::runtime_error("Cannot load game module");
-        }
     }
 
     void EditorApplication::OnDestroy()
     {
         Application::OnDestroy();
+
+        loader.Unload();
 
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
@@ -84,5 +81,10 @@ namespace Sunset
 
         ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(GetWindow()), true);
         ImGui_ImplOpenGL3_Init("#version 330");
+
+        if (!loader.Load(LOCAL_PATH "SunsetCraft.so", *this))
+        {
+            throw std::runtime_error("Cannot load game module : " LOCAL_PATH "SunsetCraft.so");
+        }
     }
 } // Sunset

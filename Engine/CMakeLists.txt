@@ -33,6 +33,7 @@ target_precompile_headers(
 find_package(glm CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(EnTT CONFIG REQUIRED)
+find_package(fmt CONFIG REQUIRED)
 
 find_package(spdlog CONFIG REQUIRED)
 find_package(unofficial-enet CONFIG REQUIRED)
@@ -46,7 +47,8 @@ target_link_libraries(
             fastNoiseSIMD
             EnTT::EnTT
             SRmGUI
-        PRIVATE
             spdlog::spdlog_header_only
+            fmt::fmt
+        PRIVATE
             unofficial::enet::enet
 )

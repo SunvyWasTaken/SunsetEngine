@@ -14,7 +14,6 @@ target_compile_definitions(SunsetEngine_compiler_flags INTERFACE
         $<$<CONFIG:Release>:SS_RELEASE>
 )
 
-
 # Permet de faire des options.
 option(SUNSET_BUILD_EDITOR "Build Sunset Editor" ON)
 option(SUNSET_USE_GLFW "Use GLFW as Window platform" ON)

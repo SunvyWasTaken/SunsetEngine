@@ -6,6 +6,7 @@ file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.cp
 
 add_library(SunsetBackEndOpenGL STATIC)
 add_library(Sunset::BackendOpenGL ALIAS SunsetBackEndOpenGL)
+set_target_properties(SunsetBackEndOpenGL PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 target_sources(
         SunsetBackEndOpenGL

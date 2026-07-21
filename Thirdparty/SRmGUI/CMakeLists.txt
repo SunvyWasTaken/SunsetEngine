@@ -8,6 +8,7 @@ find_package(glm CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 
 add_library(${PROJECT_NAME} STATIC ${MY_SOURCES})
+set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)
 
 if(PRODUCTION_BUILD)

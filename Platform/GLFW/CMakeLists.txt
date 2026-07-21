@@ -5,6 +5,7 @@ file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.cp
 
 add_library(SunsetPlatformGLFW STATIC)
 add_library(Sunset::PlatformGLFW ALIAS SunsetPlatformGLFW)
+set_target_properties(SunsetPlatformGLFW PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 target_sources(
         SunsetPlatformGLFW

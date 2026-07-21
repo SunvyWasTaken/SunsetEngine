@@ -5,8 +5,9 @@
 #pragma once
 
 #include "Core/Application.h"
+#include "Core/GameModuleLoader.h"
 
-namespace Sunset
+ namespace Sunset
 {
     class EditorApplication : public Application
     {
@@ -17,5 +18,8 @@ namespace Sunset
         void EndFrame() override;
     protected:
         void OnWindowReady() override;
+
+    private:
+        GameModuleLoader loader;
     };
 } // Sunset

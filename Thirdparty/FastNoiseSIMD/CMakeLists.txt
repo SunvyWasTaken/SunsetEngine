@@ -5,6 +5,7 @@ project(fastNoiseSIMD)
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
 add_library(fastNoiseSIMD)
+set_target_properties(fastNoiseSIMD PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 foreach (SRC IN LISTS MY_SOURCES)
     if(SRC MATCHES "FastNoiseSIMD_avx2.cpp")

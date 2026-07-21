@@ -5,10 +5,11 @@
 #include "GameModuleLoader.h"
 
 #if _WIN32
+#include <window.h>
 #define LOADDL(...) LoadLibraryW(__VA_ARGS__)
 #define GETADD(...) GetProcAddress(__VA_ARGS__)
 #define FREEDL(...) FreeLibrary(__VA_ARGS__)
-#define DLERROR()
+#define DLERROR() "Just Error"
 #else
 #include <dlfcn.h>
 #define LOADDL(...) dlopen(__VA_ARGS__)
@@ -31,7 +32,10 @@ namespace Sunset
     {
         m_Handle = LOADDL(path.c_str(), RTLD_NOW | RTLD_GLOBAL);
         if (!m_Handle)
+        {
+            LOG("Engine", error, "Enable to load game module error : {}", DLERROR())
             return false;
+        }
 
         m_Create = reinterpret_cast<CreateGameModuleFn>(GETADD(m_Handle, "SunsetCreateGameModule"));
 

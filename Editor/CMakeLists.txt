@@ -14,3 +14,4 @@ target_link_libraries(SunsetEditor PRIVATE
         imgui::imgui
 )
 
+target_compile_definitions(SunsetEditor PUBLIC LOCAL_PATH="$<TARGET_FILE_DIR:SunsetEditor>/")
