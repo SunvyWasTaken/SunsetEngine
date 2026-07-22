@@ -25,11 +25,27 @@ namespace Sunset
         void Flush() override;
 
         void Submit(const Drawable& drawable, const glm::mat4& model) override;
+        void DrawMesh(const Mesh& mesh, const RenderState& state) override;
         void UseCamera(const Camera& camera) override;
         void ShowCursor(bool show) override;
 
         void SetViewport(const glm::ivec2& size) override;
         void Clear(const glm::vec4& color) override;
+
+        std::uint32_t CreateBuffer(BufferType type, const void* data, size_t size, BufferUsage usage) override;
+        void DestroyBuffer(std::uint32_t buffer) override;
+        void BindBuffer(BufferType type, std::uint32_t buffer) override;
+        void UpdateBuffer(BufferType type, std::uint32_t buffer, size_t offset, size_t size, const void* data) override;
+
+        std::uint32_t CreateVertexArray() override;
+        void DestroyVertexArray(std::uint32_t vertexArray) override;
+        void BindVertexArray(std::uint32_t vertexArray) override;
+        void ConfigureVertexArray(std::uint32_t vertexArray, std::uint32_t vertexBuffer, const BufferLayout& layout) override;
+
+        std::uint32_t CreateTexture2D(const TextureSpecification& specification, const void* data) override;
+        void DestroyTexture(std::uint32_t texture) override;
+        void BindTexture(std::uint32_t texture, std::uint32_t slot) override;
+        void UpdateTexture2D(std::uint32_t texture, const glm::ivec2& coord, const TextureSpecification& specification, const void* data) override;
 
     private:
         struct FrameData
@@ -41,7 +57,7 @@ namespace Sunset
 
         struct DrawCommand
         {
-            uint32_t vao = 0;
+            uint32_t vertexArray = 0;
             uint32_t indexCount = 0;
             std::shared_ptr<Material> material;
             glm::mat4 model = glm::mat4(1.0f);
@@ -50,6 +66,7 @@ namespace Sunset
 
         void ResetFrameState() const;
         void ApplyState(const RenderState& state) const;
+        void DrawBoundMesh(std::uint32_t vertexCount, const RenderState& state) const;
         void SortDrawCommands();
         void FlushDrawCommands();
 

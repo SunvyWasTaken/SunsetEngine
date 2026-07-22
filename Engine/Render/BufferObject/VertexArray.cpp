@@ -5,55 +5,37 @@
 #include "VertexArray.h"
 
 #include "Buffers.h"
-
-#include <glad/glad.h>
+#include "Render/Core/RenderCommand.h"
 
 namespace Sunset
 {
     VertexArray::VertexArray()
        : m_Id(0)
        , count(0)
+       , bHasEbo(false)
     {
-        glGenVertexArrays(1, &m_Id);
+        m_Id = RenderCommand::CreateVertexArray();
     }
 
     VertexArray::~VertexArray()
     {
-        glDeleteVertexArrays(1, &m_Id);
+        RenderCommand::DestroyVertexArray(m_Id);
     }
 
     void VertexArray::Bind() const
     {
-        glBindVertexArray(m_Id);
+        RenderCommand::BindVertexArray(m_Id);
     }
 
     void VertexArray::Unbind() const
     {
-        glBindVertexArray(0);
+        RenderCommand::BindVertexArray(0);
     }
 
     void VertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
     {
-        Bind();
-        vertexBuffer->Bind();
-
-        const auto& layout = vertexBuffer->GetLayout();
-        uint32_t index = 0;
-
-        for (auto& element : layout)
-        {
-            glEnableVertexAttribArray(index);
-            if (element.IsInt())
-                glVertexAttribIPointer(index, element.Count(), element.Type(), layout.GetStride(), (const void*)element.offset);
-            else
-                glVertexAttribPointer(index, element.Count(), element.Type(), element.normalized, layout.GetStride(), (const void*)element.offset);
-            if (element.divisor > 0)
-                glVertexAttribDivisor(index, element.divisor);
-
-            index++;
-        }
+        RenderCommand::ConfigureVertexArray(m_Id, vertexBuffer->GetRendererId(), vertexBuffer->GetLayout());
         count = vertexBuffer->GetSize();
-        Unbind();
     }
 
     void VertexArray::AddIndexBuffer(const IndiceBuffer& indexBuffer)
@@ -61,10 +43,11 @@ namespace Sunset
         Bind();
         indexBuffer.Bind();
         count = indexBuffer.GetCount();
+        bHasEbo = true;
         Unbind();
     }
 
-    uint32_t VertexArray::GetVAO() const
+    uint32_t VertexArray::GetRendererId() const
     {
         return m_Id;
     }

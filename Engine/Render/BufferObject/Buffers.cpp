@@ -4,8 +4,7 @@
 
 #include "Buffers.h"
 
-#include <complex>
-#include <glad/glad.h>
+#include "Render/Core/RenderCommand.h"
 
 namespace
 {
@@ -13,7 +12,7 @@ namespace
     {
         size_t size = 0;
         int count = 0;
-        int type = 0;
+        Sunset::ShaderComponentType type = Sunset::ShaderComponentType::Float;
     };
 
     constexpr ShaderDataTypeInfo GetInfo(Sunset::ShaderDataType type)
@@ -22,51 +21,51 @@ namespace
         {
             case Sunset::ShaderDataType::Float:
                 {
-                    return {sizeof(float), 1, GL_FLOAT};
+                    return {sizeof(float), 1, Sunset::ShaderComponentType::Float};
                 }
             case Sunset::ShaderDataType::Float2:
                 {
-                    return {sizeof(float) * 2, 2, GL_FLOAT};
+                    return {sizeof(float) * 2, 2, Sunset::ShaderComponentType::Float};
                 }
             case Sunset::ShaderDataType::Float3:
                 {
-                    return {sizeof(float) * 3, 3, GL_FLOAT};
+                    return {sizeof(float) * 3, 3, Sunset::ShaderComponentType::Float};
                 }
             case Sunset::ShaderDataType::Float4:
                 {
-                    return {sizeof(float) * 4, 4, GL_FLOAT};
+                    return {sizeof(float) * 4, 4, Sunset::ShaderComponentType::Float};
                 }
             case Sunset::ShaderDataType::Mat3:
                 {
-                    return {sizeof(float) * 3 * 3, 3 * 3, GL_FLOAT};
+                    return {sizeof(float) * 3 * 3, 3 * 3, Sunset::ShaderComponentType::Float};
                 }
             case Sunset::ShaderDataType::Mat4:
                 {
-                    return {sizeof(float) * 4 * 4, 4 * 4,GL_FLOAT};
+                    return {sizeof(float) * 4 * 4, 4 * 4, Sunset::ShaderComponentType::Float};
                 }
             case Sunset::ShaderDataType::Int:
                 {
-                    return {sizeof(int), 1, GL_INT};
+                    return {sizeof(int), 1, Sunset::ShaderComponentType::Int};
                 }
             case Sunset::ShaderDataType::Int2:
                 {
-                    return {sizeof(int) * 2, 2, GL_INT};
+                    return {sizeof(int) * 2, 2, Sunset::ShaderComponentType::Int};
                 }
             case Sunset::ShaderDataType::Int3:
                 {
-                    return {sizeof(int) * 3, 3, GL_INT};
+                    return {sizeof(int) * 3, 3, Sunset::ShaderComponentType::Int};
                 }
             case Sunset::ShaderDataType::Int4:
                 {
-                    return {sizeof(int) * 4, 4, GL_INT};
+                    return {sizeof(int) * 4, 4, Sunset::ShaderComponentType::Int};
                 }
             case Sunset::ShaderDataType::UInt:
                 {
-                    return {sizeof(uint32_t), 1, GL_UNSIGNED_INT};
+                    return {sizeof(uint32_t), 1, Sunset::ShaderComponentType::UInt};
                 }
             case Sunset::ShaderDataType::Bool:
                 {
-                    return {sizeof(bool), 1, GL_BOOL};
+                    return {sizeof(bool), 1, Sunset::ShaderComponentType::Bool};
                 }
         }
         return {};
@@ -120,7 +119,7 @@ namespace Sunset
         return GetInfo(type).count;
     }
 
-    int BufferElement::Type() const
+    ShaderComponentType BufferElement::ComponentType() const
     {
         return GetInfo(type).type;
     }
@@ -162,25 +161,24 @@ namespace Sunset
         , m_Layout({})
         , m_Size(dataSize)
     {
-        glGenBuffers(1, &m_Id);
+        m_Id = RenderCommand::CreateBuffer(BufferType::Vertex, data, typeSize * dataSize, BufferUsage::Static);
         Bind();
-        glBufferData(GL_ARRAY_BUFFER, typeSize * dataSize, data, GL_STATIC_DRAW);
         Unbind();
     }
     
     VertexBuffer::~VertexBuffer()
     {
-        glDeleteBuffers(1, &m_Id);
+        RenderCommand::DestroyBuffer(m_Id);
     }
     
     void VertexBuffer::Bind() const
     {
-        glBindBuffer(GL_ARRAY_BUFFER, m_Id);
+        RenderCommand::BindBuffer(BufferType::Vertex, m_Id);
     }
 
     void VertexBuffer::Unbind() const
     {
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        RenderCommand::BindBuffer(BufferType::Vertex, 0);
     }
 
     void VertexBuffer::SetLayout(const std::initializer_list<BufferElement>& elements)
@@ -198,33 +196,42 @@ namespace Sunset
         return m_Size;
     }
 
+    std::uint32_t VertexBuffer::GetRendererId() const
+    {
+        return m_Id;
+    }
+
     IndiceBuffer::IndiceBuffer(const std::vector<uint32_t>& indices)
         : m_Id(0)
         , m_Count(indices.size())
     {
-        glGenBuffers(1, &m_Id);
+        m_Id = RenderCommand::CreateBuffer(BufferType::Index, indices.data(), sizeof(uint32_t) * indices.size(), BufferUsage::Static);
         Bind();
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * indices.size(), indices.data(), GL_STATIC_DRAW);
         Unbind();
     }
 
     IndiceBuffer::~IndiceBuffer()
     {
-        glDeleteBuffers(1, &m_Id);
+        RenderCommand::DestroyBuffer(m_Id);
     }
 
     void IndiceBuffer::Bind() const
     {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Id);
+        RenderCommand::BindBuffer(BufferType::Index, m_Id);
     }
 
     void IndiceBuffer::Unbind() const
     {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        RenderCommand::BindBuffer(BufferType::Index, 0);
     }
 
     size_t IndiceBuffer::GetCount() const
     {
         return m_Count;
+    }
+
+    std::uint32_t IndiceBuffer::GetRendererId() const
+    {
+        return m_Id;
     }
 }

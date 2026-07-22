@@ -22,7 +22,7 @@ namespace Sunset
 
         void Use() const;
 
-        std::uint32_t GetId() const;
+        std::uint32_t GetRendererId() const;
 
     private:
 
@@ -44,7 +44,7 @@ namespace Sunset
 
         size_t Nbr() const;
 
-        std::uint32_t operator()() const;
+        std::uint32_t GetRendererId() const;
 
         int m_Width, m_Height;
 

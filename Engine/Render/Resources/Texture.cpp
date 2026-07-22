@@ -5,24 +5,19 @@
 #include "Texture.h"
 
 #include "../Image.h"
-
-#include <glad/glad.h>
+#include "Render/Core/RenderCommand.h"
+#include "Render/Core/RenderAPI.h"
 
 namespace
 {
-    void SendTextureToGpu(std::uint32_t& id, const int width, const int height, void* data = nullptr, GLenum format = GL_RGB)
+    Sunset::TextureFormat TextureFormatFromChannelCount(const int channels)
     {
-        glGenTextures(1, &id);
-        glBindTexture(GL_TEXTURE_2D, id);
+        if (channels == 1)
+            return Sunset::TextureFormat::Red;
+        if (channels == 4)
+            return Sunset::TextureFormat::RGBA;
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        return Sunset::TextureFormat::RGB;
     }
 }
 
@@ -41,22 +36,27 @@ namespace Sunset
 
     void Texture::Reset()
     {
-        glDeleteTextures(1, &m_Id);
+        RenderCommand::DestroyTexture(m_Id);
         m_Id = 0;
     }
 
     void Texture::LoadImage(const std::string_view &fileName)
     {
         Image img{fileName};
-        SendTextureToGpu(m_Id, img.width, img.height, img.m_Data, img.nbrChannels == 3 ? GL_RGB : GL_RGBA);
+        Reset();
+        m_Id = RenderCommand::CreateTexture2D({
+            .width = img.width,
+            .height = img.height,
+            .format = TextureFormatFromChannelCount(img.nbrChannels)
+        }, img.m_Data);
     }
 
     void Texture::Use() const
     {
-        glBindTexture(GL_TEXTURE_2D, m_Id);
+        RenderCommand::BindTexture(*this);
     }
 
-    std::uint32_t Texture::GetId() const
+    std::uint32_t Texture::GetRendererId() const
     {
         return m_Id;
     }
@@ -68,19 +68,23 @@ namespace Sunset
         , m_Id(0)
         , m_Nbr(0)
     {
-        SendTextureToGpu(m_Id, m_Width, m_Height);
+        m_Id = RenderCommand::CreateTexture2D({
+            .width = m_Width,
+            .height = m_Height,
+            .format = TextureFormat::RGB
+        });
         LOG("Engine", trace, "Texture {} created at {}", m_Name, m_Id)
     }
 
     Textures::~Textures()
     {
         LOG("Engine", trace, "Texture {} destroy", m_Id)
-        glDeleteTextures(1, &m_Id);
+        RenderCommand::DestroyTexture(m_Id);
     }
 
     void Textures::Use() const
     {
-        glBindTexture(GL_TEXTURE_2D,m_Id);
+        RenderCommand::BindTexture(*this);
     }
 
     const char* Textures::GetName() const
@@ -90,17 +94,11 @@ namespace Sunset
 
     void Textures::AddImageAt(Image &image, const glm::ivec2& coord)
     {
-        Use();
-        GLenum format = GL_RGB;
-        if (image.nbrChannels == 1)
-            format = GL_RED;
-        else if (image.nbrChannels == 3)
-            format = GL_RGB;
-        else if (image.nbrChannels == 4)
-            format = GL_RGBA;
-
-        glTexSubImage2D(GL_TEXTURE_2D, 0, coord.x, coord.y, image.width, image.height, format, GL_UNSIGNED_BYTE, image.m_Data);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        RenderCommand::UpdateTexture2D(m_Id, coord, {
+            .width = image.width,
+            .height = image.height,
+            .format = TextureFormatFromChannelCount(image.nbrChannels)
+        }, image.m_Data);
     }
 
     size_t Textures::Nbr() const
@@ -108,8 +106,9 @@ namespace Sunset
         return m_Nbr;
     }
 
-    std::uint32_t Textures::operator()() const
+    std::uint32_t Textures::GetRendererId() const
     {
         return m_Id;
     }
+
 }

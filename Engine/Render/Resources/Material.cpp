@@ -4,8 +4,7 @@
 
 #include "Material.h"
 
-#include <glad/glad.h>
-
+#include "Render/Core/RenderCommand.h"
 #include "Render/Core/Shader.h"
 #include "Texture.h"
 
@@ -25,10 +24,8 @@ namespace Sunset
         int index = 0;
         for (const auto& it : m_Textures)
         {
-            glActiveTexture(GL_TEXTURE0 + index);
-            it->Use();
-            const GLint loc = glGetUniformLocation(m_Shader->GetId(), it->GetName());
-            glUniform1i(loc, index);
+            RenderCommand::BindTexture(*it, index);
+            m_Shader->SetInt(it->GetName(), index);
             ++index;
         }
     }

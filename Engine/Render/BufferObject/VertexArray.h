@@ -23,7 +23,7 @@ namespace Sunset
         void AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer);
         void AddIndexBuffer(const IndiceBuffer& indexBuffer);
 
-        [[nodiscard]] uint32_t GetVAO() const;
+        [[nodiscard]] uint32_t GetRendererId() const;
         [[nodiscard]] uint32_t GetCount() const;
         [[nodiscard]] bool hasEbo() const;
 

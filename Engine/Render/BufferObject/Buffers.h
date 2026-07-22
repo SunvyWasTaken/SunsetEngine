@@ -5,6 +5,8 @@
 #ifndef SUNSETCRAFT_BUFFERS_H
 #define SUNSETCRAFT_BUFFERS_H
 
+#include "Render/Core/RenderAPI.h"
+
 namespace Sunset
 {
     enum class ShaderDataType {
@@ -20,7 +22,7 @@ namespace Sunset
 
         [[nodiscard]] bool IsInt() const;
         [[nodiscard]] int Count() const;
-        [[nodiscard]] int Type() const;
+        [[nodiscard]] ShaderComponentType ComponentType() const;
 
         std::string name;
         ShaderDataType type;
@@ -62,6 +64,7 @@ namespace Sunset
         void SetLayout(const std::initializer_list<BufferElement>& elements);
         BufferLayout GetLayout() const;
         size_t GetSize() const;
+        [[nodiscard]] std::uint32_t GetRendererId() const;
     private:
         uint32_t m_Id;
         BufferLayout m_Layout;
@@ -77,6 +80,7 @@ namespace Sunset
         void Bind() const;
         void Unbind() const;
         size_t GetCount() const;
+        [[nodiscard]] std::uint32_t GetRendererId() const;
     private:
         uint32_t m_Id;
         size_t m_Count;

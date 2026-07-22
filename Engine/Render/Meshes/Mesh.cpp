@@ -60,9 +60,9 @@ namespace Sunset
         return mesh;
     }
 
-    uint32_t Mesh::GetVAO() const
+    uint32_t Mesh::GetRenderHandle() const
     {
-        return m_VertexArray->GetVAO();
+        return m_VertexArray->GetRendererId();
     }
 
     uint32_t Mesh::GetVertexCount() const
