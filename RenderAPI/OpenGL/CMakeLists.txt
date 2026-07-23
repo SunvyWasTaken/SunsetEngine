@@ -24,7 +24,6 @@ target_link_libraries(
         SunsetBackEndOpenGL
         PUBLIC
             Sunset::Engine
-
         PRIVATE
             glad::glad
             OpenGL::GL

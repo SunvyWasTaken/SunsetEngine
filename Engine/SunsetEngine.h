@@ -8,6 +8,7 @@
 #include "Core/Application.h"
 #include "Core/WindowSetting.h"
 #include "Render/FrameBuffer.h"
+#include "Render/FrameBufferPresets.h"
 #include "Render/Core/RenderCommand.h"
 
 #endif //SUNSETCRAFT_V2_SUNSETENGINE_H
