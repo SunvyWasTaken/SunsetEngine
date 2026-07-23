@@ -39,6 +39,7 @@ namespace Sunset
 
     void OpenGLContext::MakeCurrent()
     {
+        glfwMakeContextCurrent(m_WindowHandle);
     }
 
     void OpenGLContext::SwapBuffers()

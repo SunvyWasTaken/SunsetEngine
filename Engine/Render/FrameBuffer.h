@@ -43,6 +43,8 @@ namespace Sunset
         [[nodiscard]] int GetHeight() const;
         [[nodiscard]] int GetSamples() const;
         [[nodiscard]] bool IsMultisampled() const;
+        [[nodiscard]] bool HasStencilAttachment() const;
+        [[nodiscard]] const FrameBufferSpecification& GetSpecification() const;
         [[nodiscard]] bool IsValid() const;
 
     private:

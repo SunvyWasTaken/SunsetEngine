@@ -10,5 +10,8 @@
 #include "Render/FrameBuffer.h"
 #include "Render/FrameBufferPresets.h"
 #include "Render/Core/RenderCommand.h"
+#include "Render/Pipeline/RenderPass.h"
+#include "Render/Pipeline/ShadowPass.h"
+#include "Render/Pipeline/PostProcessPass.h"
 
 #endif //SUNSETCRAFT_V2_SUNSETENGINE_H

@@ -4,70 +4,19 @@
 
 #include "Render/Core/Shader.h"
 
-#include <glad/glad.h>
-#include <glm/gtc/type_ptr.hpp>
+#include "Render/Core/RenderCommand.h"
 
 #include <fstream>
-#include <iostream>
+#include <sstream>
 
 namespace
 {
     std::string OpenFile(const std::string_view& filename)
     {
-        std::ifstream tmpFile;
-        tmpFile.open(filename.data());
-        std::stringstream tmpFileStream;
-        // read file's buffer contents into streams
-        tmpFileStream << tmpFile.rdbuf();
-        // close file handlers
-        tmpFile.close();
-        // convert stream into string
-        return tmpFileStream.str();
-    }
-
-    void CreateShader(const char * vertexShaderSource, const char * fragmentShaderSource, unsigned int& shaderProgram)
-    {
-        unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-        glCompileShader(vertexShader);
-
-        int  success;
-        char infoLog[512];
-        glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-
-
-        if(!success)
-        {
-            glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-            std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-        }
-
-        unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-        glCompileShader(fragmentShader);
-
-        glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-        if(!success)
-        {
-            glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-            std::cerr << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-        }
-
-        shaderProgram = glCreateProgram();
-        glAttachShader(shaderProgram, vertexShader);
-        glAttachShader(shaderProgram, fragmentShader);
-        glLinkProgram(shaderProgram);
-
-
-        glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-        if(!success)
-        {
-            glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-            std::cerr << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-        }
-
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
+        std::ifstream file(filename.data());
+        std::stringstream stream;
+        stream << file.rdbuf();
+        return stream.str();
     }
 }
 
@@ -78,14 +27,14 @@ namespace Sunset
     {
         const std::string vertShader = OpenFile(vertPath);
         const std::string fragShader = OpenFile(fragPath);
-        CreateShader(vertShader.c_str(), fragShader.c_str(), id);
-        LOG("Engine", trace, "Shader {} create succefully", id)
+        id = RenderCommand::CreateShader(vertShader, fragShader);
+        LOG("Engine", trace, "Shader {} created", id)
     }
 
     Shader::~Shader()
     {
-        LOG("Engine", trace, "Shader {} delete", id)
-        glDeleteProgram(id);
+        LOG("Engine", trace, "Shader {} deleted", id)
+        RenderCommand::DestroyShader(id);
     }
 
     std::uint32_t Shader::GetId() const
@@ -95,36 +44,36 @@ namespace Sunset
 
     void Shader::Use() const
     {
-        glUseProgram(id);
+        RenderCommand::BindShader(id);
     }
 
-    void Shader::SetFloat(const std::string_view& name, float value) const
+    void Shader::SetFloat(const std::string_view& name, const float value) const
     {
-        glUniform1f(glGetUniformLocation(id, name.data()), value);
+        RenderCommand::SetShaderFloat(id, name, value);
     }
 
     void Shader::SetInt(const std::string_view& name, const int value) const
     {
-        glUniform1i(glGetUniformLocation(id, name.data()), value);
+        RenderCommand::SetShaderInt(id, name, value);
     }
 
     void Shader::SetVec2(const std::string_view& name, const glm::vec2& vec) const
     {
-        glUniform2fv(glGetUniformLocation(id, name.data()), 1, glm::value_ptr(vec));
+        RenderCommand::SetShaderVec2(id, name, vec);
     }
 
     void Shader::SetVec3(const std::string_view& name, const glm::vec3& value) const
     {
-        glUniform3f(glGetUniformLocation(id, name.data()), value.x, value.y, value.z);
+        RenderCommand::SetShaderVec3(id, name, value);
     }
 
     void Shader::SetVec4(const std::string_view& name, const glm::vec4& value) const
     {
-        glUniform4fv(glGetUniformLocation(id, name.data()), 1, glm::value_ptr(value));
+        RenderCommand::SetShaderVec4(id, name, value);
     }
 
     void Shader::SetMat4(const std::string_view& name, const glm::mat4& value) const
     {
-        glUniformMatrix4fv(glGetUniformLocation(id, name.data()), 1, GL_FALSE, &value[0][0]);
+        RenderCommand::SetShaderMat4(id, name, value);
     }
 }

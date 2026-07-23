@@ -17,7 +17,8 @@ target_compile_definitions(SunsetEngine_compiler_flags INTERFACE
 # Permet de faire des options.
 option(SUNSET_BUILD_EDITOR "Build Sunset Editor" ON)
 option(SUNSET_USE_GLFW "Use GLFW as Window platform" ON)
-option(SUNSET_USE_OPENGL "Use OpenGL as Rendering backend" ON)
+option(SUNSET_USE_OPENGL "Use OpenGL as Rendering backend" OFF)
+option(SUNSET_USE_VULKAN "Use Vulkan as Rendering backend" ON)
 
 add_subdirectory(Thirdparty/FastNoiseSIMD)
 add_subdirectory(Thirdparty/SRmGUI)
@@ -38,6 +39,10 @@ endif ()
 
 if (SUNSET_USE_OPENGL)
     target_link_libraries(SunsetRuntime INTERFACE Sunset::BackendOpenGL)
+endif ()
+
+if (SUNSET_USE_VULKAN)
+    target_link_libraries(SunsetRuntime INTERFACE Sunset::Vulkan)
 endif ()
 
 if (SUNSET_BUILD_EDITOR)

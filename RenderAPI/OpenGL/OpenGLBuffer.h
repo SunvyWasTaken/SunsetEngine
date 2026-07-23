@@ -4,9 +4,12 @@
 
 #pragma once
 
-namespace Sunset
+#include "Render/Core/RenderAPI.h"
+
+namespace Sunset::OpenGLBuffer
 {
-    class OpenGLBuffer
-    {
-    };
-} // Sunset
+    [[nodiscard]] std::uint32_t Create(BufferType type, const void* data, size_t size, BufferUsage usage);
+    void Destroy(std::uint32_t buffer);
+    void Bind(BufferType type, std::uint32_t buffer);
+    void Update(BufferType type, std::uint32_t buffer, size_t offset, size_t size, const void* data);
+}
