@@ -17,8 +17,8 @@ target_compile_definitions(SunsetEngine_compiler_flags INTERFACE
 # Permet de faire des options.
 option(SUNSET_BUILD_EDITOR "Build Sunset Editor" ON)
 option(SUNSET_USE_GLFW "Use GLFW as Window platform" ON)
-option(SUNSET_USE_OPENGL "Use OpenGL as Rendering backend" OFF)
-option(SUNSET_USE_VULKAN "Use Vulkan as Rendering backend" ON)
+option(SUNSET_USE_OPENGL "Use OpenGL as Rendering backend" ON)
+option(SUNSET_USE_VULKAN "Use Vulkan as Rendering backend" OFF)
 
 add_subdirectory(Thirdparty/FastNoiseSIMD)
 add_subdirectory(Thirdparty/SRmGUI)
