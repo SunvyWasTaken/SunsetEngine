@@ -157,7 +157,7 @@ namespace Sunset
     }
 
     VertexBuffer::VertexBuffer(const void* data, size_t typeSize, size_t dataSize)
-        : m_Id(0)
+        : m_Id()
         , m_Layout({})
         , m_Size(dataSize)
     {
@@ -178,7 +178,7 @@ namespace Sunset
 
     void VertexBuffer::Unbind() const
     {
-        RenderCommand::BindBuffer(BufferType::Vertex, 0);
+        RenderCommand::BindBuffer(BufferType::Vertex, BufferHandle{});
     }
 
     void VertexBuffer::SetLayout(const std::initializer_list<BufferElement>& elements)
@@ -196,13 +196,13 @@ namespace Sunset
         return m_Size;
     }
 
-    std::uint32_t VertexBuffer::GetRendererId() const
+    BufferHandle VertexBuffer::GetRendererId() const
     {
         return m_Id;
     }
 
     IndiceBuffer::IndiceBuffer(const std::vector<uint32_t>& indices)
-        : m_Id(0)
+        : m_Id()
         , m_Count(indices.size())
     {
         m_Id = RenderCommand::CreateBuffer(BufferType::Index, indices.data(), sizeof(uint32_t) * indices.size(), BufferUsage::Static);
@@ -222,7 +222,7 @@ namespace Sunset
 
     void IndiceBuffer::Unbind() const
     {
-        RenderCommand::BindBuffer(BufferType::Index, 0);
+        RenderCommand::BindBuffer(BufferType::Index, BufferHandle{});
     }
 
     size_t IndiceBuffer::GetCount() const
@@ -230,7 +230,7 @@ namespace Sunset
         return m_Count;
     }
 
-    std::uint32_t IndiceBuffer::GetRendererId() const
+    BufferHandle IndiceBuffer::GetRendererId() const
     {
         return m_Id;
     }

@@ -34,12 +34,12 @@ namespace Sunset
         m_FrameBuffer.Resize(width, height);
     }
 
-    std::uint32_t PostProcessPass::GetColorTexture() const
+    TextureHandle PostProcessPass::GetColorTexture() const
     {
         return m_FrameBuffer.GetColorAttachment();
     }
 
-    std::uint32_t PostProcessPass::GetDepthTexture() const
+    TextureHandle PostProcessPass::GetDepthTexture() const
     {
         return m_FrameBuffer.GetDepthAttachment();
     }

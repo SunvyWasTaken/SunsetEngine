@@ -10,7 +10,7 @@
 namespace Sunset
 {
     VertexArray::VertexArray()
-       : m_Id(0)
+       : m_Id()
        , count(0)
        , bHasEbo(false)
     {
@@ -29,7 +29,7 @@ namespace Sunset
 
     void VertexArray::Unbind() const
     {
-        RenderCommand::BindVertexArray(0);
+        RenderCommand::BindVertexArray(VertexArrayHandle{});
     }
 
     void VertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
@@ -47,7 +47,7 @@ namespace Sunset
         Unbind();
     }
 
-    uint32_t VertexArray::GetRendererId() const
+    VertexArrayHandle VertexArray::GetRendererId() const
     {
         return m_Id;
     }

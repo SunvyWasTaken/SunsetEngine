@@ -64,6 +64,7 @@ namespace Sunset
         std::unique_ptr<GraphicsContext> m_GraphicsContext;
 
         WindowData m_Data;
+        WindowGraphicsAPI m_GraphicsAPI = WindowGraphicsAPI::OpenGL;
 
         static std::uint32_t s_WindowCount;
     };

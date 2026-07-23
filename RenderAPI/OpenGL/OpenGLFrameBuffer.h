@@ -14,7 +14,7 @@ namespace Sunset
 namespace Sunset::OpenGLFrameBuffer
 {
     [[nodiscard]] FrameBufferCreateResult Create(const FrameBufferSpecification& specification);
-    void Destroy(std::uint32_t framebuffer, const std::vector<std::uint32_t>& colorAttachments, std::uint32_t depthAttachment);
+    void Destroy(FrameBufferHandle framebuffer, const std::vector<TextureHandle>& colorAttachments, TextureHandle depthAttachment);
     void Bind(std::uint32_t framebuffer, const glm::ivec2& size);
     void Unbind();
     void Clear(const FrameBuffer& target, ClearFlags flags, const glm::vec4& color, float depth, int stencil);

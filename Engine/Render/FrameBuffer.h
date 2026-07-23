@@ -5,6 +5,7 @@
 #pragma once
 
 #include "FrameBufferSpecification.h"
+#include "Render/Core/RenderHandle.h"
 
 #include <cstdint>
 #include <vector>
@@ -34,11 +35,11 @@ namespace Sunset
         void ClearStencil(int stencil = 0) const;
         void BlitTo(FrameBuffer& target, ClearFlags mask) const;
 
-        [[nodiscard]] std::uint32_t GetColorAttachment(std::uint32_t index = 0) const;
-        [[nodiscard]] std::uint32_t GetDepthAttachment() const;
+        [[nodiscard]] TextureHandle GetColorAttachment(std::uint32_t index = 0) const;
+        [[nodiscard]] TextureHandle GetDepthAttachment() const;
         [[nodiscard]] bool HasDepthAttachment() const;
         [[nodiscard]] std::uint32_t GetColorAttachmentCount() const;
-        [[nodiscard]] std::uint32_t GetId() const;
+        [[nodiscard]] FrameBufferHandle GetId() const;
         [[nodiscard]] int GetWidth() const;
         [[nodiscard]] int GetHeight() const;
         [[nodiscard]] int GetSamples() const;
@@ -52,8 +53,8 @@ namespace Sunset
         void Release();
 
         FrameBufferSpecification m_Specification;
-        std::uint32_t m_Id = 0;
-        std::vector<std::uint32_t> m_ColorAttachments;
-        std::uint32_t m_DepthAttachment = 0;
+        FrameBufferHandle m_Id;
+        std::vector<TextureHandle> m_ColorAttachments;
+        TextureHandle m_DepthAttachment;
     };
 }

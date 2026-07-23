@@ -59,15 +59,15 @@ namespace Sunset
         return GetRenderAPI().CreateFrameBuffer(specification);
     }
 
-    void RenderCommand::DestroyFrameBuffer(const std::uint32_t framebuffer, const std::vector<std::uint32_t>& colorAttachments, const std::uint32_t depthAttachment)
+    void RenderCommand::DestroyFrameBuffer(const FrameBufferHandle framebuffer, const std::vector<TextureHandle>& colorAttachments, const TextureHandle depthAttachment)
     {
-        if (framebuffer == 0 || !HasRenderAPI())
+        if (!framebuffer || !HasRenderAPI())
             return;
 
         GetRenderAPI().DestroyFrameBuffer(framebuffer, colorAttachments, depthAttachment);
     }
 
-    void RenderCommand::BindFrameBuffer(const std::uint32_t framebuffer, const glm::ivec2& size)
+    void RenderCommand::BindFrameBuffer(const FrameBufferHandle framebuffer, const glm::ivec2& size)
     {
         GetRenderAPI().BindFrameBuffer(framebuffer, size);
     }
@@ -102,71 +102,71 @@ namespace Sunset
         GetRenderAPI().BlitFrameBuffer(source, target, mask);
     }
 
-    bool RenderCommand::IsFrameBufferValid(const std::uint32_t framebuffer)
+    bool RenderCommand::IsFrameBufferValid(const FrameBufferHandle framebuffer)
     {
         return HasRenderAPI() && GetRenderAPI().IsFrameBufferValid(framebuffer);
     }
 
-    std::uint32_t RenderCommand::CreateBuffer(const BufferType type, const void* data, const size_t size, const BufferUsage usage)
+    BufferHandle RenderCommand::CreateBuffer(const BufferType type, const void* data, const size_t size, const BufferUsage usage)
     {
         return GetRenderAPI().CreateBuffer(type, data, size, usage);
     }
 
-    void RenderCommand::DestroyBuffer(const std::uint32_t buffer)
+    void RenderCommand::DestroyBuffer(const BufferHandle buffer)
     {
-        if (buffer == 0 || !HasRenderAPI())
+        if (!buffer || !HasRenderAPI())
             return;
 
         GetRenderAPI().DestroyBuffer(buffer);
     }
 
-    void RenderCommand::BindBuffer(const BufferType type, const std::uint32_t buffer)
+    void RenderCommand::BindBuffer(const BufferType type, const BufferHandle buffer)
     {
         GetRenderAPI().BindBuffer(type, buffer);
     }
 
-    void RenderCommand::UpdateBuffer(const BufferType type, const std::uint32_t buffer, const size_t offset, const size_t size, const void* data)
+    void RenderCommand::UpdateBuffer(const BufferType type, const BufferHandle buffer, const size_t offset, const size_t size, const void* data)
     {
         GetRenderAPI().UpdateBuffer(type, buffer, offset, size, data);
     }
 
-    std::uint32_t RenderCommand::CreateVertexArray()
+    VertexArrayHandle RenderCommand::CreateVertexArray()
     {
         return GetRenderAPI().CreateVertexArray();
     }
 
-    void RenderCommand::DestroyVertexArray(const std::uint32_t vertexArray)
+    void RenderCommand::DestroyVertexArray(const VertexArrayHandle vertexArray)
     {
-        if (vertexArray == 0 || !HasRenderAPI())
+        if (!vertexArray || !HasRenderAPI())
             return;
 
         GetRenderAPI().DestroyVertexArray(vertexArray);
     }
 
-    void RenderCommand::BindVertexArray(const std::uint32_t vertexArray)
+    void RenderCommand::BindVertexArray(const VertexArrayHandle vertexArray)
     {
         GetRenderAPI().BindVertexArray(vertexArray);
     }
 
-    void RenderCommand::ConfigureVertexArray(const std::uint32_t vertexArray, const std::uint32_t vertexBuffer, const BufferLayout& layout)
+    void RenderCommand::ConfigureVertexArray(const VertexArrayHandle vertexArray, const BufferHandle vertexBuffer, const BufferLayout& layout)
     {
         GetRenderAPI().ConfigureVertexArray(vertexArray, vertexBuffer, layout);
     }
 
-    std::uint32_t RenderCommand::CreateTexture2D(const TextureSpecification& specification, const void* data)
+    TextureHandle RenderCommand::CreateTexture2D(const TextureSpecification& specification, const void* data)
     {
         return GetRenderAPI().CreateTexture2D(specification, data);
     }
 
-    void RenderCommand::DestroyTexture(const std::uint32_t texture)
+    void RenderCommand::DestroyTexture(const TextureHandle texture)
     {
-        if (texture == 0 || !HasRenderAPI())
+        if (!texture || !HasRenderAPI())
             return;
 
         GetRenderAPI().DestroyTexture(texture);
     }
 
-    void RenderCommand::BindTexture(const std::uint32_t texture, const std::uint32_t slot)
+    void RenderCommand::BindTexture(const TextureHandle texture, const std::uint32_t slot)
     {
         GetRenderAPI().BindTexture(texture, slot);
     }
@@ -181,55 +181,55 @@ namespace Sunset
         BindTexture(texture.GetRendererId(), slot);
     }
 
-    void RenderCommand::UpdateTexture2D(const std::uint32_t texture, const glm::ivec2& coord, const TextureSpecification& specification, const void* data)
+    void RenderCommand::UpdateTexture2D(const TextureHandle texture, const glm::ivec2& coord, const TextureSpecification& specification, const void* data)
     {
         GetRenderAPI().UpdateTexture2D(texture, coord, specification, data);
     }
 
-    std::uint32_t RenderCommand::CreateShader(const std::string_view vertexSource, const std::string_view fragmentSource)
+    ShaderHandle RenderCommand::CreateShader(const std::string_view vertexSource, const std::string_view fragmentSource)
     {
         return GetRenderAPI().CreateShader(vertexSource, fragmentSource);
     }
 
-    void RenderCommand::DestroyShader(const std::uint32_t shader)
+    void RenderCommand::DestroyShader(const ShaderHandle shader)
     {
-        if (shader == 0 || !HasRenderAPI())
+        if (!shader || !HasRenderAPI())
             return;
 
         GetRenderAPI().DestroyShader(shader);
     }
 
-    void RenderCommand::BindShader(const std::uint32_t shader)
+    void RenderCommand::BindShader(const ShaderHandle shader)
     {
         GetRenderAPI().BindShader(shader);
     }
 
-    void RenderCommand::SetShaderFloat(const std::uint32_t shader, const std::string_view name, const float value)
+    void RenderCommand::SetShaderFloat(const ShaderHandle shader, const std::string_view name, const float value)
     {
         GetRenderAPI().SetShaderFloat(shader, name, value);
     }
 
-    void RenderCommand::SetShaderInt(const std::uint32_t shader, const std::string_view name, const int value)
+    void RenderCommand::SetShaderInt(const ShaderHandle shader, const std::string_view name, const int value)
     {
         GetRenderAPI().SetShaderInt(shader, name, value);
     }
 
-    void RenderCommand::SetShaderVec2(const std::uint32_t shader, const std::string_view name, const glm::vec2& value)
+    void RenderCommand::SetShaderVec2(const ShaderHandle shader, const std::string_view name, const glm::vec2& value)
     {
         GetRenderAPI().SetShaderVec2(shader, name, value);
     }
 
-    void RenderCommand::SetShaderVec3(const std::uint32_t shader, const std::string_view name, const glm::vec3& value)
+    void RenderCommand::SetShaderVec3(const ShaderHandle shader, const std::string_view name, const glm::vec3& value)
     {
         GetRenderAPI().SetShaderVec3(shader, name, value);
     }
 
-    void RenderCommand::SetShaderVec4(const std::uint32_t shader, const std::string_view name, const glm::vec4& value)
+    void RenderCommand::SetShaderVec4(const ShaderHandle shader, const std::string_view name, const glm::vec4& value)
     {
         GetRenderAPI().SetShaderVec4(shader, name, value);
     }
 
-    void RenderCommand::SetShaderMat4(const std::uint32_t shader, const std::string_view name, const glm::mat4& value)
+    void RenderCommand::SetShaderMat4(const ShaderHandle shader, const std::string_view name, const glm::mat4& value)
     {
         GetRenderAPI().SetShaderMat4(shader, name, value);
     }

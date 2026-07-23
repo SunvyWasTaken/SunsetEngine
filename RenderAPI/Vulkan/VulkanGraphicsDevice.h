@@ -1,20 +1,27 @@
 //
-// Created by sunvy on 16/07/2026.
+// Created by Codex on 23/07/2026.
 //
 
 #pragma once
 
 #include "Render/Core/RenderAPI.h"
-#include "Render/Core/RenderType.h"
-#include "OpenGLDrawQueue.h"
-#include "OpenGLContext.h"
+
+#include <memory>
 
 namespace Sunset
 {
-    class OpenGLGraphicsDevice final : public RenderAPI
+    class VulkanCommandContext;
+    class VulkanDevice;
+    class VulkanInstance;
+    class VulkanResourceRegistry;
+    class VulkanSurface;
+    class VulkanSwapchain;
+
+    class VulkanGraphicsDevice final : public RenderAPI
     {
     public:
-        ~OpenGLGraphicsDevice() override;
+        VulkanGraphicsDevice();
+        ~VulkanGraphicsDevice() override;
 
         void Init() override;
         void BeginFrame() override;
@@ -70,12 +77,14 @@ namespace Sunset
         void SetShaderMat4(ShaderHandle shader, std::string_view name, const glm::mat4& value) override;
 
     private:
-        void ResetFrameState() const;
-        void ApplyState(const RenderState& state) const;
-        void DrawBoundMesh(std::uint32_t vertexCount, const RenderState& state) const;
-        void FlushDrawCommands();
+        void RequireInitialized(std::string_view method) const;
+        VulkanResourceRegistry& RequireResources(std::string_view method) const;
 
-        std::unique_ptr<OpenGLContext> m_Context;
-        OpenGLDrawQueue m_DrawQueue;
+        std::unique_ptr<VulkanInstance> m_Instance;
+        std::unique_ptr<VulkanSurface> m_Surface;
+        std::unique_ptr<VulkanDevice> m_Device;
+        std::unique_ptr<VulkanSwapchain> m_Swapchain;
+        std::unique_ptr<VulkanCommandContext> m_CommandContext;
+        std::unique_ptr<VulkanResourceRegistry> m_Resources;
     };
-} // Sunset
+}

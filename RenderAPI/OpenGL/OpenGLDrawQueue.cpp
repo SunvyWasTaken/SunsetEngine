@@ -46,7 +46,7 @@ namespace Sunset
 
         std::shared_ptr<Shader> currentShader = nullptr;
         std::shared_ptr<Material> currentMaterial = nullptr;
-        std::uint32_t currentVertexArray = 0;
+        VertexArrayHandle currentVertexArray;
 
         for (const DrawCommand& cmd : m_DrawCommands)
         {
@@ -67,10 +67,10 @@ namespace Sunset
                 currentMaterial->Bind();
             }
 
-            if (currentVertexArray != cmd.vertexArray)
+            if (currentVertexArray.id != cmd.vertexArray.id)
             {
                 currentVertexArray = cmd.vertexArray;
-                OpenGLVertexArray::Bind(currentVertexArray);
+                OpenGLVertexArray::Bind(currentVertexArray.id);
             }
 
             cmd.material->UniformBind();
@@ -105,7 +105,7 @@ namespace Sunset
                 return glm::dot(lhsDistance, lhsDistance) > glm::dot(rhsDistance, rhsDistance);
             }
 
-            return std::tie(lhs.material->m_Shader, lhs.material, lhs.vertexArray) < std::tie(rhs.material->m_Shader, rhs.material, rhs.vertexArray);
+            return std::tie(lhs.material->m_Shader, lhs.material, lhs.vertexArray.id) < std::tie(rhs.material->m_Shader, rhs.material, rhs.vertexArray.id);
         });
     }
 }

@@ -23,21 +23,21 @@ namespace
 namespace Sunset
 {
     Shader::Shader(const std::string_view& vertPath, const std::string_view& fragPath)
-        : id(0)
+        : id()
     {
         const std::string vertShader = OpenFile(vertPath);
         const std::string fragShader = OpenFile(fragPath);
         id = RenderCommand::CreateShader(vertShader, fragShader);
-        LOG("Engine", trace, "Shader {} created", id)
+        LOG("Engine", trace, "Shader {} created", id.id)
     }
 
     Shader::~Shader()
     {
-        LOG("Engine", trace, "Shader {} deleted", id)
+        LOG("Engine", trace, "Shader {} deleted", id.id)
         RenderCommand::DestroyShader(id);
     }
 
-    std::uint32_t Shader::GetId() const
+    ShaderHandle Shader::GetId() const
     {
         return id;
     }

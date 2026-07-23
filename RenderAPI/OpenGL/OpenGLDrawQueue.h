@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Render/Core/RenderHandle.h"
 #include "Render/Core/RenderType.h"
 
 #include <memory>
@@ -35,7 +36,7 @@ namespace Sunset
 
         struct DrawCommand
         {
-            std::uint32_t vertexArray = 0;
+            VertexArrayHandle vertexArray;
             std::uint32_t indexCount = 0;
             std::shared_ptr<Material> material;
             glm::mat4 model = glm::mat4(1.0f);

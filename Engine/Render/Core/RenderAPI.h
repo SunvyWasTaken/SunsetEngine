@@ -5,7 +5,10 @@
 #pragma once
 
 #include "Render/FrameBufferSpecification.h"
+#include "Render/Core/RenderHandle.h"
 #include "Render/Core/RenderType.h"
+
+#include <glm/glm.hpp>
 
 #include <cstdint>
 #include <string_view>
@@ -22,9 +25,9 @@ namespace Sunset
 
     struct FrameBufferCreateResult
     {
-        std::uint32_t id = 0;
-        std::vector<std::uint32_t> colorAttachments;
-        std::uint32_t depthAttachment = 0;
+        FrameBufferHandle id;
+        std::vector<TextureHandle> colorAttachments;
+        TextureHandle depthAttachment;
     };
 
     enum class BufferType
@@ -85,39 +88,39 @@ namespace Sunset
         virtual void SetCullMode(CullMode mode) = 0;
 
         virtual FrameBufferCreateResult CreateFrameBuffer(const FrameBufferSpecification& specification) = 0;
-        virtual void DestroyFrameBuffer(std::uint32_t framebuffer, const std::vector<std::uint32_t>& colorAttachments, std::uint32_t depthAttachment) = 0;
-        virtual void BindFrameBuffer(std::uint32_t framebuffer, const glm::ivec2& size) = 0;
+        virtual void DestroyFrameBuffer(FrameBufferHandle framebuffer, const std::vector<TextureHandle>& colorAttachments, TextureHandle depthAttachment) = 0;
+        virtual void BindFrameBuffer(FrameBufferHandle framebuffer, const glm::ivec2& size) = 0;
         virtual void UnbindFrameBuffer() = 0;
         virtual void ClearFrameBuffer(const FrameBuffer& target, ClearFlags flags, const glm::vec4& color, float depth, int stencil) = 0;
         virtual void ClearFrameBufferColor(const FrameBuffer& target, std::uint32_t attachmentIndex, const glm::vec4& color) = 0;
         virtual void ClearFrameBufferDepth(const FrameBuffer& target, float depth) = 0;
         virtual void ClearFrameBufferStencil(const FrameBuffer& target, int stencil) = 0;
         virtual void BlitFrameBuffer(const FrameBuffer& source, FrameBuffer& target, ClearFlags mask) = 0;
-        virtual bool IsFrameBufferValid(std::uint32_t framebuffer) = 0;
+        virtual bool IsFrameBufferValid(FrameBufferHandle framebuffer) = 0;
 
-        virtual std::uint32_t CreateBuffer(BufferType type, const void* data, size_t size, BufferUsage usage) = 0;
-        virtual void DestroyBuffer(std::uint32_t buffer) = 0;
-        virtual void BindBuffer(BufferType type, std::uint32_t buffer) = 0;
-        virtual void UpdateBuffer(BufferType type, std::uint32_t buffer, size_t offset, size_t size, const void* data) = 0;
+        virtual BufferHandle CreateBuffer(BufferType type, const void* data, size_t size, BufferUsage usage) = 0;
+        virtual void DestroyBuffer(BufferHandle buffer) = 0;
+        virtual void BindBuffer(BufferType type, BufferHandle buffer) = 0;
+        virtual void UpdateBuffer(BufferType type, BufferHandle buffer, size_t offset, size_t size, const void* data) = 0;
 
-        virtual std::uint32_t CreateVertexArray() = 0;
-        virtual void DestroyVertexArray(std::uint32_t vertexArray) = 0;
-        virtual void BindVertexArray(std::uint32_t vertexArray) = 0;
-        virtual void ConfigureVertexArray(std::uint32_t vertexArray, std::uint32_t vertexBuffer, const BufferLayout& layout) = 0;
+        virtual VertexArrayHandle CreateVertexArray() = 0;
+        virtual void DestroyVertexArray(VertexArrayHandle vertexArray) = 0;
+        virtual void BindVertexArray(VertexArrayHandle vertexArray) = 0;
+        virtual void ConfigureVertexArray(VertexArrayHandle vertexArray, BufferHandle vertexBuffer, const BufferLayout& layout) = 0;
 
-        virtual std::uint32_t CreateTexture2D(const TextureSpecification& specification, const void* data) = 0;
-        virtual void DestroyTexture(std::uint32_t texture) = 0;
-        virtual void BindTexture(std::uint32_t texture, std::uint32_t slot) = 0;
-        virtual void UpdateTexture2D(std::uint32_t texture, const glm::ivec2& coord, const TextureSpecification& specification, const void* data) = 0;
+        virtual TextureHandle CreateTexture2D(const TextureSpecification& specification, const void* data) = 0;
+        virtual void DestroyTexture(TextureHandle texture) = 0;
+        virtual void BindTexture(TextureHandle texture, std::uint32_t slot) = 0;
+        virtual void UpdateTexture2D(TextureHandle texture, const glm::ivec2& coord, const TextureSpecification& specification, const void* data) = 0;
 
-        virtual std::uint32_t CreateShader(std::string_view vertexSource, std::string_view fragmentSource) = 0;
-        virtual void DestroyShader(std::uint32_t shader) = 0;
-        virtual void BindShader(std::uint32_t shader) = 0;
-        virtual void SetShaderFloat(std::uint32_t shader, std::string_view name, float value) = 0;
-        virtual void SetShaderInt(std::uint32_t shader, std::string_view name, int value) = 0;
-        virtual void SetShaderVec2(std::uint32_t shader, std::string_view name, const glm::vec2& value) = 0;
-        virtual void SetShaderVec3(std::uint32_t shader, std::string_view name, const glm::vec3& value) = 0;
-        virtual void SetShaderVec4(std::uint32_t shader, std::string_view name, const glm::vec4& value) = 0;
-        virtual void SetShaderMat4(std::uint32_t shader, std::string_view name, const glm::mat4& value) = 0;
+        virtual ShaderHandle CreateShader(std::string_view vertexSource, std::string_view fragmentSource) = 0;
+        virtual void DestroyShader(ShaderHandle shader) = 0;
+        virtual void BindShader(ShaderHandle shader) = 0;
+        virtual void SetShaderFloat(ShaderHandle shader, std::string_view name, float value) = 0;
+        virtual void SetShaderInt(ShaderHandle shader, std::string_view name, int value) = 0;
+        virtual void SetShaderVec2(ShaderHandle shader, std::string_view name, const glm::vec2& value) = 0;
+        virtual void SetShaderVec3(ShaderHandle shader, std::string_view name, const glm::vec3& value) = 0;
+        virtual void SetShaderVec4(ShaderHandle shader, std::string_view name, const glm::vec4& value) = 0;
+        virtual void SetShaderMat4(ShaderHandle shader, std::string_view name, const glm::mat4& value) = 0;
     };
 }

@@ -13,14 +13,14 @@ namespace Sunset
         return OpenGLFrameBuffer::Create(specification);
     }
 
-    void OpenGLGraphicsDevice::DestroyFrameBuffer(const std::uint32_t framebuffer, const std::vector<std::uint32_t>& colorAttachments, const std::uint32_t depthAttachment)
+    void OpenGLGraphicsDevice::DestroyFrameBuffer(const FrameBufferHandle framebuffer, const std::vector<TextureHandle>& colorAttachments, const TextureHandle depthAttachment)
     {
         OpenGLFrameBuffer::Destroy(framebuffer, colorAttachments, depthAttachment);
     }
 
-    void OpenGLGraphicsDevice::BindFrameBuffer(const std::uint32_t framebuffer, const glm::ivec2& size)
+    void OpenGLGraphicsDevice::BindFrameBuffer(const FrameBufferHandle framebuffer, const glm::ivec2& size)
     {
-        OpenGLFrameBuffer::Bind(framebuffer, size);
+        OpenGLFrameBuffer::Bind(framebuffer.id, size);
     }
 
     void OpenGLGraphicsDevice::UnbindFrameBuffer()
@@ -53,8 +53,8 @@ namespace Sunset
         OpenGLFrameBuffer::Blit(source, target, mask);
     }
 
-    bool OpenGLGraphicsDevice::IsFrameBufferValid(const std::uint32_t framebuffer)
+    bool OpenGLGraphicsDevice::IsFrameBufferValid(const FrameBufferHandle framebuffer)
     {
-        return OpenGLFrameBuffer::IsValid(framebuffer);
+        return OpenGLFrameBuffer::IsValid(framebuffer.id);
     }
 }

@@ -6,6 +6,7 @@
 
 #include <GLFW/glfw3.h>
 
+#include <cstdlib>
 #include "Render/Core/GraphicsContext.h"
 
 namespace
@@ -17,6 +18,26 @@ namespace
             "GLFW error [%d]: %s\n",
             errorCode,
             description != nullptr ? description : "Unknown error");
+    }
+
+    bool HasEnv(const char* name)
+    {
+        const char* value = std::getenv(name);
+        return value != nullptr && value[0] != '\0';
+    }
+
+    void SetGlfwPlatformHint()
+    {
+    #if GLFW_VERSION_MAJOR > 3 || (GLFW_VERSION_MAJOR == 3 && GLFW_VERSION_MINOR >= 4)
+        if (HasEnv("WAYLAND_DISPLAY") && glfwPlatformSupported(GLFW_PLATFORM_WAYLAND) == GLFW_TRUE)
+        {
+            glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
+            return;
+        }
+
+        if (HasEnv("DISPLAY") && glfwPlatformSupported(GLFW_PLATFORM_X11) == GLFW_TRUE)
+            glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
+    #endif
     }
 
     Sunset::Event::KeyModifiers FromGLFWMods(const int mods)
@@ -149,9 +170,12 @@ namespace Sunset
 
     void GLFWWindow::Initialize(const WindowSetting &properties)
     {
+        m_GraphicsAPI = properties.GraphicsAPI;
+
         if (s_WindowCount == 0)
         {
             glfwSetErrorCallback(GlfwErrorCallback);
+            SetGlfwPlatformHint();
 
             if (glfwInit() != GLFW_TRUE)
                 throw std::runtime_error("Failed to initialize GLFW");
@@ -161,13 +185,20 @@ namespace Sunset
 
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        if (m_GraphicsAPI == WindowGraphicsAPI::Vulkan)
+        {
+            glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        }
+        else if (m_GraphicsAPI == WindowGraphicsAPI::OpenGL)
+        {
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     #ifndef NDEBUG
-        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+            glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
     #endif
+        }
 
         m_WindowHandle = glfwCreateWindow(static_cast<int>(properties.WindowSize.x), static_cast<int>(properties.WindowSize.y), properties.WindowTitle.data(), nullptr, nullptr);
 
@@ -223,7 +254,8 @@ namespace Sunset
 
     void GLFWWindow::Present()
     {
-        glfwSwapBuffers(m_WindowHandle);
+        if (m_GraphicsAPI == WindowGraphicsAPI::OpenGL)
+            glfwSwapBuffers(m_WindowHandle);
     }
 
     bool GLFWWindow::ShouldClose() const
@@ -238,8 +270,11 @@ namespace Sunset
 
     void GLFWWindow::SetVSync(bool enabled)
     {
-        glfwMakeContextCurrent(m_WindowHandle);
-        glfwSwapInterval(enabled ? 1 : 0);
+        if (m_GraphicsAPI == WindowGraphicsAPI::OpenGL)
+        {
+            glfwMakeContextCurrent(m_WindowHandle);
+            glfwSwapInterval(enabled ? 1 : 0);
+        }
 
         m_Data.VSync = enabled;
     }

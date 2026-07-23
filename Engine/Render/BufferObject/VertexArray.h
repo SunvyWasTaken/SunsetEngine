@@ -5,6 +5,8 @@
 #ifndef SUNSETCRAFT_VERTEXARRAY_H
 #define SUNSETCRAFT_VERTEXARRAY_H
 
+#include "Render/Core/RenderHandle.h"
+
 namespace Sunset
 {
     class VertexBuffer;
@@ -23,12 +25,12 @@ namespace Sunset
         void AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer);
         void AddIndexBuffer(const IndiceBuffer& indexBuffer);
 
-        [[nodiscard]] uint32_t GetRendererId() const;
+        [[nodiscard]] VertexArrayHandle GetRendererId() const;
         [[nodiscard]] uint32_t GetCount() const;
         [[nodiscard]] bool hasEbo() const;
 
     private:
-        uint32_t m_Id;
+        VertexArrayHandle m_Id;
         uint32_t count;
         bool bHasEbo;
     };

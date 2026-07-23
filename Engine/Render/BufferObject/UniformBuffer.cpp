@@ -12,7 +12,7 @@ namespace Sunset
     template<typename T>
     UniformBuffer<T>::~UniformBuffer()
     {
-        LOG("Engine", trace, "Uniform buffer {} delete", m_Id);
+        LOG("Engine", trace, "Uniform buffer {} delete", m_Id.id);
         RenderCommand::DestroyBuffer(m_Id);
     }
 
@@ -21,7 +21,7 @@ namespace Sunset
     {
         m_Size = size;
         m_Id = RenderCommand::CreateBuffer(BufferType::Uniform, nullptr, sizeof(T) * size, BufferUsage::Dynamic);
-        LOG("Engine", trace, "Uniform buffer {} Create", m_Id);
+        LOG("Engine", trace, "Uniform buffer {} Create", m_Id.id);
     }
 
     template<typename T>

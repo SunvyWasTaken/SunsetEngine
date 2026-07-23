@@ -7,6 +7,7 @@
 #include "RenderPass.h"
 
 #include "Render/FrameBuffer.h"
+#include "Render/Core/RenderHandle.h"
 
 namespace Sunset
 {
@@ -27,8 +28,8 @@ namespace Sunset
         void End();
         void Resize(int width, int height);
 
-        [[nodiscard]] std::uint32_t GetColorTexture() const;
-        [[nodiscard]] std::uint32_t GetDepthTexture() const;
+        [[nodiscard]] TextureHandle GetColorTexture() const;
+        [[nodiscard]] TextureHandle GetDepthTexture() const;
         [[nodiscard]] const FrameBuffer& GetFrameBuffer() const;
         [[nodiscard]] FrameBuffer& GetFrameBuffer();
 

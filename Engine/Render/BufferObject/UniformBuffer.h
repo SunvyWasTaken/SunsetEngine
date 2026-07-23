@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Render/Core/RenderHandle.h"
+
 namespace Sunset
 {
     template <typename T>
@@ -17,7 +19,7 @@ namespace Sunset
 
         void Update(const std::vector<T>& data) const;
     private:
-        uint32_t m_Id = 0;
+        BufferHandle m_Id;
         size_t m_Size = 0;
     };
 } // Sunset

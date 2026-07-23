@@ -45,12 +45,12 @@ if (SUNSET_USE_VULKAN)
     target_link_libraries(SunsetRuntime INTERFACE Sunset::Vulkan)
 endif ()
 
-if (SUNSET_BUILD_EDITOR)
-    if (NOT SUNSET_USE_GLFW OR NOT SUNSET_USE_OPENGL)
-        message(FATAL_ERROR "SunsetEditor requires SUNSET_USE_GLFW=ON and SUNSET_USE_OPENGL=ON")
-    endif ()
-
-    add_subdirectory(Editor)
-endif ()
+#if (SUNSET_BUILD_EDITOR)
+#    if (NOT SUNSET_USE_GLFW OR NOT SUNSET_USE_OPENGL)
+#        message(FATAL_ERROR "SunsetEditor requires SUNSET_USE_GLFW=ON and SUNSET_USE_OPENGL=ON")
+#    endif ()
+#
+#    add_subdirectory(Editor)
+#endif ()
 
 add_subdirectory(Game)

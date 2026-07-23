@@ -60,7 +60,7 @@ namespace Sunset
         return mesh;
     }
 
-    uint32_t Mesh::GetRenderHandle() const
+    VertexArrayHandle Mesh::GetRenderHandle() const
     {
         return m_VertexArray->GetRendererId();
     }

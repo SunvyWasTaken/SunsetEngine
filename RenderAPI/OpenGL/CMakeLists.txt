@@ -8,6 +8,8 @@ add_library(SunsetBackEndOpenGL STATIC)
 add_library(Sunset::BackendOpenGL ALIAS SunsetBackEndOpenGL)
 set_target_properties(SunsetBackEndOpenGL PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
+target_compile_definitions(SunsetBackEndOpenGL PUBLIC SUNSET_OPENGL)
+
 target_sources(
         SunsetBackEndOpenGL
         PRIVATE

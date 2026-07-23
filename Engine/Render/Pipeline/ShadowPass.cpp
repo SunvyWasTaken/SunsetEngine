@@ -64,7 +64,7 @@ namespace Sunset
         return m_LightSpaceMatrix;
     }
 
-    std::uint32_t ShadowPass::GetDepthTexture() const
+    TextureHandle ShadowPass::GetDepthTexture() const
     {
         return m_FrameBuffer.GetDepthAttachment();
     }

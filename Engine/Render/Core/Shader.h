@@ -5,6 +5,8 @@
 #ifndef SUNSETCRAFT_SHADER_H
 #define SUNSETCRAFT_SHADER_H
 
+#include "Render/Core/RenderHandle.h"
+
 namespace Sunset
 {
     class Shader
@@ -13,7 +15,7 @@ namespace Sunset
         Shader(const std::string_view& vertPath, const std::string_view& fragPath);
         ~Shader();
 
-        std::uint32_t GetId() const;
+        ShaderHandle GetId() const;
 
         void Use() const;
 
@@ -25,7 +27,7 @@ namespace Sunset
         void SetMat4(const std::string_view& name, const glm::mat4 &value) const;
 
     private:
-        std::uint32_t id;
+        ShaderHandle id;
     };
 }
 

@@ -10,6 +10,17 @@
 
 namespace
 {
+    std::vector<std::uint32_t> ToOpenGLTextureIds(const std::vector<Sunset::TextureHandle>& handles)
+    {
+        std::vector<std::uint32_t> ids;
+        ids.reserve(handles.size());
+
+        for (const Sunset::TextureHandle handle : handles)
+            ids.emplace_back(handle.id);
+
+        return ids;
+    }
+
     bool IsDepthFormat(const Sunset::FrameBufferTextureFormat format)
     {
         switch (format)
@@ -168,8 +179,8 @@ namespace Sunset::OpenGLFrameBuffer
         }
 
         FrameBufferCreateResult result;
-        glGenFramebuffers(1, &result.id);
-        glBindFramebuffer(GL_FRAMEBUFFER, result.id);
+        glGenFramebuffers(1, &result.id.id);
+        glBindFramebuffer(GL_FRAMEBUFFER, result.id.id);
 
         GLint maxColorAttachments = 0;
         glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &maxColorAttachments);
@@ -183,7 +194,7 @@ namespace Sunset::OpenGLFrameBuffer
 
             if (!IsDepthFormat(attachment.format) && static_cast<GLint>(result.colorAttachments.size()) >= maxColorAttachments)
             {
-                LOG("OpenGL", error, "Framebuffer {} has more color attachments than the GPU supports", result.id)
+                LOG("OpenGL", error, "Framebuffer {} has more color attachments than the GPU supports", result.id.id)
                 continue;
             }
 
@@ -218,20 +229,20 @@ namespace Sunset::OpenGLFrameBuffer
 
             if (IsDepthFormat(attachment.format))
             {
-                if (result.depthAttachment != 0)
+                if (result.depthAttachment)
                 {
-                    LOG("OpenGL", error, "Framebuffer {} has more than one depth attachment", result.id)
+                    LOG("OpenGL", error, "Framebuffer {} has more than one depth attachment", result.id.id)
                     glDeleteTextures(1, &texture);
                     continue;
                 }
 
-                result.depthAttachment = texture;
-                glFramebufferTexture2D(GL_FRAMEBUFFER, ToGLDepthAttachment(attachment.format), textureTarget, result.depthAttachment, 0);
+                result.depthAttachment = TextureHandle{texture};
+                glFramebufferTexture2D(GL_FRAMEBUFFER, ToGLDepthAttachment(attachment.format), textureTarget, result.depthAttachment.id, 0);
             }
             else
             {
                 const std::uint32_t colorAttachmentIndex = static_cast<std::uint32_t>(result.colorAttachments.size());
-                result.colorAttachments.emplace_back(texture);
+                result.colorAttachments.emplace_back(TextureHandle{texture});
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + colorAttachmentIndex, textureTarget, texture, 0);
                 drawBuffers.emplace_back(GL_COLOR_ATTACHMENT0 + colorAttachmentIndex);
             }
@@ -246,23 +257,26 @@ namespace Sunset::OpenGLFrameBuffer
         }
 
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            LOG("OpenGL", error, "Framebuffer {} is incomplete", result.id)
+            LOG("OpenGL", error, "Framebuffer {} is incomplete", result.id.id)
 
         glBindTexture(textureTarget, 0);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         return result;
     }
 
-    void Destroy(const std::uint32_t framebuffer, const std::vector<std::uint32_t>& colorAttachments, const std::uint32_t depthAttachment)
+    void Destroy(const FrameBufferHandle framebuffer, const std::vector<TextureHandle>& colorAttachments, const TextureHandle depthAttachment)
     {
-        if (framebuffer != 0)
-            glDeleteFramebuffers(1, &framebuffer);
+        if (framebuffer)
+            glDeleteFramebuffers(1, &framebuffer.id);
 
         if (!colorAttachments.empty())
-            glDeleteTextures(static_cast<GLsizei>(colorAttachments.size()), colorAttachments.data());
+        {
+            const std::vector<std::uint32_t> colorAttachmentIds = ToOpenGLTextureIds(colorAttachments);
+            glDeleteTextures(static_cast<GLsizei>(colorAttachmentIds.size()), colorAttachmentIds.data());
+        }
 
-        if (depthAttachment != 0)
-            glDeleteTextures(1, &depthAttachment);
+        if (depthAttachment)
+            glDeleteTextures(1, &depthAttachment.id);
     }
 
     void Bind(const std::uint32_t framebuffer, const glm::ivec2& size)
@@ -337,8 +351,8 @@ namespace Sunset::OpenGLFrameBuffer
         glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &previousReadFrameBuffer);
         glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &previousDrawFrameBuffer);
 
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, source.GetId());
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, target.GetId());
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, source.GetId().id);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, target.GetId().id);
         glBlitFramebuffer(
             0,
             0,

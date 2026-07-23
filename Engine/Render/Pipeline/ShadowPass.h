@@ -7,6 +7,7 @@
 #include "RenderPass.h"
 
 #include "Render/FrameBuffer.h"
+#include "Render/Core/RenderHandle.h"
 
 #include <cstdint>
 #include <functional>
@@ -28,7 +29,7 @@ namespace Sunset
     struct ShadowRenderData
     {
         bool enabled = false;
-        std::uint32_t depthTexture = 0;
+        TextureHandle depthTexture;
         int textureUnit = 1;
         glm::mat4 lightSpaceMatrix{1.0f};
     };
@@ -46,7 +47,7 @@ namespace Sunset
 
         [[nodiscard]] ShadowRenderData GetRenderData(int textureUnit = 1) const;
         [[nodiscard]] const glm::mat4& GetLightSpaceMatrix() const;
-        [[nodiscard]] std::uint32_t GetDepthTexture() const;
+        [[nodiscard]] TextureHandle GetDepthTexture() const;
         [[nodiscard]] bool IsValid() const;
 
     private:

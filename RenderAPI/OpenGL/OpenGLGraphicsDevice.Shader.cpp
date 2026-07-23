@@ -8,48 +8,48 @@
 
 namespace Sunset
 {
-    std::uint32_t OpenGLGraphicsDevice::CreateShader(const std::string_view vertexSource, const std::string_view fragmentSource)
+    ShaderHandle OpenGLGraphicsDevice::CreateShader(const std::string_view vertexSource, const std::string_view fragmentSource)
     {
-        return OpenGLShader::Create(vertexSource, fragmentSource);
+        return ShaderHandle{OpenGLShader::Create(vertexSource, fragmentSource)};
     }
 
-    void OpenGLGraphicsDevice::DestroyShader(const std::uint32_t shader)
+    void OpenGLGraphicsDevice::DestroyShader(const ShaderHandle shader)
     {
-        OpenGLShader::Destroy(shader);
+        OpenGLShader::Destroy(shader.id);
     }
 
-    void OpenGLGraphicsDevice::BindShader(const std::uint32_t shader)
+    void OpenGLGraphicsDevice::BindShader(const ShaderHandle shader)
     {
-        OpenGLShader::Bind(shader);
+        OpenGLShader::Bind(shader.id);
     }
 
-    void OpenGLGraphicsDevice::SetShaderFloat(const std::uint32_t shader, const std::string_view name, const float value)
+    void OpenGLGraphicsDevice::SetShaderFloat(const ShaderHandle shader, const std::string_view name, const float value)
     {
-        OpenGLShader::SetFloat(shader, name, value);
+        OpenGLShader::SetFloat(shader.id, name, value);
     }
 
-    void OpenGLGraphicsDevice::SetShaderInt(const std::uint32_t shader, const std::string_view name, const int value)
+    void OpenGLGraphicsDevice::SetShaderInt(const ShaderHandle shader, const std::string_view name, const int value)
     {
-        OpenGLShader::SetInt(shader, name, value);
+        OpenGLShader::SetInt(shader.id, name, value);
     }
 
-    void OpenGLGraphicsDevice::SetShaderVec2(const std::uint32_t shader, const std::string_view name, const glm::vec2& value)
+    void OpenGLGraphicsDevice::SetShaderVec2(const ShaderHandle shader, const std::string_view name, const glm::vec2& value)
     {
-        OpenGLShader::SetVec2(shader, name, value);
+        OpenGLShader::SetVec2(shader.id, name, value);
     }
 
-    void OpenGLGraphicsDevice::SetShaderVec3(const std::uint32_t shader, const std::string_view name, const glm::vec3& value)
+    void OpenGLGraphicsDevice::SetShaderVec3(const ShaderHandle shader, const std::string_view name, const glm::vec3& value)
     {
-        OpenGLShader::SetVec3(shader, name, value);
+        OpenGLShader::SetVec3(shader.id, name, value);
     }
 
-    void OpenGLGraphicsDevice::SetShaderVec4(const std::uint32_t shader, const std::string_view name, const glm::vec4& value)
+    void OpenGLGraphicsDevice::SetShaderVec4(const ShaderHandle shader, const std::string_view name, const glm::vec4& value)
     {
-        OpenGLShader::SetVec4(shader, name, value);
+        OpenGLShader::SetVec4(shader.id, name, value);
     }
 
-    void OpenGLGraphicsDevice::SetShaderMat4(const std::uint32_t shader, const std::string_view name, const glm::mat4& value)
+    void OpenGLGraphicsDevice::SetShaderMat4(const ShaderHandle shader, const std::string_view name, const glm::mat4& value)
     {
-        OpenGLShader::SetMat4(shader, name, value);
+        OpenGLShader::SetMat4(shader.id, name, value);
     }
 }

@@ -64,9 +64,9 @@ namespace Sunset
         void SetLayout(const std::initializer_list<BufferElement>& elements);
         BufferLayout GetLayout() const;
         size_t GetSize() const;
-        [[nodiscard]] std::uint32_t GetRendererId() const;
+        [[nodiscard]] BufferHandle GetRendererId() const;
     private:
-        uint32_t m_Id;
+        BufferHandle m_Id;
         BufferLayout m_Layout;
         size_t m_Size;
     };
@@ -80,9 +80,9 @@ namespace Sunset
         void Bind() const;
         void Unbind() const;
         size_t GetCount() const;
-        [[nodiscard]] std::uint32_t GetRendererId() const;
+        [[nodiscard]] BufferHandle GetRendererId() const;
     private:
-        uint32_t m_Id;
+        BufferHandle m_Id;
         size_t m_Count;
     };
 }

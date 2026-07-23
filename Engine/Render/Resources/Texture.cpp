@@ -37,7 +37,7 @@ namespace Sunset
     void Texture::Reset()
     {
         RenderCommand::DestroyTexture(m_Id);
-        m_Id = 0;
+        m_Id = {};
     }
 
     void Texture::LoadImage(const std::string_view &fileName)
@@ -56,7 +56,7 @@ namespace Sunset
         RenderCommand::BindTexture(*this);
     }
 
-    std::uint32_t Texture::GetRendererId() const
+    TextureHandle Texture::GetRendererId() const
     {
         return m_Id;
     }
@@ -65,7 +65,7 @@ namespace Sunset
         : m_Width(width)
         , m_Height(height)
         , m_Name(name)
-        , m_Id(0)
+        , m_Id()
         , m_Nbr(0)
     {
         m_Id = RenderCommand::CreateTexture2D({
@@ -73,12 +73,12 @@ namespace Sunset
             .height = m_Height,
             .format = TextureFormat::RGB
         });
-        LOG("Engine", trace, "Texture {} created at {}", m_Name, m_Id)
+        LOG("Engine", trace, "Texture {} created at {}", m_Name, m_Id.id)
     }
 
     Textures::~Textures()
     {
-        LOG("Engine", trace, "Texture {} destroy", m_Id)
+        LOG("Engine", trace, "Texture {} destroy", m_Id.id)
         RenderCommand::DestroyTexture(m_Id);
     }
 
@@ -106,7 +106,7 @@ namespace Sunset
         return m_Nbr;
     }
 
-    std::uint32_t Textures::GetRendererId() const
+    TextureHandle Textures::GetRendererId() const
     {
         return m_Id;
     }

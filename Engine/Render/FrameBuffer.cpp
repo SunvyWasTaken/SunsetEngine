@@ -34,8 +34,8 @@ namespace Sunset
         , m_ColorAttachments(std::move(other.m_ColorAttachments))
         , m_DepthAttachment(other.m_DepthAttachment)
     {
-        other.m_Id = 0;
-        other.m_DepthAttachment = 0;
+        other.m_Id = {};
+        other.m_DepthAttachment = {};
     }
 
     FrameBuffer& FrameBuffer::operator=(FrameBuffer&& other) noexcept
@@ -49,8 +49,8 @@ namespace Sunset
         m_ColorAttachments = std::move(other.m_ColorAttachments);
         m_DepthAttachment = other.m_DepthAttachment;
 
-        other.m_Id = 0;
-        other.m_DepthAttachment = 0;
+        other.m_Id = {};
+        other.m_DepthAttachment = {};
         return *this;
     }
 
@@ -107,19 +107,19 @@ namespace Sunset
         RenderCommand::BlitFrameBuffer(*this, target, mask);
     }
 
-    std::uint32_t FrameBuffer::GetColorAttachment(const std::uint32_t index) const
+    TextureHandle FrameBuffer::GetColorAttachment(const std::uint32_t index) const
     {
-        return index < m_ColorAttachments.size() ? m_ColorAttachments[index] : 0;
+        return index < m_ColorAttachments.size() ? m_ColorAttachments[index] : TextureHandle{};
     }
 
-    std::uint32_t FrameBuffer::GetDepthAttachment() const
+    TextureHandle FrameBuffer::GetDepthAttachment() const
     {
         return m_DepthAttachment;
     }
 
     bool FrameBuffer::HasDepthAttachment() const
     {
-        return m_DepthAttachment != 0;
+        return static_cast<bool>(m_DepthAttachment);
     }
 
     std::uint32_t FrameBuffer::GetColorAttachmentCount() const
@@ -127,7 +127,7 @@ namespace Sunset
         return static_cast<std::uint32_t>(m_ColorAttachments.size());
     }
 
-    std::uint32_t FrameBuffer::GetId() const
+    FrameBufferHandle FrameBuffer::GetId() const
     {
         return m_Id;
     }
@@ -170,7 +170,7 @@ namespace Sunset
 
     bool FrameBuffer::IsValid() const
     {
-        return m_Id != 0 && RenderCommand::IsFrameBufferValid(m_Id);
+        return static_cast<bool>(m_Id) && RenderCommand::IsFrameBufferValid(m_Id);
     }
 
     void FrameBuffer::Invalidate()
@@ -187,8 +187,8 @@ namespace Sunset
     {
         RenderCommand::DestroyFrameBuffer(m_Id, m_ColorAttachments, m_DepthAttachment);
 
-        m_Id = 0;
+        m_Id = {};
         m_ColorAttachments.clear();
-        m_DepthAttachment = 0;
+        m_DepthAttachment = {};
     }
 }

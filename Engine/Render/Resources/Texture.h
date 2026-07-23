@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Render/Core/RenderHandle.h"
+
 namespace Sunset
 {
     class Shader;
@@ -22,11 +24,11 @@ namespace Sunset
 
         void Use() const;
 
-        std::uint32_t GetRendererId() const;
+        TextureHandle GetRendererId() const;
 
     private:
 
-        uint32_t m_Id = 0;
+        TextureHandle m_Id;
     };
 
     class Textures
@@ -44,13 +46,13 @@ namespace Sunset
 
         size_t Nbr() const;
 
-        std::uint32_t GetRendererId() const;
+        TextureHandle GetRendererId() const;
 
         int m_Width, m_Height;
 
     private:
         std::string m_Name;
-        std::uint32_t m_Id;
+        TextureHandle m_Id;
         size_t m_Nbr;
     };
 }

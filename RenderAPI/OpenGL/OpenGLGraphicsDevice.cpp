@@ -9,10 +9,8 @@
 
 #include "Core/Application.h"
 #include "Core/WindowSetting.h"
-#include "Render/Camera.h"
 #include "Render/FrameBuffer.h"
 #include "Render/Meshes/Mesh.h"
-#include "Render/Resources/Drawable.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
