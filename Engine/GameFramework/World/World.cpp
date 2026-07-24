@@ -83,4 +83,14 @@ namespace Sunset
         entity.AddComponent<TagComponent>(name);
         return entity;
     }
+
+    void World::DestroyEntity(const Entity& entity)
+    {
+        if (!entity)
+            return;
+
+        const auto id = static_cast<entt::entity>(entity);
+        if (m_Registry.valid(id))
+            m_Registry.destroy(id);
+    }
 } // Sunset

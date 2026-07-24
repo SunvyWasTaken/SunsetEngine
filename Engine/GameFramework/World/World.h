@@ -87,6 +87,7 @@ namespace Sunset
         }
 
         Entity CreateEntity(const std::string& name);
+        void DestroyEntity(const Entity& entity);
 
     private:
         entt::registry m_Registry;

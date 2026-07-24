@@ -15,4 +15,15 @@ namespace Sunset
     Entity::~Entity()
     {
     }
+
+    void Entity::Destroy()
+    {
+        if (!*this)
+            return;
+
+        World* world = m_World;
+        world->DestroyEntity(*this);
+        m_World = nullptr;
+        m_Id = entt::null;
+    }
 } // Sunset

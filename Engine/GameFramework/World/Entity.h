@@ -41,6 +41,8 @@ namespace Sunset
             m_World->m_Registry.remove<T>(m_Id);
         }
 
+        void Destroy();
+
         explicit operator bool() const
         {
             return m_World != nullptr && m_Id != entt::null;
@@ -54,6 +56,12 @@ namespace Sunset
         explicit operator std::uint32_t() const
         {
             return static_cast<std::uint32_t>(m_Id);
+        }
+
+        [[nodiscard]]
+        World* GetWorld() const
+        {
+            return m_World;
         }
 
         bool operator==(const Entity& other) const
