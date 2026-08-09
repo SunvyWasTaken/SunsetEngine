@@ -1,0 +1,19 @@
+//
+// Created by sunvy on 09/08/2026.
+//
+
+#pragma once
+
+#include "Component.h"
+
+namespace Sunset
+{
+    class SpriteRenderComponent : public Component
+    {
+        friend class SpriteRenderSystem;
+    public:
+        SpriteRenderComponent();
+    private:
+        Drawable m_drawable;
+    };
+} // Sunset

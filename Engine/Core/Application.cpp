@@ -175,7 +175,6 @@ namespace Sunset
         m_LayerStack.Clear();
         m_GameInstance.reset();
         RenderCommand::Shutdown();
-        NetworkService::Shutdown();
         m_Window.reset();
     }
 

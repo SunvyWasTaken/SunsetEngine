@@ -45,8 +45,8 @@ if (SUNSET_USE_VULKAN)
     target_link_libraries(SunsetRuntime INTERFACE Sunset::Vulkan)
 endif ()
 
+add_subdirectory(Game)
+
 if (SUNSET_BUILD_EDITOR)
     add_subdirectory(Editor)
 endif ()
-
-add_subdirectory(Game)

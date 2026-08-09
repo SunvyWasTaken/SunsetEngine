@@ -4,6 +4,26 @@
 
 #pragma once
 
+#ifdef _WIN32
+#define SUNSET_GAME_EXPORT __declspec(dllexport)
+#else
+#define SUNSET_GAME_EXPORT __attribute__((visibility("default")))
+#endif
+
+#define CREATE_MODULE(name) \
+extern "C" \
+{ \
+    SUNSET_GAME_EXPORT Sunset::IGameModule* SunsetCreateGameModule() \
+    { \
+        return new name; \
+    } \
+ \
+    SUNSET_GAME_EXPORT void SunsetDestroyGameModule(Sunset::IGameModule* module) \
+    { \
+        delete module; \
+    } \
+}
+
 namespace Sunset
 {
     class Application;

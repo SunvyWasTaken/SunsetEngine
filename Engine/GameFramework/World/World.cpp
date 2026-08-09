@@ -13,6 +13,7 @@
 #include "GameFramework/System/IWorldSystem.h"
 #include "GameFramework/System/NativeScriptingSystem.h"
 #include "GameFramework/System/RenderMeshSystem.h"
+#include "GameFramework/System/SpriteRenderSystem.h"
 #include "Network/NetworkService.h"
 #include "Render/Core/RenderCommand.h"
 
@@ -21,6 +22,7 @@ namespace
     void RegisterEngineSystems(Sunset::World& world)
     {
         world.AddSystem<Sunset::NativeScriptingSystem>();
+        world.AddSystem<Sunset::SpriteRenderSystem>();
         world.AddSystem<Sunset::RenderMeshSystem>();
     }
 }

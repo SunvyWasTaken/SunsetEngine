@@ -14,4 +14,8 @@ target_link_libraries(SunsetEditor PRIVATE
         imgui::imgui
 )
 
+add_dependencies(SunsetEditor Sunset::Game)
+
 target_compile_definitions(SunsetEditor PUBLIC LOCAL_PATH="${CMAKE_BINARY_DIR}/")
+
+target_compile_definitions(SunsetEditor PRIVATE SUNSET_EDITOR_GAME_MODULE_PATH=\"$<TARGET_FILE:${SUNSET_GAME_TARGET}>\")
