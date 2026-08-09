@@ -41,11 +41,23 @@ namespace Sunset
 
         m_Destroy = reinterpret_cast<DestroyGameModuleFn>(GETADD(m_Handle, "SunsetDestroyGameModule"));
 
-        if (!m_Create && !m_Destroy)
+        if (!m_Create || !m_Destroy)
+        {
+            LOG("Engine", error, "Cannot load game module symbols from : {}", path.string())
+            FREEDL(m_Handle);
+            m_Handle = nullptr;
+            m_Create = nullptr;
+            m_Destroy = nullptr;
             return false;
+        }
 
         if ((module = m_Create()))
             module->Load(app);
+        else
+        {
+            LOG("Engine", error, "Game module factory returned null : {}", path.string())
+            return false;
+        }
 
         return true;
     }

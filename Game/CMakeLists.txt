@@ -1,9 +1,21 @@
 
-add_executable(SunsetCraftGame main.cpp)
+add_subdirectory(Pong)
 
-target_link_libraries(SunsetCraftGame PRIVATE Sunset::Runtime)
+add_library(SunsetGameTarget INTERFACE)
+add_library(Sunset::Game ALIAS SunsetGameTarget)
+
+add_dependencies(SunsetGameTarget Pong)
+
+add_executable(SunsetGame main.cpp)
+
+target_link_libraries(SunsetGame PRIVATE Sunset::Runtime)
+
 if (PRODUCTION_BUILD)
-    target_compile_definitions(SunsetCraftGame PUBLIC LOCAL_PATH="./")
+    target_compile_definitions(SunsetGame PUBLIC LOCAL_PATH="./")
 else ()
-    target_compile_definitions(SunsetCraftGame PUBLIC LOCAL_PATH="${CMAKE_BINARY_DIR}/")
+    target_compile_definitions(SunsetGame PUBLIC LOCAL_PATH="${CMAKE_BINARY_DIR}/")
 endif ()
+
+add_dependencies(SunsetGame Sunset::Game)
+
+target_compile_definitions(SunsetGame PRIVATE SUNSET_GAME_MODULE_PATH=\"$<TARGET_FILE:${SUNSET_GAME_TARGET}>\")

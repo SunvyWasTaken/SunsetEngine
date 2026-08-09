@@ -43,7 +43,7 @@ int main()
     Sunset::RenderCommand::SetRenderAPI(std::make_unique<Sunset::OpenGLGraphicsDevice>());
 #endif
     Sunset::GameModuleLoader loader;
-    loader.Load(LOCAL_PATH  "SunsetCraft.so", app);
+    loader.Load(SUNSET_GAME_MODULE_PATH, app);
     app.Run();
     loader.Unload();
     return EXIT_SUCCESS;
