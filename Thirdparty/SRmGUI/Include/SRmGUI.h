@@ -5,6 +5,8 @@
 
 #include "Context.h"
 #include "Widget.h"
+#include "Text.h"
+#include "Panel.h"
 
 namespace SRmGUI
 {

@@ -4,14 +4,16 @@
 
 #include "Application.h"
 
-#include "WindowSetting.h"
+#include "GameFramework/Components/InputComponent.h"
+#include "GameFramework/World/Entity.h"
+#include "GameFramework/World/World.h"
 #include "GameInstance.h"
 #include "Layer.h"
 #include "Network/NetworkService.h"
-#include "../Render/Core/RenderCommand.h"
 #include "Render/Core/RenderAPI.h"
-#include "GameFramework/World/World.h"
+#include "Render/Core/RenderCommand.h"
 #include "Window.h"
+#include "WindowSetting.h"
 
 namespace
 {
@@ -204,6 +206,10 @@ namespace Sunset
             if (layer->OnEvent(event))
                 return;
         }
+        m_GameInstance->m_ActiveWorld->Each<InputComponent>([&](const Entity& entity, InputComponent& comp)
+        {
+            comp.OnEvent(event);
+        });
     }
 
     const WindowSetting& Application::GetSetting()

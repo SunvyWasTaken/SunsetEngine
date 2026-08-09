@@ -8,6 +8,7 @@
 #include "Core/WindowSetting.h"
 #include "GameInstance.h"
 #include "SRmGUI.h"
+#include "GameFramework/Components/InputComponent.h"
 #include "GameFramework/World/World.h"
 
 namespace Sunset

@@ -27,6 +27,7 @@ namespace Sunset
         }
 
         template <typename T>
+        requires(std::is_base_of_v<Component, T>)
         T* GetComponent() const
         {
             if (!m_World)
@@ -36,6 +37,7 @@ namespace Sunset
         }
 
         template <typename T>
+        requires(std::is_base_of_v<Component, T>)
         void RemoveComponent() const
         {
             m_World->m_Registry.remove<T>(m_Id);

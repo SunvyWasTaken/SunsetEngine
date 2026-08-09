@@ -133,5 +133,6 @@ namespace Sunset
 
     void TransformComponent::SetScale(const glm::vec3 &scale)
     {
+        Scale = scale;
     }
 } // Sunset
