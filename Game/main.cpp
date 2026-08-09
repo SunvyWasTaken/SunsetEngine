@@ -8,6 +8,7 @@
 #elif defined(SUNSET_OPENGL)
 #include "OpenGLGraphicsDevice.h"
 #endif
+
 #include "Core/Application.h"
 #include "Core/GameModuleLoader.h"
 #include "Render/Core/RenderCommand.h"

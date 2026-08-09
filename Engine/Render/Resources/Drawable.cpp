@@ -8,15 +8,6 @@
 
 namespace Sunset
 {
-    RenderState RenderState::AfterWorldOverlay()
-    {
-        RenderState state;
-        state.layer = RenderLayer::Overlay;
-        state.depthTest = false;
-        state.depthWrite = false;
-        return state;
-    }
-
     Drawable::Drawable()
         : m_Mesh(nullptr)
         , m_Material(std::make_shared<Material>())

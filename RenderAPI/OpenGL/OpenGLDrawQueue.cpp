@@ -85,13 +85,6 @@ namespace Sunset
     {
         std::stable_sort(m_DrawCommands.begin(), m_DrawCommands.end(), [this](const DrawCommand& lhs, const DrawCommand& rhs)
         {
-            const bool lhsOverlay = lhs.state.layer == RenderLayer::Overlay;
-            const bool rhsOverlay = rhs.state.layer == RenderLayer::Overlay;
-            if (lhsOverlay != rhsOverlay)
-                return !lhsOverlay;
-            if (lhsOverlay)
-                return false;
-
             const bool lhsTransparent = lhs.state.blending;
             const bool rhsTransparent = rhs.state.blending;
             if (lhsTransparent != rhsTransparent)

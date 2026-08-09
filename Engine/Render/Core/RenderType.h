@@ -37,20 +37,8 @@ namespace Sunset
         TriangleFan
     };
 
-    enum class RenderLayer
-    {
-        World,
-        Overlay
-    };
-
     struct RenderState
     {
-        RenderLayer layer = RenderLayer::World;
-
-        // Use this for first-person hands/items, HUD meshes, or any geometry that
-        // must be rendered after the world without being hidden by the world depth buffer.
-        static RenderState AfterWorldOverlay();
-
         bool depthTest = true;
         bool depthWrite = true;
 
