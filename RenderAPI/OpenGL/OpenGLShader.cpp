@@ -57,18 +57,21 @@ namespace Sunset::OpenGLShader
         const std::uint32_t vertexShader = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vertexShader, 1, &vertexSourcePtr, nullptr);
         glCompileShader(vertexShader);
-        CheckShaderCompileStatus(vertexShader, "Vertex");
+        if (!CheckShaderCompileStatus(vertexShader, "Vertex"))
+            throw std::runtime_error("Vertex shader compilation failed");
 
         const std::uint32_t fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fragmentShader, 1, &fragmentSourcePtr, nullptr);
         glCompileShader(fragmentShader);
-        CheckShaderCompileStatus(fragmentShader, "Fragment");
+        if (!CheckShaderCompileStatus(fragmentShader, "Fragment"))
+            throw std::runtime_error("Fragment shader compilation failed");
 
         const std::uint32_t shaderProgram = glCreateProgram();
         glAttachShader(shaderProgram, vertexShader);
         glAttachShader(shaderProgram, fragmentShader);
         glLinkProgram(shaderProgram);
-        CheckProgramLinkStatus(shaderProgram);
+        if (!CheckProgramLinkStatus(shaderProgram))
+            throw std::runtime_error("Program linking failed");
 
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);

@@ -4,8 +4,15 @@
 
 #include "CameraComponent.h"
 
+#include <glm/gtc/type_ptr.hpp>
+
 namespace Sunset
 {
+    void CameraComponent::SetProjectionType(const ProjectionType& projectionType)
+    {
+        camera.m_ProjectionType = projectionType;
+    }
+
     ReflectionType CameraComponent::Properties()
     {
         ReflectionType properties;
@@ -16,6 +23,22 @@ namespace Sunset
         }, {
             {ProjectionType::Perspective, "Perspective"},
             {ProjectionType::Orthographic, "Orthographic"}
+        });
+        properties.Field("Position", [](void* instance)
+        {
+            auto* component = static_cast<CameraComponent*>(instance);
+            return &component->camera.m_Position;
+        });
+
+        properties.Field("Near", [](void* instance)->float*
+        {
+            auto* component = static_cast<CameraComponent*>(instance);
+            return &component->camera.NearPlaneDistance;
+        });
+        properties.Field("Far", [](void* instance)->float*
+        {
+            auto* component = static_cast<CameraComponent*>(instance);
+            return &component->camera.FarPlaneDistance;
         });
         return properties;
     }

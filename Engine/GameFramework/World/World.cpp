@@ -10,6 +10,7 @@
 #include "GameFramework/Components/CameraComponent.h"
 #include "GameFramework/Components/InputComponent.h"
 #include "GameFramework/Components/NativeScriptComponent.h"
+#include "GameFramework/System/CameraSystem.h"
 #include "GameFramework/System/IWorldSystem.h"
 #include "GameFramework/System/NativeScriptingSystem.h"
 #include "GameFramework/System/RenderMeshSystem.h"
@@ -21,6 +22,7 @@ namespace
 {
     void RegisterEngineSystems(Sunset::World& world)
     {
+        world.AddSystem<Sunset::CameraSystem>();
         world.AddSystem<Sunset::NativeScriptingSystem>();
         world.AddSystem<Sunset::SpriteRenderSystem>();
         world.AddSystem<Sunset::RenderMeshSystem>();

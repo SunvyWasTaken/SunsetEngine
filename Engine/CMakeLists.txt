@@ -27,7 +27,7 @@ if(PRODUCTION_BUILD)
     target_compile_definitions(SunsetEngine PRIVATE ENGINE_SHADERS_PATH=\"./Shaders/\")
 else()
     target_compile_definitions(SunsetEngine PUBLIC SAVE_PATH=\"${CMAKE_SOURCE_DIR}/Save/\")
-    target_compile_definitions(SunsetEngine PRIVATE ENGINE_SHADERS_PATH=\"${CMAKE_SOURCE_DIR}/Shaders/\")
+    target_compile_definitions(SunsetEngine PRIVATE ENGINE_SHADERS_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/Shaders/\")
 endif()
 
 target_precompile_headers(

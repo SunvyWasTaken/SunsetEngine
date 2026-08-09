@@ -50,7 +50,7 @@ namespace Sunset
         bool wireframe = false;
         bool DrawInstance = false;
         std::uint32_t nbrInstance = 0;
-        bool HasIndice = true;
+        bool HasIndice = false;
         PrimitiveType primitiveType = PrimitiveType::Triangles;
     };
 }

@@ -14,6 +14,8 @@ namespace Sunset
         CameraComponent() = default;
         ~CameraComponent() override = default;
 
+        void SetProjectionType(const ProjectionType& projectionType);
+
         ReflectionType Properties() override;
 
         void Activate(bool active);

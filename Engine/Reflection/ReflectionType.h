@@ -96,12 +96,15 @@ namespace Sunset
             Fields.push_back(std::move(reflectionField));
         }
 
-        template <typename F>
-        void Field(const std::string& name, ReflectionFieldType type, std::function<F*(void*)> getter)
+        template <typename Getter>
+        void Field(const std::string& name, Getter&& getter)
         {
+            using Pointer = std::invoke_result_t<Getter, void*>;
+            using F = std::remove_pointer_t<Pointer>;
+
             ReflectionField reflectionField;
             reflectionField.Name = name;
-            reflectionField.Type = type;
+            reflectionField.Type = GetReflectionFieldType<F>();
             reflectionField.GetPtr = [getter = std::move(getter)](void* instance) -> void*
             {
                 return getter(instance);
