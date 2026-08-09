@@ -1,10 +1,16 @@
 
-add_subdirectory(Pong)
-
 add_library(SunsetGameTarget INTERFACE)
 add_library(Sunset::Game ALIAS SunsetGameTarget)
 
+# Part to change to start ur project
+# ex:
+# add_subdirectory(yourproject)
+# add_dependencies(SunsetGameTarget yourproject)
+
+add_subdirectory(Pong)
 add_dependencies(SunsetGameTarget Pong)
+
+# ----------------------------------------------
 
 add_executable(SunsetGame main.cpp)
 

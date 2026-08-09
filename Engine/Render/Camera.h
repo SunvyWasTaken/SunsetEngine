@@ -16,8 +16,15 @@ namespace Sunset
         bool IsVisible(const AABB& box);
     };
 
+    enum class ProjectionType
+    {
+        Perspective,
+        Orthographic
+    };
+
     class Camera
     {
+        friend class CameraComponent;
     public:
         Camera();
         ~Camera();
@@ -68,10 +75,14 @@ namespace Sunset
         glm::vec3 m_Up;
 
         float m_Yaw, m_Pitch;
+        float m_Fov;
+        float m_CameraDistance;
 
-        float fov;
-        float CameraDistance;
-        friend class CameraComponent;
+        float OrthographicSize;
+        float NearPlaneDistance;
+        float FarPlaneDistance;
+
+        ProjectionType m_ProjectionType;
     };
 }
 

@@ -14,7 +14,8 @@ namespace Sunset
         Bool,
         Vec2,
         Vec3,
-        String
+        String,
+        Enum
     };
 
     template <typename T>
@@ -71,6 +72,9 @@ namespace Sunset
         std::string Name;
         ReflectionFieldType Type{};
         std::function<void*(void*)> GetPtr;
+        std::vector<std::pair<int, std::string>> EnumValues;
+        std::function<int(void*)> GetEnumValue;
+        std::function<void(void*, int)> SetEnumValue;
     };
 
     struct ReflectionType
@@ -88,6 +92,62 @@ namespace Sunset
             {
                 return &(static_cast<Class*>(instance)->*member);
             };
+
+            Fields.push_back(std::move(reflectionField));
+        }
+
+        template <typename F>
+        void Field(const std::string& name, ReflectionFieldType type, std::function<F*(void*)> getter)
+        {
+            ReflectionField reflectionField;
+            reflectionField.Name = name;
+            reflectionField.Type = type;
+            reflectionField.GetPtr = [getter = std::move(getter)](void* instance) -> void*
+            {
+                return getter(instance);
+            };
+
+            Fields.push_back(std::move(reflectionField));
+        }
+
+        template <typename Class, typename Enum>
+        void EnumField(const std::string& name, Enum Class::* member, std::vector<std::pair<Enum, std::string>> values)
+        {
+            ReflectionField reflectionField;
+            reflectionField.Name = name;
+            reflectionField.Type = ReflectionFieldType::Enum;
+            reflectionField.GetEnumValue = [member](void* instance) -> int
+            {
+                return static_cast<int>(static_cast<Class*>(instance)->*member);
+            };
+            reflectionField.SetEnumValue = [member](void* instance, const int value)
+            {
+                static_cast<Class*>(instance)->*member = static_cast<Enum>(value);
+            };
+
+            for (auto& [value, label] : values)
+                reflectionField.EnumValues.emplace_back(static_cast<int>(value), std::move(label));
+
+            Fields.push_back(std::move(reflectionField));
+        }
+
+        template <typename Class, typename Enum>
+        void EnumField(const std::string& name, std::function<Enum*(void*)> getter, std::vector<std::pair<Enum, std::string>> values)
+        {
+            ReflectionField reflectionField;
+            reflectionField.Name = name;
+            reflectionField.Type = ReflectionFieldType::Enum;
+            reflectionField.GetEnumValue = [getter](void* instance) -> int
+            {
+                return static_cast<int>(*getter(instance));
+            };
+            reflectionField.SetEnumValue = [getter](void* instance, const int value)
+            {
+                *getter(instance) = static_cast<Enum>(value);
+            };
+
+            for (auto& [value, label] : values)
+                reflectionField.EnumValues.emplace_back(static_cast<int>(value), std::move(label));
 
             Fields.push_back(std::move(reflectionField));
         }

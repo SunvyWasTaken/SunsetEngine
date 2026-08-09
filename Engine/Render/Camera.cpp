@@ -51,8 +51,12 @@ namespace Sunset
         , m_Up(0.0f, 1.0f, 0.0f)
         , m_Yaw(-90.f)
         , m_Pitch(0.f)
-        , fov(45.f)
-        , CameraDistance(50000.f)
+        , m_Fov(45.f)
+        , m_CameraDistance(50000.f)
+        , OrthographicSize(10.f)
+        , NearPlaneDistance(-100.f)
+        , FarPlaneDistance(100.f)
+        , m_ProjectionType(ProjectionType::Perspective)
     {
     }
 
@@ -63,7 +67,14 @@ namespace Sunset
     glm::mat4 Camera::GetProjection() const
     {
         const glm::ivec2& src = Application::GetSetting().WindowSize;
-        return glm::perspective(glm::radians(fov), static_cast<float>(src.x) / static_cast<float>(src.y), 0.1f, CameraDistance);
+        const float aspect = static_cast<float>(src.x) / static_cast<float>(src.y);
+        if (m_ProjectionType == ProjectionType::Orthographic)
+        {
+            const float halfHeight = OrthographicSize * 0.5f;
+            const float halfWidth = halfHeight * aspect;
+            return glm::ortho(-halfWidth, halfWidth, -halfHeight, halfHeight, NearPlaneDistance, FarPlaneDistance);
+        }
+        return glm::perspective(glm::radians(m_Fov), aspect, 0.1f, m_CameraDistance);
     }
 
     glm::mat4 Camera::GetViewMatrix() const
@@ -153,7 +164,7 @@ namespace Sunset
 
     void Camera::SetCameraDistance(float distance)
     {
-        CameraDistance = distance;
+        m_CameraDistance = distance;
     }
 
     Frustum Camera::GetFrustum() const

@@ -224,11 +224,11 @@ namespace
     {
         for (auto& type : properties.Fields)
         {
-            void* ptr = type.GetPtr(instance);
             switch (type.Type)
             {
                 case Sunset::ReflectionFieldType::Float:
                 {
+                    void* ptr = type.GetPtr(instance);
                     float val = *(static_cast<float*>(ptr));
                     if (ImGui::InputFloat(type.Name.c_str(), &val, 0.01f))
                         *(static_cast<float*>(ptr)) = val;
@@ -236,11 +236,13 @@ namespace
                 }
                 case Sunset::ReflectionFieldType::Bool:
                 {
+                    void* ptr = type.GetPtr(instance);
                     ImGui::Checkbox(type.Name.c_str(), static_cast<bool*>(ptr));
                     break;
                 }
                 case Sunset::ReflectionFieldType::UInt8:
                 {
+                    void* ptr = type.GetPtr(instance);
                     int val = *static_cast<std::uint8_t*>(ptr);
                     if (ImGui::InputInt(type.Name.c_str(), &val))
                         *(static_cast<std::uint8_t*>(ptr)) = val;
@@ -248,11 +250,13 @@ namespace
                 }
                 case Sunset::ReflectionFieldType::Int:
                 {
+                    void* ptr = type.GetPtr(instance);
                     ImGui::InputInt(type.Name.c_str(), static_cast<int*>(ptr));
                     break;
                 }
                 case Sunset::ReflectionFieldType::String:
                 {
+                    void* ptr = type.GetPtr(instance);
                     char buffer[256] = {};
                     strcpy(buffer, static_cast<std::string*>(ptr)->c_str());
                     if (ImGui::InputText("Tag", buffer, sizeof(buffer)))
@@ -262,12 +266,45 @@ namespace
                 }
                 case Sunset::ReflectionFieldType::Vec2:
                 {
+                    void* ptr = type.GetPtr(instance);
                     ImGui::DragFloat2(type.Name.c_str(), static_cast<float*>(ptr));
                     break;
                 }
                 case Sunset::ReflectionFieldType::Vec3:
                 {
+                    void* ptr = type.GetPtr(instance);
                     ImGui::DragFloat3(type.Name.c_str(), static_cast<float*>(ptr));
+                    break;
+                }
+                case Sunset::ReflectionFieldType::Enum:
+                {
+                    int currentValue = type.GetEnumValue(instance);
+                    const char* currentLabel = "Unknown";
+                    for (const auto& [value, label] : type.EnumValues)
+                    {
+                        if (value == currentValue)
+                        {
+                            currentLabel = label.c_str();
+                            break;
+                        }
+                    }
+
+                    if (ImGui::BeginCombo(type.Name.c_str(), currentLabel))
+                    {
+                        for (const auto& [value, label] : type.EnumValues)
+                        {
+                            const bool selected = value == currentValue;
+                            if (ImGui::Selectable(label.c_str(), selected))
+                            {
+                                currentValue = value;
+                                type.SetEnumValue(instance, value);
+                            }
+
+                            if (selected)
+                                ImGui::SetItemDefaultFocus();
+                        }
+                        ImGui::EndCombo();
+                    }
                     break;
                 }
                 default:
