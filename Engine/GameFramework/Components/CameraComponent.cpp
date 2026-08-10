@@ -29,7 +29,11 @@ namespace Sunset
             auto* component = static_cast<CameraComponent*>(instance);
             return &component->camera.m_Position;
         });
-
+        properties.Field("OrthographicSize", [](void* instance)
+        {
+            auto* component = static_cast<CameraComponent*>(instance);
+            return &component->camera.OrthographicSize;
+        });
         properties.Field("Near", [](void* instance)->float*
         {
             auto* component = static_cast<CameraComponent*>(instance);

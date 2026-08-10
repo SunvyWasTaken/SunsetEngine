@@ -24,4 +24,7 @@ endif ()
 
 add_dependencies(SunsetGame Sunset::Game)
 
-target_compile_definitions(SunsetGame PRIVATE SUNSET_GAME_MODULE_PATH=\"$<TARGET_FILE:${SUNSET_GAME_TARGET}>\")
+target_compile_definitions(SunsetGame PRIVATE
+        SUNSET_GAME_MODULE_PATH=\"$<TARGET_FILE:${SUNSET_GAME_TARGET}>\"
+        SUNSET_GAME_NAME="${SUNSET_GAME_TARGET}"
+)

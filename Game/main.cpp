@@ -33,7 +33,7 @@ namespace
 
 int main()
 {
-    Sunset::WindowSetting setting{"SunsetCraft"};
+    Sunset::WindowSetting setting{SUNSET_GAME_NAME};
     setting.GraphicsAPI = SelectGraphicsAPI();
 
     Sunset::Application app{setting};
