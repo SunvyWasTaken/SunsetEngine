@@ -17,14 +17,21 @@ add_executable(SunsetGame main.cpp)
 target_link_libraries(SunsetGame PRIVATE Sunset::Runtime)
 
 if (PRODUCTION_BUILD)
-    target_compile_definitions(SunsetGame PUBLIC LOCAL_PATH="./")
+    target_compile_definitions(SunsetGame
+            PUBLIC
+            LOCAL_PATH="./"
+            PRIVATE
+            SUNSET_GAME_MODULE_PATH="./$<TARGET_FILE_NAME:${SUNSET_GAME_TARGET}>"
+            SUNSET_GAME_NAME="${SUNSET_GAME_TARGET}"
+    )
 else ()
-    target_compile_definitions(SunsetGame PUBLIC LOCAL_PATH="${CMAKE_BINARY_DIR}/")
+    target_compile_definitions(SunsetGame
+            PUBLIC
+            LOCAL_PATH="${CMAKE_BINARY_DIR}/"
+            PRIVATE
+            SUNSET_GAME_MODULE_PATH=\"$<TARGET_FILE:${SUNSET_GAME_TARGET}>\"
+            SUNSET_GAME_NAME="${SUNSET_GAME_TARGET}"
+    )
 endif ()
 
 add_dependencies(SunsetGame Sunset::Game)
-
-target_compile_definitions(SunsetGame PRIVATE
-        SUNSET_GAME_MODULE_PATH=\"$<TARGET_FILE:${SUNSET_GAME_TARGET}>\"
-        SUNSET_GAME_NAME="${SUNSET_GAME_TARGET}"
-)

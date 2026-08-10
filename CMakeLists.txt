@@ -6,6 +6,13 @@ project(
     LANGUAGES CXX
 )
 
+#! ! ! ! ! ! !
+#set this to ON instead of OFF to ship the game!
+#basically this will change the RESOURCES_PATH to be the local path
+#! ! ! ! ! ! !
+#delete the out folder after changing if visual studio doesn't recognize the change
+set(PRODUCTION_BUILD ON CACHE BOOL "Make this a production build" FORCE)
+
 add_library(SunsetEngine_compiler_flags INTERFACE)
 target_compile_features(SunsetEngine_compiler_flags INTERFACE cxx_std_23)
 target_compile_definitions(SunsetEngine_compiler_flags INTERFACE
