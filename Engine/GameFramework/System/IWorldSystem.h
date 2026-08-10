@@ -11,7 +11,7 @@ namespace Sunset
     class IWorldSystem
     {
     public:
-        explicit IWorldSystem(World* world);
+        explicit IWorldSystem(World* world = nullptr);
         virtual ~IWorldSystem() = default;
         virtual void Update(float dt) {};
     protected:

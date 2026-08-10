@@ -16,7 +16,7 @@ namespace SRmGUI
         void SetColor(const glm::vec4 &color);
         void SetText(const std::string_view& text);
     private:
-        glm::vec4 m_Color;
+        glm::vec4 m_Color = {1.f, 1.f, 1.f, 1.f};
         std::string m_Text;
     };
 
