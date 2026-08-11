@@ -1,18 +1,9 @@
 {
   "name" : "sunset-engine",
   "version-string" : "1.0.0",
-  "dependencies" : [
-    "assimp",
-    "enet",
-    "entt",
-    "glad",
-    "glfw3",
-    "glm",
-    {
-      "name" : "imgui",
-      "features" : [ "glfw-binding", "opengl3-binding", "docking-experimental" ]
-    },
-    "nlohmann-json",
-    "spdlog"
-  ]
+  "dependencies" : [ "assimp", "enet", "entt", "glad", "glfw3", "glm", {
+    "name" : "imgui",
+    "features" : [ "glfw-binding", "opengl3-binding", "docking-experimental" ]
+  }, "nlohmann-json", "openal-soft", "spdlog"
+   ]
 }

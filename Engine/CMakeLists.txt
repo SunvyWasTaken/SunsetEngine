@@ -40,8 +40,9 @@ find_package(glm CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(EnTT CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
-
 find_package(spdlog CONFIG REQUIRED)
+
+find_package(OpenAL CONFIG REQUIRED)
 find_package(unofficial-enet CONFIG REQUIRED)
 
 target_link_libraries(
@@ -56,5 +57,6 @@ target_link_libraries(
             spdlog::spdlog_header_only
             fmt::fmt
         PRIVATE
+            OpenAL::OpenAL
             unofficial::enet::enet
 )
