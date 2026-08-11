@@ -53,6 +53,8 @@ namespace Sunset
             m_Systems.push_back(std::move(system));
         }
 
+        Entity FindEntityByName(const std::string& name);
+
         template <typename Func>
         void ForEach(Func&& func)
         {

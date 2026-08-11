@@ -11,7 +11,7 @@ project(
 #basically this will change the RESOURCES_PATH to be the local path
 #! ! ! ! ! ! !
 #delete the out folder after changing if visual studio doesn't recognize the change
-set(PRODUCTION_BUILD ON CACHE BOOL "Make this a production build" FORCE)
+set(PRODUCTION_BUILD OFF CACHE BOOL "Make this a production build" FORCE)
 
 add_library(SunsetEngine_compiler_flags INTERFACE)
 target_compile_features(SunsetEngine_compiler_flags INTERFACE cxx_std_23)

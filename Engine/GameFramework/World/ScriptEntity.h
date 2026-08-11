@@ -27,6 +27,12 @@ namespace Sunset
             return m_Entity.GetComponent<T>();
         }
 
+        [[nodiscard]]
+        World* GetWorld() const
+        {
+            return m_Entity.GetWorld();
+        }
+
     private:
         Entity m_Entity;
         friend class NativeScriptComponent;

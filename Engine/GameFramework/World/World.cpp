@@ -81,6 +81,17 @@ namespace Sunset
         }
     }
 
+    Entity World::FindEntityByName(const std::string &name)
+    {
+        for (const auto& entity : m_Registry.view<TagComponent>())
+        {
+            auto& tag = m_Registry.get<TagComponent>(entity);
+            if (tag.Tag == name)
+                return Entity{this, entity};
+        }
+        return Entity{nullptr};
+    }
+
     Entity World::CreateEntity(const std::string &name)
     {
         Entity entity{this, m_Registry.create()};
