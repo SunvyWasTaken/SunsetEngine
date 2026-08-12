@@ -6,12 +6,12 @@
 
 namespace Sunset
 {
-    AudioClip Audio::Load(const std::string_view &path)
+    AudioBuffer Audio::Load(const std::string_view &path)
     {
         return {};
     }
 
-    void Audio::Play(const AudioClip &audioClip)
+    void Audio::Play(const AudioBuffer &audioClip)
     {
     }
 }

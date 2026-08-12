@@ -6,7 +6,9 @@
 
 namespace Sunset
 {
-    class AudioSystem
+    struct AudioSystem
     {
+        static void Init();
+        static void Shutdown();
     };
 } // Sunset

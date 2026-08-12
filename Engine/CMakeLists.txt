@@ -41,6 +41,7 @@ find_package(spdlog CONFIG REQUIRED)
 
 find_package(OpenAL CONFIG REQUIRED)
 find_package(unofficial-enet CONFIG REQUIRED)
+find_package(SndFile REQUIRED)
 
 target_link_libraries(
         SunsetEngine
@@ -55,4 +56,5 @@ target_link_libraries(
         PRIVATE
             OpenAL::OpenAL
             unofficial::enet::enet
+            sndfile
 )

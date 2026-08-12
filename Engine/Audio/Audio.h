@@ -5,14 +5,14 @@
 #ifndef SUNSETENGINE_AUDIO_H
 #define SUNSETENGINE_AUDIO_H
 
-#include "AudioClip.h"
+#include "AudioBuffer.h"
 
 namespace Sunset
 {
     struct Audio
     {
-        static AudioClip Load(const std::string_view& path);
-        static void Play(const AudioClip& audioClip);
+        static AudioBuffer Load(const std::string_view& path);
+        static void Play(const AudioBuffer& audioClip);
     };
 }
 

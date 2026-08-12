@@ -4,6 +4,7 @@
 
 #include "Application.h"
 
+#include "Audio/AudioSystem.h"
 #include "GameFramework/Components/InputComponent.h"
 #include "GameFramework/World/Entity.h"
 #include "GameFramework/World/World.h"
@@ -173,6 +174,8 @@ namespace Sunset
 
     void Application::OnDestroy()
     {
+        AudioSystem::Shutdown();
+
         m_CommandBuffer.clear();
         m_LayerStack.Clear();
         m_GameInstance.reset();
@@ -192,6 +195,7 @@ namespace Sunset
 
     void Application::OnWindowReady()
     {
+        AudioSystem::Init();
     }
 
     void Application::OnEvent(const Event::Type& event)
