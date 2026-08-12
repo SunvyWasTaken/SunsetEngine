@@ -40,7 +40,6 @@ namespace Sunset
 
     void EditorApplication::EndFrame()
     {
-        ImGui::End();
         Application::EndFrame();
 
         if (!PrintScreen::Get().empty())

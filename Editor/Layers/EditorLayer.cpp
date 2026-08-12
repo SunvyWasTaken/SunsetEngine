@@ -46,7 +46,6 @@ namespace Sunset
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking;
         if (args.IsFullscreen)
         {
-            // Fullscreen dockspace: practically the same as calling DockSpaceOverViewport();
             const ImGuiViewport* viewport = ImGui::GetMainViewport();
             ImGui::SetNextWindowPos(viewport->WorkPos);
             ImGui::SetNextWindowSize(viewport->WorkSize);
@@ -66,15 +65,14 @@ namespace Sunset
         if (!args.KeepWindowPadding)
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 
+        window_flags |= ImGuiWindowFlags_MenuBar;
+
         ImGui::Begin("SunsetEngine Editor", nullptr, window_flags);
 
         if (!args.KeepWindowPadding)
             ImGui::PopStyleVar();
         if (args.IsFullscreen)
             ImGui::PopStyleVar(2);
-
-        ImGuiID docspace_id = ImGui::GetID("MainDockSpace");
-        ImGui::DockSpace(docspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
 
         if (ImGui::BeginMenuBar()) {
             if (ImGui::BeginMenu("File")) {
@@ -87,6 +85,11 @@ namespace Sunset
             if (ImGui::BeginMenu("View")) { /* ... */ ImGui::EndMenu(); }
             ImGui::EndMenuBar();
         }
+
+        ImGuiID docspace_id = ImGui::GetID("MainDockSpace");
+        ImGui::DockSpace(docspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
+
+        ImGui::End();
 
         m_WorldHierarchy->OnImGuiRender();
     }
