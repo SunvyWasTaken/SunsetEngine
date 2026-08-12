@@ -18,6 +18,7 @@ namespace Sunset
 
     AudioSource::AudioSource()
         : m_AudioSourceData(std::make_unique<AudioSourceData>())
+        , m_Buffer(nullptr)
     {
         alGenSources(1, &m_AudioSourceData->source);
         if (alGetError() != AL_NO_ERROR)

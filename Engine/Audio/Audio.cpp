@@ -4,7 +4,10 @@
 
 #include "Audio.h"
 
+namespace
+{
 
+}
 
 namespace Sunset
 {
@@ -20,6 +23,14 @@ namespace Sunset
     }
 
     void Audio::Play(const AudioBuffer &audioClip)
+    {
+    }
+
+    void Audio::CreateAllSource()
+    {
+    }
+
+    void Audio::ClearAllSource()
     {
     }
 }

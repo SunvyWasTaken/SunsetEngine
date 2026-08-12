@@ -35,6 +35,7 @@ namespace Sunset
     std::uint32_t AudioBuffer::GetBufferID() const
     {
         return data->buffer;
+        // return 0;
     }
 
     std::string AudioBuffer::GetName() const

@@ -56,5 +56,5 @@ target_link_libraries(
         PRIVATE
             OpenAL::OpenAL
             unofficial::enet::enet
-            sndfile
+            SndFile::sndfile
 )

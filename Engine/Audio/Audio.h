@@ -14,6 +14,9 @@ namespace Sunset
         static AudioBuffer Load(const std::string_view& path);
         static void Play2D(const std::shared_ptr<AudioBuffer>& audio);
         static void Play(const AudioBuffer& audioClip);
+    private:
+        static void CreateAllSource();
+        static void ClearAllSource();
     };
 }
 
