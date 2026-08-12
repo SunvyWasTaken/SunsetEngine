@@ -32,15 +32,15 @@ namespace Sunset
     void EditorApplication::BeginFrame()
     {
         Application::BeginFrame();
+
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-
-        ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
     }
 
     void EditorApplication::EndFrame()
     {
+        ImGui::End();
         Application::EndFrame();
 
         if (!PrintScreen::Get().empty())
@@ -79,7 +79,7 @@ namespace Sunset
         ImGuiStyle& style = ImGui::GetStyle();
         style.Colors[ImGuiCol_WindowBg].w = 0.2f;
 
-        io.Fonts->AddFontFromFileTTF(SUNSET_EDITOR_LOCAL_RESOURCES "JetBrainMono/JetBrainsMono-Regular.ttf", 18.f);
+        io.FontDefault = io.Fonts->AddFontFromFileTTF(SUNSET_EDITOR_LOCAL_RESOURCES "JetBrainMono/JetBrainsMono-Regular.ttf", 18.f);
 
         ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(GetWindow()), true);
         ImGui_ImplOpenGL3_Init("#version 330");
