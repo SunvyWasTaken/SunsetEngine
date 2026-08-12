@@ -23,10 +23,8 @@ set_target_properties(SunsetEngine PROPERTIES
 
 
 if(PRODUCTION_BUILD)
-    target_compile_definitions(SunsetEngine PUBLIC SAVE_PATH=\"./Save/\")
     target_compile_definitions(SunsetEngine PRIVATE ENGINE_SHADERS_PATH=\"./Shaders/\")
 else()
-    target_compile_definitions(SunsetEngine PUBLIC SAVE_PATH=\"${CMAKE_SOURCE_DIR}/Save/\")
     target_compile_definitions(SunsetEngine PRIVATE ENGINE_SHADERS_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/Shaders/\")
 endif()
 
@@ -37,7 +35,6 @@ target_precompile_headers(
 )
 
 find_package(glm CONFIG REQUIRED)
-find_package(nlohmann_json CONFIG REQUIRED)
 find_package(EnTT CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
@@ -50,7 +47,6 @@ target_link_libraries(
         PUBLIC
             SunsetEngine_compiler_flags
             glm::glm
-            nlohmann_json::nlohmann_json
             fastNoiseSIMD
             EnTT::EnTT
             SRmGUI

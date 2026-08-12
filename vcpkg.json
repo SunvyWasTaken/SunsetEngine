@@ -4,6 +4,5 @@
   "dependencies" : [ "assimp", "enet", "entt", "glad", "glfw3", "glm", {
     "name" : "imgui",
     "features" : [ "glfw-binding", "opengl3-binding", "docking-experimental" ]
-  }, "nlohmann-json", "openal-soft", "spdlog"
-   ]
+  }, "openal-soft", "spdlog" ]
 }

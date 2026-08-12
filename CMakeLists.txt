@@ -14,12 +14,20 @@ project(
 set(PRODUCTION_BUILD OFF CACHE BOOL "Make this a production build" FORCE)
 
 add_library(SunsetEngine_compiler_flags INTERFACE)
+
 target_compile_features(SunsetEngine_compiler_flags INTERFACE cxx_std_23)
+
 target_compile_definitions(SunsetEngine_compiler_flags INTERFACE
         $<$<CONFIG:Debug>:SS_PROFILING>
         $<$<CONFIG:RelWithDebInfo>:SS_PROFILING>
         $<$<CONFIG:Release>:SS_RELEASE>
 )
+
+if(PRODUCTION_BUILD)
+    target_compile_definitions(SunsetEngine_compiler_flags INTERFACE SAVE_PATH=\"./Save\")
+else ()
+    target_compile_definitions(SunsetEngine_compiler_flags INTERFACE SAVE_PATH=\"${CMAKE_SOURCE_DIR}/Save/\")
+endif ()
 
 # Permet de faire des options.
 option(SUNSET_BUILD_EDITOR "Build Sunset Editor" ON)
