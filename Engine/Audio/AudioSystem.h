@@ -4,10 +4,11 @@
 
 #pragma once
 
+#include "Audio.h"
+
 namespace Sunset
 {
     class AudioSource;
-    class AudioBuffer;
 
     struct AudioSystem
     {
@@ -15,8 +16,9 @@ namespace Sunset
     private:
         static void Init();
         static void Shutdown();
+        static void Update();
     public:
-        static std::shared_ptr<AudioBuffer> CreateAudioBuffer(const std::filesystem::path& path);
-        static AudioSource* Play2DAudio(const std::shared_ptr<AudioBuffer>& audio, bool loop);
+        static std::shared_ptr<Audio> CreateAudio(const std::filesystem::path& path);
+        static AudioSource* Play2DAudio(const std::shared_ptr<Audio>& audio, bool loop);
     };
 } // Sunset

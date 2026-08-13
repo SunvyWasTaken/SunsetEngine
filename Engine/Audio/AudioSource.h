@@ -3,7 +3,8 @@
 //
 
 #pragma once
-#include <memory>
+
+#include "Audio.h"
 
 namespace Sunset
 {
@@ -11,11 +12,12 @@ namespace Sunset
 
     class AudioSource final
     {
+        friend class AudioSystem;
     public:
         AudioSource();
         ~AudioSource();
 
-        void SetAudio(const std::shared_ptr<AudioBuffer>& buffer);
+        void SetAudio(const std::shared_ptr<Audio>& buffer);
         void Play(bool loop = false);
         void Stop();
         void Pause();
@@ -24,9 +26,12 @@ namespace Sunset
         void SetVolume(float volume) const;
 
         void SetRelativeToListener(bool relative) const;
+
+    private:
+        void Update();
     private:
         struct AudioSourceData;
         std::unique_ptr<AudioSourceData> m_AudioSourceData;
-        std::shared_ptr<AudioBuffer> m_Buffer;
+        std::shared_ptr<Audio> m_Buffer;
     };
 } // Sunset

@@ -141,6 +141,8 @@ namespace Sunset
 
             if (!AppSetting.Headless)
             {
+                AudioSystem::Update();
+
                 SS_PROFILE_SCOPE("Render part");
                 BeginFrame();
                 for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )

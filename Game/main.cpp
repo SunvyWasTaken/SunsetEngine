@@ -14,8 +14,6 @@
 #include "Render/Core/RenderCommand.h"
 
 #include <cstdlib>
-#include <exception>
-#include <iostream>
 
 namespace
 {
@@ -43,6 +41,7 @@ int main()
 #elif defined(SUNSET_OPENGL)
     Sunset::RenderCommand::SetRenderAPI(std::make_unique<Sunset::OpenGLGraphicsDevice>());
 #endif
+    app.InitializeWindow();
     Sunset::GameModuleLoader loader;
     loader.Load(SUNSET_GAME_MODULE_PATH, app);
     app.Run();

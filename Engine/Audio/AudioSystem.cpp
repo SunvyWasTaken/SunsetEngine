@@ -5,12 +5,17 @@
 #include "AudioSystem.h"
 
 #include "AudioBuffer.h"
+#include "AudioStream.h"
 #include "AudioSource.h"
 #include "AL/alc.h"
+
+#include <sndfile.h>
 
 namespace
 {
     constexpr std::uint8_t NbrAudioSource = 32;
+
+    constexpr std::uint64_t MaxAudioSizeForBuffer = 64ULL * 1024ULL; // 64Kib
 
     ALCdevice* device = nullptr;
     ALCcontext* context = nullptr;
@@ -20,9 +25,15 @@ namespace
 
     std::uint8_t GetCurrAudio()
     {
-        if (++currAudioSource > NbrAudioSource)
+        if (++currAudioSource >= NbrAudioSource)
             currAudioSource = 0;
         return currAudioSource;
+    }
+
+    [[nodiscard]]
+    std::uint64_t GetDecodeAudioSize(sf_count_t frames, int channels, int bitsPerSample)
+    {
+        return static_cast<std::uint64_t>(frames) * static_cast<std::uint64_t>(channels) * static_cast<std::uint64_t>(bitsPerSample) / 8ULL;
     }
 }
 
@@ -48,17 +59,49 @@ namespace Sunset
     {
         LOG("Engine", info, "AudioSystem Shutdown")
         m_AudioSources.clear();
-        alcCloseDevice(device);
+        if (context)
+        {
+            alcMakeContextCurrent(nullptr);
+            alcDestroyContext(context);
+            context = nullptr;
+        }
+
+        if (device)
+        {
+            alcCloseDevice(device);
+            device = nullptr;
+        }
     }
 
-    std::shared_ptr<AudioBuffer> AudioSystem::CreateAudioBuffer(const std::filesystem::path &path)
+    void AudioSystem::Update()
     {
-        auto buffer = std::make_shared<AudioBuffer>();
-        buffer->LoadFile(path);
-        return buffer;
+        for (const auto& audioSource : m_AudioSources)
+            audioSource->Update();
     }
 
-    AudioSource* AudioSystem::Play2DAudio(const std::shared_ptr<AudioBuffer> &audio, bool loop)
+    std::shared_ptr<Audio> AudioSystem::CreateAudio(const std::filesystem::path &path)
+    {
+        SF_INFO info = {};
+        SNDFILE* file = sf_open(path.c_str(), SFM_READ, &info);
+        if (!file)
+            throw std::runtime_error("Impossible d'ouvrir le fichier audio : " + path.string() + "(" + sf_strerror(nullptr) + ")");
+
+        const auto decodeSize = GetDecodeAudioSize(info.frames, info.channels, 16);
+        sf_close(file);
+
+        if (decodeSize <= MaxAudioSizeForBuffer)
+        {
+            auto audio = std::make_shared<Audio>(std::in_place_type<AudioBuffer>);
+            std::get<AudioBuffer>(*audio).LoadFile(path);
+            return audio;
+        }
+
+        auto audio = std::make_shared<Audio>(std::in_place_type<AudioStream>);
+        std::get<AudioStream>(*audio).LoadFile(path);
+        return audio;
+    }
+
+    AudioSource* AudioSystem::Play2DAudio(const std::shared_ptr<Audio> &audio, bool loop)
     {
         const auto i = GetCurrAudio();
         m_AudioSources[i]->SetAudio(audio);
