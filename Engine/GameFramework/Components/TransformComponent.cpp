@@ -135,4 +135,10 @@ namespace Sunset
     {
         Scale = scale;
     }
+
+    template<typename Archive>
+    void Serialize(Archive &ar, TransformComponent &component)
+    {
+        ar(component.Position, component.Rotation, component.Scale);
+    }
 } // Sunset

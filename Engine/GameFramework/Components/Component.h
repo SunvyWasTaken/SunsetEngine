@@ -48,4 +48,7 @@ namespace Sunset
     {
         Drawable m_mesh;
     };
+
+    template <typename Archive>
+    void Serialize(Archive& ar, TagComponent& component);
 } // Sunset

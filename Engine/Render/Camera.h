@@ -7,7 +7,13 @@
 
 namespace Sunset
 {
+    class BinaryInputArchive;
+    class BinaryOutputArchive;
     struct AABB;
+    class Camera;
+
+    void Serialize(BinaryInputArchive& archive, Camera& camera);
+    void Serialize(BinaryOutputArchive& archive, Camera& camera);
 
     struct Frustum
     {
@@ -25,6 +31,8 @@ namespace Sunset
     class Camera
     {
         friend class CameraComponent;
+        friend void Serialize(BinaryInputArchive& archive, Camera& camera);
+        friend void Serialize(BinaryOutputArchive& archive, Camera& camera);
     public:
         Camera();
         ~Camera();

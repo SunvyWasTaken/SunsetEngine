@@ -24,4 +24,7 @@ namespace Sunset
 
         Camera camera;
     };
+
+    template <typename Archive>
+    void Serialize(Archive& ar, CameraComponent& component);
 } // Sunset

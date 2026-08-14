@@ -36,6 +36,15 @@ namespace Sunset
         ar(value.w);
     }
 
+    template <typename Archive, typename T, glm::qualifier Q>
+    void Serialize(Archive& ar, glm::qua<T, Q>& value)
+    {
+        ar(value.w);
+        ar(value.x);
+        ar(value.y);
+        ar(value.z);
+    }
+
     class BinaryInputArchive
     {
     public:

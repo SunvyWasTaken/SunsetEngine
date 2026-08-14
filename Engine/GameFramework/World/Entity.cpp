@@ -26,4 +26,15 @@ namespace Sunset
         m_World = nullptr;
         m_Id = entt::null;
     }
+
+    entt::entity Entity::GetId() const
+    {
+        return m_Id;
+    }
+
+    template<typename Archive>
+    void Serialize(Archive &ar, Entity &entity)
+    {
+        // ar(entity.GetId());
+    }
 } // Sunset

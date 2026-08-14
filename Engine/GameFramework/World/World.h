@@ -7,6 +7,7 @@
 #include "Core/Event.h"
 #include "GameFramework/Components/Component.h"
 #include "entt/entt.hpp"
+#include "SaveSystem/BinaryArchive.h"
 
 namespace Sunset
 {
@@ -34,6 +35,8 @@ namespace Sunset
     class World
     {
         friend class Entity;
+        friend void Serialize(BinaryInputArchive& archive, World& world);
+        friend void Serialize(BinaryOutputArchive& archive, World& world);
     public:
         World();
 
@@ -76,7 +79,7 @@ namespace Sunset
         }
 
         template <typename Func>
-        void ForEachComponent(const entt::entity entity, Func&& func)
+        void ForEachComponent(const entt::entity& entity, Func&& func)
         {
             for (auto [componentTypeId, storage] : m_Registry.storage())
             {
@@ -96,4 +99,7 @@ namespace Sunset
         PeerId m_LocalPeerId = 0;
         std::vector<std::unique_ptr<IWorldSystem>> m_Systems;
     };
+
+    template <typename Archive>
+    void Serialize(Archive& ar, World& world);
 } // Sunset

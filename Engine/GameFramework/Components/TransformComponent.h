@@ -51,4 +51,7 @@ namespace Sunset
 
         operator glm::mat4 () const { return glm::translate(glm::mat4(1.f), Position) * glm::mat4_cast(Rotation) * glm::scale(glm::mat4(1.f), Scale); }
     };
+
+    template <typename Archive>
+    void Serialize(Archive& ar, TransformComponent& component);
 } // Sunset

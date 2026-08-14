@@ -29,4 +29,10 @@ namespace Sunset
         properties.Field("Tag", &TagComponent::Tag);
         return properties;
     }
+
+    template<typename Archive>
+    void Serialize(Archive &ar, TagComponent &component)
+    {
+        ar(component.Tag);
+    }
 } // Sunset

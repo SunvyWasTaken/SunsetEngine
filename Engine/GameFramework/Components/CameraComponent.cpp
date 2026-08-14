@@ -51,4 +51,10 @@ namespace Sunset
     {
         Primary = active;
     }
+
+    template<typename Archive>
+    void Serialize(Archive &ar, CameraComponent &component)
+    {
+
+    }
 } // Sunset

@@ -76,6 +76,8 @@ namespace Sunset
             return !(*this == other);
         }
 
+        entt::entity GetId() const;
+
     private:
 
         World* m_World;
@@ -89,4 +91,7 @@ namespace Sunset
     {
         return GetOwner().GetComponent<T>();
     }
+
+    template <typename Archive>
+    void Serialize(Archive& ar, Entity& entity);
 } // Sunset
