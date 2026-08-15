@@ -30,6 +30,7 @@ Le dépôt contient également un exécutable d'éditeur en cours de constructio
 ├── Engine/
 │   ├── CMakeLists.txt              # Cible statique SunsetEngine
 │   ├── SunsetEngine.h              # Include d'entrée pour les APIs principales
+│   ├── Audio/                      # Audio system, buffer and stream to be play at runtime
 │   ├── Core/                       # Application, layers, événements, entrées, GameInstance
 │   ├── GameFramework/              # World, Entity, composants, systèmes et scripts natifs
 │   ├── Log/                        # Logs et affichage debug à l'écran
