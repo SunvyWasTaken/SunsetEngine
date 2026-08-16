@@ -68,6 +68,7 @@ Dépendances déclarées dans `vcpkg.json` :
 - glm
 - imgui avec bindings GLFW, OpenGL 3 et docking
 - nlohmann-json
+- openal
 - spdlog
 
 ---
