@@ -31,6 +31,7 @@ namespace Sunset
     void Layer::OnDraw()
     {
         const auto& setting = Application::GetSetting();
+        PRINTSCREEN("ScreenSize {}", setting.WindowSize);
         m_UIContext.Arrange({{0, 0}, setting.WindowSize});
         m_UIContext.Paint();
     }

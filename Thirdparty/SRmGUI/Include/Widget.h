@@ -58,14 +58,21 @@ namespace SRmGUI
 
         void SetAnchorMax(const glm::vec2& max);
 
+        void SetCenter(const glm::vec2& center);
+
     protected:
         WidgetWeak m_Parent;
+        /// Desize size by the user.
         Rect m_DesireParameter;
+        /// Size of the current widget
         Rect m_Bounds;
         bool m_IsVisible;
-        // Haut/Droite/Bas/Gauche
+        /// Haut/Droite/Bas/Gauche
         glm::vec4 m_Padding;
+
         glm::vec2 m_Offset;
+        /// Center of the widget.
+        glm::vec2 m_Center;
     public:
         std::function<bool(DragDropPayload&)> m_OnDragDetected;
         std::function<bool(const DragDropPayload&)> m_CanAcceptDrag;
@@ -153,6 +160,12 @@ namespace SRmGUI
         Derived& AnchorMax(const glm::vec2& max)
         {
             m_Widget->SetAnchorMax(max);
+            return static_cast<Derived&>(*this);
+        }
+
+        Derived& Center(const glm::vec2& center)
+        {
+            m_Widget->SetCenter(center);
             return static_cast<Derived&>(*this);
         }
 
