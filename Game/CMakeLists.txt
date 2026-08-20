@@ -7,8 +7,8 @@ add_library(Sunset::Game ALIAS SunsetGameTarget)
 # add_subdirectory(yourproject)
 # add_dependencies(SunsetGameTarget yourproject)
 
-add_subdirectory(Pong)
-add_dependencies(SunsetGameTarget Pong)
+add_subdirectory(FlapFlap)
+add_dependencies(SunsetGameTarget FlapFlap)
 
 # ----------------------------------------------
 
