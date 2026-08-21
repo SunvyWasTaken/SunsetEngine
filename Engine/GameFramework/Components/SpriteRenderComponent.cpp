@@ -21,4 +21,10 @@ namespace Sunset
         m_drawable.m_Mesh = Mesh::CreateVertexOnly(points.data(), sizeof(glm::vec2), points.size(), {BufferElement{ShaderDataType::Float2, "pos"}});
         m_drawable.m_Material->LoadShader(ENGINE_SHADERS_PATH "SpriteShader.vert", ENGINE_SHADERS_PATH "SpriteShader.frag");
     }
+
+    template<typename Archive>
+    void Serialize(Archive &ar, SpriteRenderComponent &component)
+    {
+        // ar(component);
+    }
 } // Sunset

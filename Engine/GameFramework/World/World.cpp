@@ -10,6 +10,7 @@
 #include "GameFramework/Components/CameraComponent.h"
 #include "GameFramework/Components/InputComponent.h"
 #include "GameFramework/Components/NativeScriptComponent.h"
+#include "GameFramework/Components/SpriteRenderComponent.h"
 #include "GameFramework/Components/TransformComponent.h"
 #include "GameFramework/System/CameraSystem.h"
 #include "GameFramework/System/IWorldSystem.h"
@@ -167,6 +168,14 @@ namespace Sunset
         archive(component.GetBindings());
     }
 
+    void Serialize(BinaryInputArchive& archive, SpriteRenderComponent& component)
+    {
+    }
+
+    void Serialize(BinaryOutputArchive& archive, SpriteRenderComponent& component)
+    {
+    }
+
     World::World()
         : m_Registry()
     {
@@ -272,6 +281,7 @@ namespace Sunset
             SaveComponent<TransformComponent>(archive, world.m_Registry, enttEntity);
             SaveComponent<CameraComponent>(archive, world.m_Registry, enttEntity);
             SaveComponent<InputComponent>(archive, world.m_Registry, enttEntity);
+            SaveComponent<SpriteRenderComponent>(archive, world.m_Registry, enttEntity);
         });
     }
 
@@ -306,6 +316,7 @@ namespace Sunset
             LoadComponent<TransformComponent>(archive, entity);
             LoadComponent<CameraComponent>(archive, entity);
             LoadComponent<InputComponent>(archive, entity);
+            LoadComponent<SpriteRenderComponent>(archive, entity);
         }
     }
 } // Sunset

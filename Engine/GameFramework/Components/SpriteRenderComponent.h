@@ -16,4 +16,7 @@ namespace Sunset
     private:
         Drawable m_drawable;
     };
+
+    template <typename Archive>
+    void Serialize(Archive& ar, SpriteRenderComponent& component);
 } // Sunset

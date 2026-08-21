@@ -9,6 +9,7 @@
 
 #include "Core/GameInstance.h"
 #include "Panels/WorldHierarchyPanel.h"
+#include "SaveSystem/SaveSystem.h"
 
 namespace
 {
@@ -77,8 +78,14 @@ namespace Sunset
         if (ImGui::BeginMenuBar()) {
             if (ImGui::BeginMenu("File")) {
                 if (ImGui::MenuItem("New Project")) { /* ... */ }
-                if (ImGui::MenuItem("Open")) { /* ... */ }
-                if (ImGui::MenuItem("Save")) { /* ... */ }
+                if (ImGui::MenuItem("Open"))
+                {
+                    SaveSystem::Load(SAVE_PATH "World.bin", *(GetGameInstance()->m_ActiveWorld.get()));
+                }
+                if (ImGui::MenuItem("Save"))
+                {
+                    SaveSystem::Save(SAVE_PATH "World.bin", *(GetGameInstance()->m_ActiveWorld.get()));
+                }
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Edit")) { /* ... */ ImGui::EndMenu(); }
@@ -89,6 +96,13 @@ namespace Sunset
         ImGuiID docspace_id = ImGui::GetID("MainDockSpace");
         ImGui::DockSpace(docspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
 
+        ImGui::End();
+
+        ImGui::Begin("Panel");
+        if (ImGui::Button("Add Entity"))
+        {
+            GetGameInstance()->m_ActiveWorld->CreateEntity("Entity");
+        }
         ImGui::End();
 
         m_WorldHierarchy->OnImGuiRender();

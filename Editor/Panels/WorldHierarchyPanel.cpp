@@ -16,6 +16,8 @@
 
 namespace
 {
+    entt::entity selected = entt::null;
+
     bool HasSpecializedComponentDrawer(const entt::id_type typeId)
     {
         return typeId == entt::type_hash<Sunset::TagComponent>::value()
@@ -337,7 +339,10 @@ namespace Sunset
         });
 
         if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+        {
+            selected = entt::null;
             m_SelectedEntity = {};
+        }
         ImGui::End();
 
         ImGui::Begin("Properties");
@@ -352,14 +357,27 @@ namespace Sunset
     {
         if (const auto tag = entity.GetComponent<TagComponent>())
         {
-            ImGuiTreeNodeFlags flags = (m_SelectedEntity == entity ?  ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
-            bool opened = ImGui::TreeNodeEx((void*)(std::uint64_t)(std::uint32_t)entity, flags, tag->Tag.c_str());
-            if (ImGui::IsItemClicked())
+            if (ImGui::Selectable(tag->Tag.c_str(), selected == entity.GetId()))
             {
+                selected = entity.GetId();
                 m_SelectedEntity = entity;
             }
-            if (opened)
-                ImGui::TreePop();
+
+            if (ImGui::BeginPopupContextItem())
+            {
+                if (ImGui::Button("AddComponent"))
+                {
+
+                }
+                if (ImGui::Button("Destroy Entity"))
+                {
+                    if (m_SelectedEntity == entity)
+                        m_SelectedEntity = nullptr;
+
+                    m_Context->DestroyEntity(entity);
+                }
+                ImGui::EndPopup();
+            }
         }
     }
 
