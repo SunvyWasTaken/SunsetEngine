@@ -53,6 +53,15 @@ namespace Sunset
         EnsureNetworkTransformHandler();
     }
 
+    ReflectionType TransformComponent::Properties()
+    {
+        ReflectionType properties;
+        properties.Field("Position", &TransformComponent::Position);
+        properties.Field("Rotation", &TransformComponent::Rotation);
+        properties.Field("Scale", &TransformComponent::Scale);
+        return properties;
+    }
+
     glm::mat4 TransformComponent::GetWorldMatrix() const noexcept
     {
         return glm::translate(glm::mat4(1.0f), Position)

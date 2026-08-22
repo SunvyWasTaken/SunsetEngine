@@ -269,13 +269,19 @@ namespace
                 case Sunset::ReflectionFieldType::Vec2:
                 {
                     void* ptr = type.GetPtr(instance);
-                    ImGui::DragFloat2(type.Name.c_str(), static_cast<float*>(ptr));
+                    ImGui::DragFloat2(type.Name.c_str(), static_cast<float*>(ptr), 0.001f, -__FLT_MAX__, __FLT_MAX__, "%.3f", ImGuiSliderFlags_ColorMarkers);
                     break;
                 }
                 case Sunset::ReflectionFieldType::Vec3:
                 {
                     void* ptr = type.GetPtr(instance);
-                    ImGui::DragFloat3(type.Name.c_str(), static_cast<float*>(ptr));
+                    ImGui::DragFloat3(type.Name.c_str(), static_cast<float*>(ptr), 0.001f, -__FLT_MAX__, __FLT_MAX__, "%.3f", ImGuiSliderFlags_ColorMarkers);
+                    break;
+                }
+                case Sunset::ReflectionFieldType::Vec4:
+                {
+                    void* ptr = type.GetPtr(instance);
+                    ImGui::DragFloat4(type.Name.c_str(), static_cast<float*>(ptr), 0.001f, -__FLT_MAX__, __FLT_MAX__, "%.3f", ImGuiSliderFlags_ColorMarkers);
                     break;
                 }
                 case Sunset::ReflectionFieldType::Enum:
@@ -395,15 +401,18 @@ namespace Sunset
 
         if (auto* tc = entity.GetComponent<TransformComponent>())
         {
+
             if (ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Transform"))
             {
-                auto& position = tc->Position;
-                auto& rotation = tc->Rotation;
-                auto& scale = tc->Scale;
-
-                ImGui::DragFloat3("Position", glm::value_ptr(position));
-                ImGui::DragFloat4("Rotation", glm::value_ptr(rotation));
-                ImGui::DragFloat3("Scale", glm::value_ptr(scale));
+                ReflectionType properties = tc->Properties();
+                DrawEditorObject(tc, properties);
+                // auto& position = tc->Position;
+                // auto& rotation = tc->Rotation;
+                // auto& scale = tc->Scale;
+                //
+                // ImGui::DragFloat3("Position", glm::value_ptr(position));
+                // ImGui::DragFloat4("Rotation", glm::value_ptr(rotation));
+                // ImGui::DragFloat3("Scale", glm::value_ptr(scale));
                 ImGui::TreePop();
             }
         }

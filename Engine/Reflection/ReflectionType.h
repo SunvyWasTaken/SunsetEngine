@@ -14,6 +14,7 @@ namespace Sunset
         Bool,
         Vec2,
         Vec3,
+        Vec4,
         String,
         Enum
     };
@@ -59,6 +60,18 @@ namespace Sunset
     constexpr ReflectionFieldType GetReflectionFieldType<glm::vec3>()
     {
         return ReflectionFieldType::Vec3;
+    }
+
+    template <>
+    constexpr ReflectionFieldType GetReflectionFieldType<glm::vec4>()
+    {
+        return ReflectionFieldType::Vec4;
+    }
+
+    template <>
+    constexpr ReflectionFieldType GetReflectionFieldType<glm::quat>()
+    {
+        return ReflectionFieldType::Vec4;
     }
 
     template <>

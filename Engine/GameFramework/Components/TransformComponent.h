@@ -27,6 +27,8 @@ namespace Sunset
         TransformComponent(const TransformComponent&) = default;
         TransformComponent(PeerId ownerPeerId, bool syncPositionInWorld = true, bool broadcastPositionInWorld = true);
 
+        ReflectionType Properties() override;
+
         [[nodiscard]] glm::mat4 GetWorldMatrix() const noexcept;
 
         void Update(float deltatime);
