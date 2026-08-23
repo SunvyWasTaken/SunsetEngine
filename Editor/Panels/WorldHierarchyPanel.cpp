@@ -406,13 +406,6 @@ namespace Sunset
             {
                 ReflectionType properties = tc->Properties();
                 DrawEditorObject(tc, properties);
-                // auto& position = tc->Position;
-                // auto& rotation = tc->Rotation;
-                // auto& scale = tc->Scale;
-                //
-                // ImGui::DragFloat3("Position", glm::value_ptr(position));
-                // ImGui::DragFloat4("Rotation", glm::value_ptr(rotation));
-                // ImGui::DragFloat3("Scale", glm::value_ptr(scale));
                 ImGui::TreePop();
             }
         }

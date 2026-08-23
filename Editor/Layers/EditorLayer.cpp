@@ -9,6 +9,10 @@
 
 #include "Core/GameInstance.h"
 #include "Panels/WorldHierarchyPanel.h"
+#include "Render/FrameBuffer.h"
+#include "Render/FrameBufferSpecification.h"
+#include "Render/Core/RenderAPI.h"
+#include "Render/Core/RenderCommand.h"
 #include "SaveSystem/SaveSystem.h"
 
 namespace
@@ -96,6 +100,19 @@ namespace Sunset
         ImGuiID docspace_id = ImGui::GetID("MainDockSpace");
         ImGui::DockSpace(docspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
 
+        ImGui::End();
+
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+        ImGui::Begin("Viewport");
+        const auto& size = ImGui::GetContentRegionAvail();
+        FrameBuffer frame_buffer({static_cast<int>(size.x), static_cast<int>(size.y)});
+        frame_buffer.Bind();
+        ImGui::Image(frame_buffer.GetId().id, size);
+        ImGui::End();
+        ImGui::PopStyleVar();
+
+        ImGui::Begin("Content");
         ImGui::End();
 
         ImGui::Begin("Panel");
