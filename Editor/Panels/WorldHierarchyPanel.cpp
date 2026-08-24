@@ -373,7 +373,23 @@ namespace Sunset
             {
                 if (ImGui::Button("AddComponent"))
                 {
-
+                    ImGui::OpenPopup("Add Component##1");
+                }
+                if (ImGui::BeginPopup("Add Component##1"))
+                {
+                    // for (auto& component : ComponentRegister::register)
+                    // {
+                    //
+                    // }
+                    if (ImGui::Button("Transform Component"))
+                    {
+                        if (m_SelectedEntity)
+                        {
+                            m_SelectedEntity.AddComponent<TransformComponent>();
+                        }
+                        ImGui::CloseCurrentPopup();
+                    }
+                    ImGui::EndPopup();
                 }
                 if (ImGui::Button("Destroy Entity"))
                 {

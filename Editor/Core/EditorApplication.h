@@ -12,7 +12,7 @@
     class EditorApplication : public Application
     {
     public:
-        EditorApplication(const WindowSetting& setting = WindowSetting{});
+        explicit EditorApplication(const WindowSetting& setting = WindowSetting{});
         void OnDestroy() override;
         void BeginFrame() override;
         void EndFrame() override;
