@@ -11,7 +11,6 @@
 #include "GameInstance.h"
 #include "Layer.h"
 #include "Network/NetworkService.h"
-#include "Render/Core/RenderAPI.h"
 #include "Render/Core/RenderCommand.h"
 #include "Window.h"
 #include "WindowSetting.h"
@@ -61,7 +60,7 @@ namespace
     void ResizeWindow(const glm::ivec2& setting)
     {
         AppSetting.WindowSize = setting;
-        Sunset::RenderCommand::SetViewport(setting);
+        // Sunset::RenderCommand::SetViewport(setting);
     }
 }
 

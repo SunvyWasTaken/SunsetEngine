@@ -7,7 +7,7 @@
 #include <GLFW/glfw3.h>
 
 #include <cstdlib>
-#include "Render/Core/GraphicsContext.h"
+// #include "Render/Core/GraphicsContext.h"
 
 namespace
 {
@@ -163,7 +163,7 @@ namespace Sunset
 
     GLFWWindow::GLFWWindow(const WindowSetting &setting)
         : m_WindowHandle(nullptr)
-        , m_GraphicsContext(nullptr)
+        // , m_GraphicsContext(nullptr)
     {
         Initialize(setting);
     }
@@ -233,7 +233,7 @@ namespace Sunset
 
     void GLFWWindow::Shutdown()
     {
-        m_GraphicsContext.reset();
+        // m_GraphicsContext.reset();
 
         if (m_WindowHandle != nullptr)
         {

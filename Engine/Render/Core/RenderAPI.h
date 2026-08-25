@@ -8,6 +8,11 @@ namespace Sunset
 {
     struct RenderAPI
     {
+        virtual ~RenderAPI() = default;
 
+        virtual void Init() = 0;
+        virtual void Clear(const glm::vec4& color) = 0;
+        virtual void BeginFrame() = 0;
+        virtual void EndFrame() = 0;
     };
 } // Sunset
