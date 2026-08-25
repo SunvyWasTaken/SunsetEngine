@@ -3,15 +3,19 @@
 //
 
 #pragma once
+#include "Render/Core/RenderHandle.h"
+#include "Render/Core/RenderType.h"
 
 namespace Sunset
 {
     struct Camera;
+    class Drawable;
+    class Material;
 
     class OpenGLDrawQueue
     {
     public:
-        void Submit();
+        void Submit(const Drawable& drawable, const glm::mat4& model);
         void UseCamera(const Camera& camera);
         void Flush();
     private:
@@ -27,7 +31,11 @@ namespace Sunset
 
         struct DrawCommand
         {
-
+            VertexArrayHandle vertexArray;
+            std::uint32_t indexCount = 0;
+            std::shared_ptr<Material> material;
+            glm::mat4 model = glm::mat4(1.0f);
+            RenderState state;
         };
 
         FrameData m_FrameData;
