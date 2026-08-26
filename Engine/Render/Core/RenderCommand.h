@@ -24,5 +24,7 @@ namespace Sunset
         static void Submit(const Drawable& drawable, const glm::mat4& transform);
 
         static void UseCamera(const Camera& camera);
+
+        static void SetViewport(const glm::ivec2& screenSize);
     };
 } // Sunset

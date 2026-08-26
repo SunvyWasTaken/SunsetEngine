@@ -73,6 +73,11 @@ namespace Sunset
     {
         data->m_DrawQueue.UseCamera(camera);
     }
+
+    void OpenGLRenderAPI::SetViewport(const glm::ivec2 &screenSize)
+    {
+        glViewport(0, 0, screenSize.x, screenSize.y);
+    }
 }
 
 /*--------------------------------------*/

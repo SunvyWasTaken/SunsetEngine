@@ -60,7 +60,7 @@ namespace
     void ResizeWindow(const glm::ivec2& setting)
     {
         AppSetting.WindowSize = setting;
-        // Sunset::RenderCommand::SetViewport(setting);
+        Sunset::RenderCommand::SetViewport(setting);
     }
 }
 

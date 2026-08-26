@@ -207,10 +207,6 @@ namespace Sunset
     {
         SS_PROFILE_FUNCTION();
 
-        for (const auto& system : m_Systems)
-            system->Update(dt);
-
-
         if (!Application::IsHeadless())
         {
             for (const auto view = m_Registry.view<CameraComponent>(); const auto entity : view)
@@ -222,6 +218,9 @@ namespace Sunset
                 }
             }
         }
+
+        for (const auto& system : m_Systems)
+            system->Update(dt);
     }
 
     Entity World::FindEntityByName(const std::string &name)

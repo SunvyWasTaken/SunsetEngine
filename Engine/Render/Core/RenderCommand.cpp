@@ -70,6 +70,11 @@ namespace Sunset
     {
         GetRenderAPI().UseCamera(camera);
     }
+
+    void RenderCommand::SetViewport(const glm::ivec2 &screenSize)
+    {
+        GetRenderAPI().SetViewport(screenSize);
+    }
 } // Sunset
 
 /****************************************/

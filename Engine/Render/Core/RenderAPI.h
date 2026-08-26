@@ -32,6 +32,8 @@ namespace Sunset
 
         virtual void UseCamera(const Camera& camera) = 0;
 
+        virtual void SetViewport(const glm::ivec2& screenSize) = 0;
+
         /****************************************/
         /* Shader                               */
         /****************************************/

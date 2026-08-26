@@ -22,6 +22,8 @@ namespace Sunset
 
         void UseCamera(const Camera &camera) override;
 
+        void SetViewport(const glm::ivec2 &screenSize) override;
+
         /*--------------------------------------*/
         /* Shader                               */
         /*--------------------------------------*/
