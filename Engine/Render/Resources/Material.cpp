@@ -4,14 +4,16 @@
 
 #include "Material.h"
 
+#include "Pipeline.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Render/Core/RenderType.h"
 #include "Utility/UtilityFunction.h"
 
 namespace Sunset
 {
     Material::Material()
-        : m_Pipeline(nullptr)
+        : m_Pipeline(Pipeline::Create(OpaqueState))
         , m_Shader(nullptr)
     {
     }

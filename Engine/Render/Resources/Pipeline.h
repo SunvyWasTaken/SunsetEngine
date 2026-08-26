@@ -10,6 +10,7 @@ namespace Sunset
 
     class Pipeline
     {
+    public:
         static std::shared_ptr<Pipeline> Create(const RenderState& state);
     public:
         virtual ~Pipeline() = default;
