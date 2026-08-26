@@ -7,6 +7,8 @@
 #include "RenderAPI.h"
 #include "RenderHandle.h"
 
+#include "Render/Resources/Shader.h"
+
 namespace
 {
     std::unique_ptr<Sunset::RenderAPI>& GetRenderAPIStorage()
@@ -26,6 +28,11 @@ namespace
 
 namespace Sunset
 {
+    std::unique_ptr<Shader> Shader::CreateShader(const std::string &vertShader, const std::string &fragShader)
+    {
+        return GetRenderAPI().CreateShader(vertShader, fragShader);
+    }
+
     void RenderCommand::SetRenderAPI(std::unique_ptr<RenderAPI> renderAPI)
     {
         if (!renderAPI)
@@ -56,83 +63,5 @@ namespace Sunset
     void RenderCommand::EndFrame()
     {
         GetRenderAPI().EndFrame();
-    }
-} // Sunset
-
-/*--------------------------------------*/
-/* Shader                               */
-/*--------------------------------------*/
-namespace Sunset
-{
-    ShaderHandle RenderCommand::CreateShader(const std::string &vertShader, const std::string &fragShader)
-    {
-        return GetRenderAPI().CreateShader(vertShader, fragShader);
-    }
-
-    void RenderCommand::DestroyShader(ShaderHandle &shaderID)
-    {
-        GetRenderAPI().DestroyShader(shaderID);
-        shaderID = ShaderHandle();
-    }
-
-    void RenderCommand::BindShader(const ShaderHandle &shaderID)
-    {
-        GetRenderAPI().BindShader(shaderID);
-    }
-
-    void RenderCommand::SetShaderFloat(const ShaderHandle &shaderID, const std::string_view &name, float value)
-    {
-        GetRenderAPI().SetShaderFloat(shaderID, name, value);
-    }
-
-    void RenderCommand::SetShaderInt(const ShaderHandle &shaderID, const std::string_view &name, int value)
-    {
-        GetRenderAPI().SetShaderInt(shaderID, name, value);
-    }
-
-    void RenderCommand::SetShaderVec2(const ShaderHandle &shaderID, const std::string_view &name,
-        const glm::vec2 &value)
-    {
-        GetRenderAPI().SetShaderVec2(shaderID, name, value);
-    }
-
-    void RenderCommand::SetShaderVec3(const ShaderHandle &shaderID, const std::string_view &name,
-        const glm::vec3 &value)
-    {
-        GetRenderAPI().SetShaderVec3(shaderID, name, value);
-    }
-
-    void RenderCommand::SetShaderVec4(const ShaderHandle &shaderID, const std::string_view &name,
-        const glm::vec4 &value)
-    {
-        GetRenderAPI().SetShaderVec4(shaderID, name, value);
-    }
-
-    void RenderCommand::SetShaderMat4(const ShaderHandle &shaderID, const std::string_view &name,
-        const glm::mat4 &value)
-    {
-        GetRenderAPI().SetShaderMat4(shaderID, name, value);
-    }
-} // Sunset
-
-/*--------------------------------------*/
-/* Texture                              */
-/*--------------------------------------*/
-namespace Sunset
-{
-    TextureHandle RenderCommand::CreateTexture(const void *data)
-    {
-        return GetRenderAPI().CreateTexture(data);
-    }
-
-    void RenderCommand::DestroyTexture(TextureHandle &textureID)
-    {
-        GetRenderAPI().DestroyTexture(textureID);
-        textureID = TextureHandle();
-    }
-
-    void RenderCommand::BindTexture(const TextureHandle &texture, std::uint32_t slot)
-    {
-        GetRenderAPI().BindTexture(texture, slot);
     }
 } // Sunset

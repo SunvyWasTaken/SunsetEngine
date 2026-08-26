@@ -16,9 +16,17 @@ namespace
 
 namespace Sunset
 {
-    bool UtilityFunction::DoesFileExist(const std::string_view &path)
+    bool UtilityFunction::DoesFileExist(const std::filesystem::path &path)
     {
         return std::filesystem::exists(path);
+    }
+
+    std::string UtilityFunction::OpenTextFile(const std::filesystem::path &path)
+    {
+        std::ifstream file(path);
+        std::stringstream stream;
+        stream << file.rdbuf();
+        return stream.str();
     }
 
     template<>

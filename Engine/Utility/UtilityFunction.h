@@ -10,7 +10,9 @@ namespace Sunset
 {
     struct UtilityFunction
     {
-        static bool DoesFileExist(const std::string_view &path);
+        static bool DoesFileExist(const std::filesystem::path &path);
+
+        static std::string OpenTextFile(const std::filesystem::path &path);
 
         template <typename T>
         requires std::is_arithmetic_v<T>
