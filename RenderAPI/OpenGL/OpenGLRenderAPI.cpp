@@ -55,7 +55,7 @@ namespace Sunset
 
     void OpenGLRenderAPI::BeginFrame()
     {
-
+        Clear({0, 0, 0, 0});
     }
 
     void OpenGLRenderAPI::EndFrame()
