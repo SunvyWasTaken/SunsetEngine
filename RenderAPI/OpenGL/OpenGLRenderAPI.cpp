@@ -56,12 +56,13 @@ namespace Sunset
 
     void OpenGLRenderAPI::BeginFrame()
     {
-        Clear({0, 0, 0, 0});
+
     }
 
     void OpenGLRenderAPI::EndFrame()
     {
         data->m_DrawQueue.Flush();
+        Clear({0, 0, 0, 0});
     }
 
     void OpenGLRenderAPI::Submit(const Drawable &drawable, const glm::mat4 &transform)

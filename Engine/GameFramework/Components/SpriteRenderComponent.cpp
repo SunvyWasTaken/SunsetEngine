@@ -10,7 +10,14 @@
 
 namespace
 {
-    constexpr std::array<glm::vec2, 6> points = {glm::vec2{-0.5f, -0.5f}, {-0.5f, 0.5f}, {0.5f, 0.5f}, {0.5f, 0.5f}, {0.5f, -0.5f}, {-0.5f, -0.5f}};
+    constexpr std::array<glm::vec2, 6> points = {
+        glm::vec2{-0.5f, -0.5f},
+        {0.5f, -0.5f},
+        {0.5f, 0.5f},
+        {0.5f, 0.5f},
+        {-0.5f, 0.5f},
+        {-0.5f, -0.5f}
+    };
 }
 
 namespace Sunset

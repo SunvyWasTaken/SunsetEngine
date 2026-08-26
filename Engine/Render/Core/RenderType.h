@@ -55,7 +55,7 @@ namespace Sunset
         .depthTest = true,
         .depthWrite = true,
         .blending = false,
-        .cullMode = CullMode::Back
+        .cullMode = CullMode::None
     };
 
     constexpr RenderState TransparentState{

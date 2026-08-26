@@ -14,6 +14,18 @@
 #include "Render/Resources/Pipeline.h"
 #include "Render/Resources/Shader.h"
 
+namespace
+{
+    void CheckOpenGLError(const char* location)
+    {
+        const GLenum error = glGetError();
+        while (error != GL_NO_ERROR)
+        {
+            LOG("OpenGL", error, "OpenGL error at {}: 0x{:X}", location, static_cast<unsigned int>(error))
+        }
+    }
+}
+
 namespace Sunset
 {
     OpenGLDrawQueue::OpenGLDrawQueue()
@@ -38,10 +50,14 @@ namespace Sunset
     {
         SS_PROFILE_FUNCTION();
         Sort();
+        PRINTSCREEN("Flush {} draw commands", m_DrawCommands.size());
         for (const auto& cmd : m_DrawCommands)
         {
             if (!cmd.material || !cmd.mesh)
+            {
+                PRINTSCREEN("Draw cmd ignored");
                 continue;
+            }
 
             cmd.material->m_Pipeline->Bind();
 
@@ -56,10 +72,12 @@ namespace Sunset
 
             cmd.mesh->Bind();
 
+            CheckOpenGLError("Before draw");
             if (cmd.mesh->m_IndexBuffer)
                 glDrawElements(GL_TRIANGLES, cmd.mesh->m_IndexBuffer->Count(), GL_UNSIGNED_INT, nullptr);
             else
                 glDrawArrays(GL_TRIANGLES, 0, cmd.mesh->m_VertexBuffer->Count());
+            CheckOpenGLError("After draw");
         }
         m_DrawCommands.clear();
     }
