@@ -77,7 +77,7 @@ namespace Sunset
 
     std::size_t VertexLayout::GetStride() const
     {
-        return m_Layout.size();
+        return m_Stride;
     }
 
     std::vector<VertexElement>::const_iterator VertexLayout::begin() const

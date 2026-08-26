@@ -72,6 +72,21 @@ namespace Sunset
 
             cmd.mesh->Bind();
 
+            GLint vao = 0;
+            glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &vao);
+
+            GLint vbo = 0;
+            GLint enabled = 0;
+            GLint stride = 0;
+
+            glGetVertexAttribiv(0,GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING,&vbo);
+
+            glGetVertexAttribiv(0,GL_VERTEX_ATTRIB_ARRAY_ENABLED,&enabled);
+
+            glGetVertexAttribiv(0,GL_VERTEX_ATTRIB_ARRAY_STRIDE,&stride);
+
+            LOG("OpenGL", info, "VAO={} VBO={} enabled={} stride={}", vao, vbo, enabled, stride);
+
             CheckOpenGLError("Before draw");
             if (cmd.mesh->m_IndexBuffer)
                 glDrawElements(GL_TRIANGLES, cmd.mesh->m_IndexBuffer->Count(), GL_UNSIGNED_INT, nullptr);

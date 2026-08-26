@@ -23,7 +23,6 @@ namespace Sunset
 {
     struct OpenGLRenderAPI::OpenGLData
     {
-        GLFWwindow* window;
         OpenGLDrawQueue m_DrawQueue;
     };
 
@@ -62,7 +61,6 @@ namespace Sunset
     void OpenGLRenderAPI::EndFrame()
     {
         data->m_DrawQueue.Flush();
-        Clear({0, 0, 0, 0});
     }
 
     void OpenGLRenderAPI::Submit(const Drawable &drawable, const glm::mat4 &transform)

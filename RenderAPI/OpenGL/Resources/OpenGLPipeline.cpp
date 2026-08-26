@@ -33,7 +33,8 @@ namespace
         {
             case Sunset::CullMode::Back:  return GL_BACK;
             case Sunset::CullMode::Front: return GL_FRONT;
-            case Sunset::CullMode::None:  return GL_BACK;
+            case Sunset::CullMode::None:
+                break;
         }
 
         return GL_BACK;
