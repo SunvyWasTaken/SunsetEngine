@@ -28,10 +28,8 @@ namespace
 
     void RegisterEngineSystems(Sunset::World& world)
     {
-        world.AddSystem<Sunset::CameraSystem>();
         world.AddSystem<Sunset::NativeScriptingSystem>();
         world.AddSystem<Sunset::SpriteRenderSystem>();
-        world.AddSystem<Sunset::RenderMeshSystem>();
     }
 
     template <typename ComponentType>
@@ -215,14 +213,14 @@ namespace Sunset
 
         if (!Application::IsHeadless())
         {
-            for (const auto view = m_Registry.view<CameraComponent>(); const auto entity : view)
-            {
-                if (const auto& cam = m_Registry.get<CameraComponent>(entity); cam.Primary)
-                {
-                    RenderCommand::UseCamera(cam.camera);
-                    break;
-                }
-            }
+            // for (const auto view = m_Registry.view<CameraComponent>(); const auto entity : view)
+            // {
+            //     if (const auto& cam = m_Registry.get<CameraComponent>(entity); cam.Primary)
+            //     {
+            //         RenderCommand::UseCamera(cam.camera);
+            //         break;
+            //     }
+            // }
         }
     }
 

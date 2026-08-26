@@ -46,11 +46,24 @@ namespace Sunset
         BlendFactor src = BlendFactor::One;
         BlendFactor dest = BlendFactor::Zero;
 
-        CullMode cullMode = CullMode::Front;
+        CullMode cullMode = CullMode::Back;
+
         bool wireframe = false;
-        bool DrawInstance = false;
-        std::uint32_t nbrInstance = 0;
-        bool HasIndice = false;
-        PrimitiveType primitiveType = PrimitiveType::Triangles;
+    };
+
+    constexpr RenderState OpaqueState{
+        .depthTest = true,
+        .depthWrite = true,
+        .blending = false,
+        .cullMode = CullMode::Back
+    };
+
+    constexpr RenderState TransparentState{
+        .depthTest = true,
+        .depthWrite = false,
+        .blending = true,
+        .src = BlendFactor::SrcAlpha,
+        .dest = BlendFactor::OneMinusSrcAlpha,
+        .cullMode = CullMode::Back
     };
 }

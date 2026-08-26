@@ -3,12 +3,11 @@
 //
 
 #pragma once
-#include <memory>
-
-#include "Render/Resources/Texture.h"
 
 namespace Sunset
 {
+    class Drawable;
+    struct RenderState;
     struct ShaderHandle;
 
     struct RenderCommand
@@ -20,5 +19,7 @@ namespace Sunset
 
         static void BeginFrame();
         static void EndFrame();
+
+        static void Submit(const Drawable& drawable, const glm::mat4& transform);
     };
 } // Sunset

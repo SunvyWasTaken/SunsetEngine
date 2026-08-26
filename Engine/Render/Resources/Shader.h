@@ -9,7 +9,7 @@ namespace Sunset
     class Shader
     {
     public:
-        static std::unique_ptr<Shader> CreateShader(const std::string& vertShader, const std::string& fragShader);
+        static std::unique_ptr<Shader> CreateShader(const std::string_view& vertShader, const std::string_view& fragShader);
     public:
         virtual ~Shader() = default;
 

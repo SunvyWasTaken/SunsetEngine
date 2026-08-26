@@ -4,7 +4,7 @@
 
 #pragma once
 #include "Component.h"
-#include "Render/Camera.h"
+#include "Render/Resources/Camera.h"
 
 namespace Sunset
 {

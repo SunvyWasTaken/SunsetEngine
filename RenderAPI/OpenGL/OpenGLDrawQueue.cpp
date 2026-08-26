@@ -4,12 +4,25 @@
 
 #include "OpenGLDrawQueue.h"
 
+#include <glad/glad.h>
+
+#include "Render/Resources/Buffer.h"
 #include "Render/Resources/Camera.h"
+#include "Render/Resources/Drawable.h"
+#include "Render/Resources/Material.h"
+#include "Render/Resources/Mesh.h"
 
 namespace Sunset
 {
+    OpenGLDrawQueue::OpenGLDrawQueue()
+        : m_DrawCommands()
+        , m_FrameData()
+    {
+    }
+
     void OpenGLDrawQueue::Submit(const Drawable &drawable, const glm::mat4 &model)
     {
+        m_DrawCommands.emplace_back(DrawCommand{drawable.m_Mesh, drawable.m_Material, model});
     }
 
     void OpenGLDrawQueue::UseCamera(const Camera &camera)
@@ -21,29 +34,28 @@ namespace Sunset
 
     void OpenGLDrawQueue::Flush()
     {
-        Sort();
         SS_PROFILE_FUNCTION();
+        Sort();
+        for (const auto& cmd : m_DrawCommands)
+        {
+            if (!cmd.material || !cmd.mesh)
+                continue;
+
+            cmd.material->Bind();
+
+            cmd.mesh->Bind();
+
+            if (cmd.mesh->m_IndexBuffer)
+                glDrawElements(GL_TRIANGLES, cmd.mesh->m_IndexBuffer->Count(), GL_UNSIGNED_INT, nullptr);
+            else
+                glDrawArrays(GL_TRIANGLES, 0, cmd.mesh->m_VertexBuffer->Count());
+        }
+        m_DrawCommands.clear();
     }
 
     void OpenGLDrawQueue::Sort()
     {
         SS_PROFILE_FUNCTION();
-        std::stable_sort(m_DrawCommands.begin(), m_DrawCommands.begin(), [this](const DrawCommand &lhs, const DrawCommand &rhs)
-        {
-            const bool lhsTransparent = lhs.state.blending;
-            const bool rhsTransparent = rhs.state.blending;
-            if (lhsTransparent != rhsTransparent)
-                return !lhsTransparent;
-            if (lhsTransparent)
-            {
-                const glm::vec3 lhsPosition = glm::vec3(lhs.model[3]);
-                const glm::vec3 rhsPosition = glm::vec3(rhs.model[3]);
-                const glm::vec3 lhsDistance = lhsPosition - m_FrameData.position;
-                const glm::vec3 rhsDistance = rhsPosition - m_FrameData.position;
-                return glm::dot(lhsDistance, lhsDistance) > glm::dot(rhsDistance, rhsDistance);
-            }
-
-            return std::tie(lhs.material->m_Shader, lhs.material, lhs.vertexArray.id) < std::tie(rhs.material->m_Shader, rhs.material, rhs.vertexArray.id);
-                    });
+        /// Todo : Redo the sort with the new DrawCmd.
     }
 } // Sunset

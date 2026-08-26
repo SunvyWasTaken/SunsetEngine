@@ -3,11 +3,12 @@
 //
 
 #include "RenderCommand.h"
-
 #include "RenderAPI.h"
-#include "RenderHandle.h"
-
+#include "Render/Resources/Buffer.h"
+#include "Render/Resources/Mesh.h"
+#include "Render/Resources/Pipeline.h"
 #include "Render/Resources/Shader.h"
+#include "Render/Resources/Texture.h"
 
 namespace
 {
@@ -28,11 +29,6 @@ namespace
 
 namespace Sunset
 {
-    std::unique_ptr<Shader> Shader::CreateShader(const std::string &vertShader, const std::string &fragShader)
-    {
-        return GetRenderAPI().CreateShader(vertShader, fragShader);
-    }
-
     void RenderCommand::SetRenderAPI(std::unique_ptr<RenderAPI> renderAPI)
     {
         if (!renderAPI)
@@ -64,4 +60,69 @@ namespace Sunset
     {
         GetRenderAPI().EndFrame();
     }
+
+    void RenderCommand::Submit(const Drawable &drawable, const glm::mat4 &transform)
+    {
+        GetRenderAPI().Submit(drawable, transform);
+    }
 } // Sunset
+
+/****************************************/
+/* Shader                               */
+/****************************************/
+namespace Sunset
+{
+    std::unique_ptr<Shader> Shader::CreateShader(const std::string_view &vertShader, const std::string_view &fragShader)
+    {
+        return GetRenderAPI().CreateShader(vertShader, fragShader);
+    }
+}
+
+/****************************************/
+/* Buffer                               */
+/****************************************/
+namespace Sunset
+{
+    std::shared_ptr<Buffer> Buffer::Create(const BufferType& type)
+    {
+        return GetRenderAPI().CreateBuffer(type);
+    }
+}
+
+/****************************************/
+/* Texture                              */
+/****************************************/
+namespace Sunset
+{
+    std::unique_ptr<Texture> Texture::Create(const TextureDescription& desc)
+    {
+        return GetRenderAPI().CreateTexture(desc);
+    }
+}
+
+/****************************************/
+/* Pipeline                             */
+/****************************************/
+
+namespace Sunset
+{
+    std::shared_ptr<Pipeline> Pipeline::Create(const RenderState& state)
+    {
+        return GetRenderAPI().CreatePipeline(state);
+    }
+}
+
+/****************************************/
+/* Mesh                                 */
+/****************************************/
+
+namespace Sunset
+{
+    std::shared_ptr<Mesh> Mesh::CreateMesh(const void *data, const std::size_t typeSize, const std::size_t size, const VertexLayout &layout)
+    {
+        auto vertexBuffer = Buffer::Create(BufferType::Vertex);
+        vertexBuffer->SetData(data, typeSize, size);
+        std::shared_ptr<Buffer> indexBuffer = nullptr;
+        return GetRenderAPI().CreateMesh(vertexBuffer, indexBuffer, layout);
+    }
+}

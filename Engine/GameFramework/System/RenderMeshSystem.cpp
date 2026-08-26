@@ -13,10 +13,6 @@ namespace Sunset
 {
     void RenderMeshSystem::Update(float dt)
     {
-        IWorldSystem::Update(dt);
-        m_World->Each<TransformComponent, MeshComponent>([&](const Entity& entity, const TransformComponent& trans, const MeshComponent& mesh)
-        {
-            RenderCommand::Submit(mesh.m_mesh, trans.GetWorldMatrix());
-        });
+
     }
 } // Sunset

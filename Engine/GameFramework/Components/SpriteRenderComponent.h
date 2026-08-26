@@ -6,6 +6,8 @@
 
 #include "Component.h"
 
+#include "Render/Resources/Drawable.h"
+
 namespace Sunset
 {
     class SpriteRenderComponent : public Component

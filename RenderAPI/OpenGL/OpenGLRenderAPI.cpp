@@ -8,7 +8,11 @@
 #include <GLFW/glfw3.h>
 
 #include "OpenGLDrawQueue.h"
+#include "Resources/OpenGLBuffer.h"
+#include "Resources/OpenGLMesh.h"
+#include "Resources/OpenGLPipeline.h"
 #include "Resources/OpenGLShader.h"
+#include "Resources/OpenGLTexture.h"
 
 namespace
 {
@@ -30,6 +34,7 @@ namespace Sunset
 
     OpenGLRenderAPI::~OpenGLRenderAPI()
     {
+        LOG("OpenGL", info, "OpenGL Render API is Destroy")
     }
 
     void OpenGLRenderAPI::Init()
@@ -39,6 +44,8 @@ namespace Sunset
 
         if (loader == GL_FALSE)
             throw std::runtime_error("Failed to initialize GLAD");
+
+        data = std::make_unique<OpenGLData>();
     }
 
     void OpenGLRenderAPI::Clear(const glm::vec4& color)
@@ -49,12 +56,17 @@ namespace Sunset
 
     void OpenGLRenderAPI::BeginFrame()
     {
-
+        Clear({0, 0, 0, 0});
     }
 
     void OpenGLRenderAPI::EndFrame()
     {
+        data->m_DrawQueue.Flush();
+    }
 
+    void OpenGLRenderAPI::Submit(const Drawable &drawable, const glm::mat4 &transform)
+    {
+        data->m_DrawQueue.Submit(drawable, transform);
     }
 }
 
@@ -64,13 +76,47 @@ namespace Sunset
 
 namespace Sunset
 {
-    std::unique_ptr<Shader> OpenGLRenderAPI::CreateShader(const std::string &vertShader, const std::string &fragShader)
+    std::unique_ptr<Shader> OpenGLRenderAPI::CreateShader(const std::string_view&vertShader, const std::string_view&fragShader)
     {
         return std::make_unique<OpenGLShader>(vertShader, fragShader);
     }
+}
 
-    TextureHandle OpenGLRenderAPI::CreateTexture(const void *data)
+/****************************************/
+/* Buffer                               */
+/****************************************/
+namespace Sunset
+{
+    std::shared_ptr<Buffer> OpenGLRenderAPI::CreateBuffer(const BufferType& type)
     {
-        return TextureHandle{};
+        return std::make_shared<OpenGLBuffer>(type);
+    }
+}
+
+/****************************************/
+/* Texture                              */
+/****************************************/
+namespace Sunset
+{
+    std::unique_ptr<Texture> OpenGLRenderAPI::CreateTexture(const TextureDescription &desc)
+    {
+        return std::make_unique<OpenGLTexture>(desc);
     }
 } // Sunset
+
+/****************************************/
+/* Pipeline                             */
+/****************************************/
+namespace Sunset
+{
+    std::shared_ptr<Pipeline> OpenGLRenderAPI::CreatePipeline(const RenderState &state)
+    {
+        return std::make_shared<OpenGLPipeline>(state);
+    }
+
+    std::shared_ptr<Mesh> OpenGLRenderAPI::CreateMesh(const std::shared_ptr<Buffer> &vertexBuffer,
+        const std::shared_ptr<Buffer> &indexBuffer, const VertexLayout &vertexLayout)
+    {
+        return std::make_shared<OpenGLMesh>(vertexBuffer, indexBuffer, vertexLayout);
+    }
+}

@@ -6,7 +6,8 @@
 
 namespace Sunset
 {
-    class Textures;
+    class Pipeline;
+    class Texture;
     class Shader;
 
     class Material
@@ -37,8 +38,9 @@ namespace Sunset
 
         void LoadShader(const std::string_view& vertPath, const std::string_view& fragPath);
 
+        std::shared_ptr<Pipeline> m_Pipeline;
         std::shared_ptr<Shader> m_Shader;
-        std::vector<std::shared_ptr<Textures>> m_Textures;
+        std::vector<std::shared_ptr<Texture>> m_Textures;
 
     private:
         std::unordered_map<std::string, UniformType> m_Uniforms;

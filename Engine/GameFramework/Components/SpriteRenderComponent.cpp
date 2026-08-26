@@ -4,9 +4,8 @@
 
 #include "SpriteRenderComponent.h"
 
-#include "Render/BufferObject/Buffers.h"
-#include "Render/Core/Shader.h"
-#include "Render/Meshes/Mesh.h"
+#include "Render/Resources/Shader.h"
+#include "Render/Resources/Mesh.h"
 #include "Render/Resources/Material.h"
 
 namespace
@@ -18,7 +17,7 @@ namespace Sunset
 {
     SpriteRenderComponent::SpriteRenderComponent()
     {
-        m_drawable.m_Mesh = Mesh::CreateVertexOnly(points.data(), sizeof(glm::vec2), points.size(), {BufferElement{ShaderDataType::Float2, "pos"}});
+        m_drawable.m_Mesh = Mesh::CreateMesh(points.data(), sizeof(glm::vec2), points.size(), {{VertexType::Float2}});
         m_drawable.m_Material->LoadShader(ENGINE_SHADERS_PATH "SpriteShader.vert", ENGINE_SHADERS_PATH "SpriteShader.frag");
     }
 

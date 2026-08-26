@@ -5,12 +5,13 @@
 #include "Material.h"
 
 #include "Shader.h"
-#include "Render/Core/RenderCommand.h"
+#include "Texture.h"
 
 namespace Sunset
 {
     Material::Material()
-        : m_Shader(nullptr)
+        : m_Pipeline(nullptr)
+        , m_Shader(nullptr)
     {
     }
 
@@ -20,11 +21,12 @@ namespace Sunset
 
     void Material::Bind() const
     {
+        m_Shader->Bind();
+
         int index = 0;
         for (const auto& it : m_Textures)
         {
-            RenderCommand::BindTexture(it->GetRendererId(), index);
-            m_Shader->SetInt(it->GetName(), index);
+            it->Bind(index);
             ++index;
         }
     }
@@ -60,6 +62,6 @@ namespace Sunset
 
     void Material::LoadShader(const std::string_view &vertPath, const std::string_view &fragPath)
     {
-        m_Shader = std::make_shared<Shader>(vertPath, fragPath);
+        m_Shader = Shader::CreateShader(vertPath, fragPath);
     }
 } // Sunset

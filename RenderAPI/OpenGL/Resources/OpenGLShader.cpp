@@ -64,12 +64,15 @@ namespace Sunset
         if (!CheckProgramLinkStatus(id))
             throw std::runtime_error("Program linking failed");
 
+        LOG("OpenGL", trace, "OpenGL shader {} created succes", id)
+
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
     }
 
     OpenGLShader::~OpenGLShader()
     {
+        LOG("OpenGL", trace, "OpenGL shader {} destroyed", id)
         glDeleteProgram(id);
     }
 
