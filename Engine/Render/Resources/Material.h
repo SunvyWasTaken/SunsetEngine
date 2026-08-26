@@ -2,12 +2,12 @@
 // Created by sunvy on 11/02/2026.
 //
 
-#ifndef SUNSETCRAFT_MATERIAL_H
-#define SUNSETCRAFT_MATERIAL_H
+#pragma once
 
 namespace Sunset
 {
-    class Textures;
+    class Pipeline;
+    class Texture;
     class Shader;
 
     class Material
@@ -36,14 +36,13 @@ namespace Sunset
             m_Uniforms.insert_or_assign(name.data(), value);
         }
 
-        void LoadShader(const std::string_view& vertPath, const std::string_view& fragPath);
+        void LoadShader(const std::filesystem::path& vertPath, const std::filesystem::path& fragPath);
 
+        std::shared_ptr<Pipeline> m_Pipeline;
         std::shared_ptr<Shader> m_Shader;
-        std::vector<std::shared_ptr<Textures>> m_Textures;
+        std::vector<std::shared_ptr<Texture>> m_Textures;
 
     private:
         std::unordered_map<std::string, UniformType> m_Uniforms;
     };
-}
-
-#endif //SUNSETCRAFT_MATERIAL_H
+} // Sunset

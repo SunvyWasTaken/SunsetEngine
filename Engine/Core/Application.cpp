@@ -11,7 +11,6 @@
 #include "GameInstance.h"
 #include "Layer.h"
 #include "Network/NetworkService.h"
-#include "Render/Core/RenderAPI.h"
 #include "Render/Core/RenderCommand.h"
 #include "Window.h"
 #include "WindowSetting.h"
@@ -145,6 +144,7 @@ namespace Sunset
 
                 SS_PROFILE_SCOPE("Render part");
                 BeginFrame();
+
                 for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )
                     (*--layer)->OnDraw();
 

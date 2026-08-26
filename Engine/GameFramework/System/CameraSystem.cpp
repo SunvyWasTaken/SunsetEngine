@@ -16,8 +16,7 @@ namespace Sunset
         IWorldSystem::Update(dt);
         m_World->Each<Sunset::CameraComponent>([&](const Entity& entity, CameraComponent& component)
         {
-            if (component.Primary)
-                RenderCommand::UseCamera(component.camera);
+
         });
     }
 } // Sunset

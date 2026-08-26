@@ -4,14 +4,17 @@
 
 #include "Material.h"
 
-#include "Render/Core/RenderCommand.h"
-#include "Render/Core/Shader.h"
+#include "Pipeline.h"
+#include "Shader.h"
 #include "Texture.h"
+#include "Render/Core/RenderType.h"
+#include "Utility/UtilityFunction.h"
 
 namespace Sunset
 {
     Material::Material()
-        : m_Shader(nullptr)
+        : m_Pipeline(Pipeline::Create(OpaqueState))
+        , m_Shader(nullptr)
     {
     }
 
@@ -21,11 +24,12 @@ namespace Sunset
 
     void Material::Bind() const
     {
+        m_Shader->Bind();
+
         int index = 0;
         for (const auto& it : m_Textures)
         {
-            RenderCommand::BindTexture(*it, index);
-            m_Shader->SetInt(it->GetName(), index);
+            it->Bind(index);
             ++index;
         }
     }
@@ -59,8 +63,10 @@ namespace Sunset
         }
     }
 
-    void Material::LoadShader(const std::string_view &vertPath, const std::string_view &fragPath)
+    void Material::LoadShader(const std::filesystem::path &vertPath, const std::filesystem::path &fragPath)
     {
-        m_Shader = std::make_shared<Shader>(vertPath, fragPath);
+        const auto vertShader = UtilityFunction::OpenTextFile(vertPath);
+        const auto fragShader = UtilityFunction::OpenTextFile(fragPath);
+        m_Shader = Shader::CreateShader(vertShader, fragShader);
     }
-}
+} // Sunset

@@ -1,38 +1,45 @@
 //
-// Created by Codex on 23/07/2026.
+// Created by sunvy on 25/08/2026.
 //
 
 #include "OpenGLDrawQueue.h"
 
-#include "OpenGLDraw.h"
-#include "OpenGLRendererState.h"
-#include "OpenGLVertexArray.h"
-#include "Render/Camera.h"
-#include "Render/Core/Shader.h"
-#include "Render/Meshes/Mesh.h"
+#include <glad/glad.h>
+
+#include "Render/Resources/Buffer.h"
+#include "Render/Resources/Camera.h"
 #include "Render/Resources/Drawable.h"
 #include "Render/Resources/Material.h"
+#include "Render/Resources/Mesh.h"
+#include "Render/Resources/Pipeline.h"
+#include "Render/Resources/Shader.h"
 
-#include <algorithm>
-#include <tuple>
+namespace
+{
+    void CheckOpenGLError(const char* location)
+    {
+        const GLenum error = glGetError();
+        while (error != GL_NO_ERROR)
+        {
+            LOG("OpenGL", error, "OpenGL error at {}: 0x{:X}", location, static_cast<unsigned int>(error))
+        }
+    }
+}
 
 namespace Sunset
 {
-    void OpenGLDrawQueue::Submit(const Drawable& drawable, const glm::mat4& model)
+    OpenGLDrawQueue::OpenGLDrawQueue()
+        : m_DrawCommands()
+        , m_FrameData()
     {
-        if (!drawable)
-            return;
-
-        DrawCommand cmd;
-        cmd.vertexArray = drawable.m_Mesh->GetRenderHandle();
-        cmd.indexCount = drawable.m_Mesh->GetVertexCount();
-        cmd.material = drawable.m_Material;
-        cmd.model = model;
-        cmd.state = drawable.m_RenderState;
-        m_DrawCommands.emplace_back(cmd);
     }
 
-    void OpenGLDrawQueue::UseCamera(const Camera& camera)
+    void OpenGLDrawQueue::Submit(const Drawable &drawable, const glm::mat4 &model)
+    {
+        m_DrawCommands.emplace_back(DrawCommand{drawable.m_Mesh, drawable.m_Material, model});
+    }
+
+    void OpenGLDrawQueue::UseCamera(const Camera &camera)
     {
         m_FrameData.position = camera.GetPosition();
         m_FrameData.view = camera.GetViewMatrix();
@@ -43,62 +50,41 @@ namespace Sunset
     {
         SS_PROFILE_FUNCTION();
         Sort();
-
-        std::shared_ptr<Shader> currentShader = nullptr;
-        std::shared_ptr<Material> currentMaterial = nullptr;
-        VertexArrayHandle currentVertexArray;
-
-        for (const DrawCommand& cmd : m_DrawCommands)
+        PRINTSCREEN("Flush {} draw commands", m_DrawCommands.size());
+        for (const auto& cmd : m_DrawCommands)
         {
-            OpenGLRendererState::Apply(cmd.state);
-
-            if (currentShader != cmd.material->m_Shader)
+            if (!cmd.material || !cmd.mesh)
             {
-                currentShader = cmd.material->m_Shader;
-                currentShader->Use();
-                currentShader->SetMat4("view", m_FrameData.view);
-                currentShader->SetMat4("projection", m_FrameData.projection);
-                currentShader->SetVec3("u_CameraPos", m_FrameData.position);
+                PRINTSCREEN("Draw cmd ignored");
+                continue;
             }
 
-            if (currentMaterial != cmd.material)
-            {
-                currentMaterial = cmd.material;
-                currentMaterial->Bind();
-            }
+            cmd.material->m_Pipeline->Bind();
 
-            if (currentVertexArray.id != cmd.vertexArray.id)
-            {
-                currentVertexArray = cmd.vertexArray;
-                OpenGLVertexArray::Bind(currentVertexArray.id);
-            }
+            cmd.material->Bind();
+
+            cmd.material->m_Shader->SetVec3("u_CameraPos", m_FrameData.position);
+            cmd.material->m_Shader->SetMat4("view", m_FrameData.view);
+            cmd.material->m_Shader->SetMat4("projection", m_FrameData.projection);
+            cmd.material->m_Shader->SetMat4("model", cmd.model);
 
             cmd.material->UniformBind();
-            cmd.material->m_Shader->SetMat4("model", cmd.model);
-            OpenGLDraw::Draw(cmd.indexCount, cmd.state);
-        }
 
+            cmd.mesh->Bind();
+
+            CheckOpenGLError("Before draw");
+            if (cmd.mesh->m_IndexBuffer)
+                glDrawElements(GL_TRIANGLES, cmd.mesh->m_IndexBuffer->Count(), GL_UNSIGNED_INT, nullptr);
+            else
+                glDrawArrays(GL_TRIANGLES, 0, cmd.mesh->m_VertexBuffer->Count());
+            CheckOpenGLError("After draw");
+        }
         m_DrawCommands.clear();
     }
 
     void OpenGLDrawQueue::Sort()
     {
-        std::stable_sort(m_DrawCommands.begin(), m_DrawCommands.end(), [this](const DrawCommand& lhs, const DrawCommand& rhs)
-        {
-            const bool lhsTransparent = lhs.state.blending;
-            const bool rhsTransparent = rhs.state.blending;
-            if (lhsTransparent != rhsTransparent)
-                return !lhsTransparent;
-            if (lhsTransparent)
-            {
-                const glm::vec3 lhsPosition = glm::vec3(lhs.model[3]);
-                const glm::vec3 rhsPosition = glm::vec3(rhs.model[3]);
-                const glm::vec3 lhsDistance = lhsPosition - m_FrameData.position;
-                const glm::vec3 rhsDistance = rhsPosition - m_FrameData.position;
-                return glm::dot(lhsDistance, lhsDistance) > glm::dot(rhsDistance, rhsDistance);
-            }
-
-            return std::tie(lhs.material->m_Shader, lhs.material, lhs.vertexArray.id) < std::tie(rhs.material->m_Shader, rhs.material, rhs.vertexArray.id);
-        });
+        SS_PROFILE_FUNCTION();
+        /// Todo : Redo the sort with the new DrawCmd.
     }
-}
+} // Sunset

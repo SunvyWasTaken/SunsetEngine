@@ -6,7 +6,6 @@
 
 #include <entt/entity/entity.hpp>
 
-#include "Render/Resources/Drawable.h"
 #include "Reflection/ReflectionType.h"
 
 namespace Sunset
@@ -39,14 +38,11 @@ namespace Sunset
 
         TagComponent() = default;
         TagComponent(const TagComponent&) = default;
-        TagComponent(const std::string& tag) : Tag(tag) {}
+        explicit TagComponent(const std::string& tag) : Tag(tag) {}
+
+        ~TagComponent() override;
 
         ReflectionType Properties() override;
-    };
-
-    struct MeshComponent : public Component
-    {
-        Drawable m_mesh;
     };
 
     template <typename Archive>

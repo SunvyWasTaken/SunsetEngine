@@ -4,55 +4,37 @@
 
 #pragma once
 
-#include "Render/Core/RenderHandle.h"
-
 namespace Sunset
 {
     class Shader;
     struct Image;
 
+    enum class TextureFormat
+    {
+        Red,
+        RGB,
+        RGBA
+    };
+
+    struct TextureDescription
+    {
+        std::uint32_t width = 0, height = 0;
+        TextureFormat format = TextureFormat::RGBA;
+        const void* data = nullptr;
+    };
+
     class Texture
     {
     public:
-        Texture();
-
-        ~Texture();
-
-        void Reset();
-
-        void LoadImage(const std::string_view& fileName);
-
-        void Use() const;
-
-        TextureHandle GetRendererId() const;
-
-    private:
-
-        TextureHandle m_Id;
-    };
-
-    class Textures
-    {
+        static std::unique_ptr<Texture> Create(const TextureDescription& desc);
     public:
-        Textures(const std::string_view& name, int width, int height);
+        virtual ~Texture() = default;
 
-        virtual ~Textures();
+        virtual void Bind(std::uint32_t slot) const = 0;
 
-        void Use() const;
+        virtual std::uint32_t GetWidth() const = 0;
+        virtual std::uint32_t GetHeight() const = 0;
 
-        const char* GetName() const;
-
-        void AddImageAt(Image& image, const glm::ivec2& coord);
-
-        size_t Nbr() const;
-
-        TextureHandle GetRendererId() const;
-
-        int m_Width, m_Height;
-
-    private:
-        std::string m_Name;
-        TextureHandle m_Id;
-        size_t m_Nbr;
+        virtual TextureFormat GetFormat() const = 0;
     };
-}
+} // Sunset

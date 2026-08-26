@@ -4,14 +4,9 @@
 
 #include "Drawable.h"
 
-#include "Material.h"
-
 namespace Sunset
 {
     Drawable::Drawable()
-        : m_Mesh(nullptr)
-        , m_Material(std::make_shared<Material>())
-        , m_RenderState({})
     {
     }
 
@@ -23,4 +18,4 @@ namespace Sunset
     {
         return m_Mesh != nullptr && m_Material != nullptr;
     }
-}
+} // Sunset

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.28)
 
 project(
     SunsetEngine
-    VERSION 0.1.0
+    VERSION 0.2.0
     LANGUAGES CXX
 )
 
@@ -19,7 +19,9 @@ target_compile_features(SunsetEngine_compiler_flags INTERFACE cxx_std_23)
 
 target_compile_definitions(SunsetEngine_compiler_flags INTERFACE
         $<$<CONFIG:Debug>:SS_PROFILING>
+        $<$<CONFIG:Debug>:SS_DEBUG>
         $<$<CONFIG:RelWithDebInfo>:SS_PROFILING>
+        $<$<CONFIG:RelWithDebInfo>:SS_DEBUG>
         $<$<CONFIG:Release>:SS_RELEASE>
 )
 
