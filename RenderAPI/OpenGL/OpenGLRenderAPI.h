@@ -20,6 +20,8 @@ namespace Sunset
 
         void Submit(const Drawable &drawable, const glm::mat4 &transform) override;
 
+        void UseCamera(const Camera &camera) override;
+
         /*--------------------------------------*/
         /* Shader                               */
         /*--------------------------------------*/

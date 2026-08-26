@@ -36,9 +36,11 @@ namespace Sunset
     {
         std::string Tag;
 
-        TagComponent() = default;
-        TagComponent(const TagComponent&) = default;
-        TagComponent(const std::string& tag) : Tag(tag) {}
+        TagComponent();
+        TagComponent(const TagComponent&);
+        TagComponent(const std::string& tag);
+
+        ~TagComponent() override;
 
         ReflectionType Properties() override;
     };

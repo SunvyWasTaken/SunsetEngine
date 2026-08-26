@@ -11,6 +11,8 @@
 #include "Render/Resources/Drawable.h"
 #include "Render/Resources/Material.h"
 #include "Render/Resources/Mesh.h"
+#include "Render/Resources/Pipeline.h"
+#include "Render/Resources/Shader.h"
 
 namespace Sunset
 {
@@ -41,7 +43,16 @@ namespace Sunset
             if (!cmd.material || !cmd.mesh)
                 continue;
 
+            cmd.material->m_Pipeline->Bind();
+
             cmd.material->Bind();
+
+            cmd.material->m_Shader->SetVec3("u_CameraPos", m_FrameData.position);
+            cmd.material->m_Shader->SetMat4("view", m_FrameData.view);
+            cmd.material->m_Shader->SetMat4("projection", m_FrameData.projection);
+            cmd.material->m_Shader->SetMat4("model", cmd.model);
+
+            cmd.material->UniformBind();
 
             cmd.mesh->Bind();
 

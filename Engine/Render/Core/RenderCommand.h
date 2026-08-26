@@ -6,6 +6,7 @@
 
 namespace Sunset
 {
+    class Camera;
     class Drawable;
     struct RenderState;
     struct ShaderHandle;
@@ -21,5 +22,7 @@ namespace Sunset
         static void EndFrame();
 
         static void Submit(const Drawable& drawable, const glm::mat4& transform);
+
+        static void UseCamera(const Camera& camera);
     };
 } // Sunset

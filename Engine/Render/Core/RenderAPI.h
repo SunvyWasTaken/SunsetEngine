@@ -6,6 +6,7 @@
 
 namespace Sunset
 {
+    class Camera;
     class Drawable;
     class VertexLayout;
     class Mesh;
@@ -29,6 +30,8 @@ namespace Sunset
 
         virtual void Submit(const Drawable& drawable, const glm::mat4& transform) = 0;
 
+        virtual void UseCamera(const Camera& camera) = 0;
+
         /****************************************/
         /* Shader                               */
         /****************************************/
@@ -50,6 +53,5 @@ namespace Sunset
         virtual std::shared_ptr<Pipeline> CreatePipeline(const RenderState& state) = 0;
 
         virtual std::shared_ptr<Mesh> CreateMesh(const std::shared_ptr<Buffer>& vertexBuffer, const std::shared_ptr<Buffer>& indexBuffer, const VertexLayout& vertexLayout) = 0;
-
     };
 } // Sunset

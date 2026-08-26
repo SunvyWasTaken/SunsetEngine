@@ -10,7 +10,6 @@ namespace Sunset
 {
     Component::~Component()
     {
-        LOG("Engine", trace, "Component::~Component()")
     }
 
     Entity Component::GetOwner() const
@@ -21,6 +20,26 @@ namespace Sunset
     ReflectionType Component::Properties()
     {
         return {};
+    }
+
+    TagComponent::TagComponent()
+    {
+        LOG("Engine", trace, "Tag Component empty Create");
+    }
+
+    TagComponent::TagComponent(const TagComponent &)
+    {
+        LOG("Engine", trace, "Tag Component {} created", Tag);
+    }
+
+    TagComponent::TagComponent(const std::string &tag)
+    {
+        LOG("Engine", trace, "Tag Component {} created", tag);
+    }
+
+    TagComponent::~TagComponent()
+    {
+        LOG("Engine", trace, "Tag Component {} destroy", Tag);
     }
 
     ReflectionType TagComponent::Properties()

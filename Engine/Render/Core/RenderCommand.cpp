@@ -65,11 +65,17 @@ namespace Sunset
     {
         GetRenderAPI().Submit(drawable, transform);
     }
+
+    void RenderCommand::UseCamera(const Camera &camera)
+    {
+        GetRenderAPI().UseCamera(camera);
+    }
 } // Sunset
 
 /****************************************/
 /* Shader                               */
 /****************************************/
+
 namespace Sunset
 {
     std::unique_ptr<Shader> Shader::CreateShader(const std::string_view &vertShader, const std::string_view &fragShader)
@@ -81,6 +87,7 @@ namespace Sunset
 /****************************************/
 /* Buffer                               */
 /****************************************/
+
 namespace Sunset
 {
     std::shared_ptr<Buffer> Buffer::Create(const BufferType& type)
@@ -92,6 +99,7 @@ namespace Sunset
 /****************************************/
 /* Texture                              */
 /****************************************/
+
 namespace Sunset
 {
     std::unique_ptr<Texture> Texture::Create(const TextureDescription& desc)

@@ -6,6 +6,7 @@
 
 #include "Shader.h"
 #include "Texture.h"
+#include "Utility/UtilityFunction.h"
 
 namespace Sunset
 {
@@ -60,8 +61,10 @@ namespace Sunset
         }
     }
 
-    void Material::LoadShader(const std::string_view &vertPath, const std::string_view &fragPath)
+    void Material::LoadShader(const std::filesystem::path &vertPath, const std::filesystem::path &fragPath)
     {
-        m_Shader = Shader::CreateShader(vertPath, fragPath);
+        const auto vertShader = UtilityFunction::OpenTextFile(vertPath);
+        const auto fragShader = UtilityFunction::OpenTextFile(fragPath);
+        m_Shader = Shader::CreateShader(vertShader, fragShader);
     }
 } // Sunset

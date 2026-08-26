@@ -18,6 +18,7 @@ namespace Sunset
     SpriteRenderComponent::SpriteRenderComponent()
     {
         m_drawable.m_Mesh = Mesh::CreateMesh(points.data(), sizeof(glm::vec2), points.size(), {{VertexType::Float2}});
+        m_drawable.m_Material = std::make_shared<Material>();
         m_drawable.m_Material->LoadShader(ENGINE_SHADERS_PATH "SpriteShader.vert", ENGINE_SHADERS_PATH "SpriteShader.frag");
     }
 

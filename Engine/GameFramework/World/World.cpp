@@ -213,14 +213,14 @@ namespace Sunset
 
         if (!Application::IsHeadless())
         {
-            // for (const auto view = m_Registry.view<CameraComponent>(); const auto entity : view)
-            // {
-            //     if (const auto& cam = m_Registry.get<CameraComponent>(entity); cam.Primary)
-            //     {
-            //         RenderCommand::UseCamera(cam.camera);
-            //         break;
-            //     }
-            // }
+            for (const auto view = m_Registry.view<CameraComponent>(); const auto entity : view)
+            {
+                if (const auto& cam = m_Registry.get<CameraComponent>(entity); cam.Primary)
+                {
+                    RenderCommand::UseCamera(cam.camera);
+                    break;
+                }
+            }
         }
     }
 

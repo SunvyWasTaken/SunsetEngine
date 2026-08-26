@@ -68,6 +68,11 @@ namespace Sunset
     {
         data->m_DrawQueue.Submit(drawable, transform);
     }
+
+    void OpenGLRenderAPI::UseCamera(const Camera &camera)
+    {
+        data->m_DrawQueue.UseCamera(camera);
+    }
 }
 
 /*--------------------------------------*/
@@ -85,6 +90,7 @@ namespace Sunset
 /****************************************/
 /* Buffer                               */
 /****************************************/
+
 namespace Sunset
 {
     std::shared_ptr<Buffer> OpenGLRenderAPI::CreateBuffer(const BufferType& type)
@@ -96,6 +102,7 @@ namespace Sunset
 /****************************************/
 /* Texture                              */
 /****************************************/
+
 namespace Sunset
 {
     std::unique_ptr<Texture> OpenGLRenderAPI::CreateTexture(const TextureDescription &desc)
@@ -107,6 +114,7 @@ namespace Sunset
 /****************************************/
 /* Pipeline                             */
 /****************************************/
+
 namespace Sunset
 {
     std::shared_ptr<Pipeline> OpenGLRenderAPI::CreatePipeline(const RenderState &state)

@@ -56,6 +56,8 @@ namespace Sunset
         }
 
         glBindVertexArray(0);
+
+        LOG("OpenGL", trace, "OpenGL mesh {} created", id)
     }
 
     OpenGLMesh::~OpenGLMesh()

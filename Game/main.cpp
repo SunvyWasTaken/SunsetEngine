@@ -6,7 +6,7 @@
 #ifdef SUNSET_VULKAN
 #include "VulkanGraphicsDevice.h"
 #elif defined(SUNSET_OPENGL)
-#include "OpenGLGraphicsDevice.h"
+#include "OpenGLRenderAPI.h"
 #endif
 
 #include "Core/Application.h"
@@ -39,7 +39,7 @@ int main()
 #ifdef SUNSET_VULKAN
     Sunset::RenderCommand::SetRenderAPI(std::make_unique<Sunset::VulkanGraphicsDevice>());
 #elif defined(SUNSET_OPENGL)
-    Sunset::RenderCommand::SetRenderAPI(std::make_unique<Sunset::OpenGLGraphicsDevice>());
+    Sunset::RenderCommand::SetRenderAPI(std::make_unique<Sunset::OpenGLRenderAPI>());
 #endif
     app.InitializeWindow();
     Sunset::GameModuleLoader loader;

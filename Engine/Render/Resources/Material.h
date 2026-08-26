@@ -36,7 +36,7 @@ namespace Sunset
             m_Uniforms.insert_or_assign(name.data(), value);
         }
 
-        void LoadShader(const std::string_view& vertPath, const std::string_view& fragPath);
+        void LoadShader(const std::filesystem::path& vertPath, const std::filesystem::path& fragPath);
 
         std::shared_ptr<Pipeline> m_Pipeline;
         std::shared_ptr<Shader> m_Shader;
