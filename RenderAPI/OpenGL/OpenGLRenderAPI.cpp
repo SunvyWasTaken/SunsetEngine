@@ -8,6 +8,7 @@
 #include <GLFW/glfw3.h>
 
 #include "OpenGLDrawQueue.h"
+#include "OpenGLFramebuffer.h"
 #include "Resources/OpenGLBuffer.h"
 #include "Resources/OpenGLMesh.h"
 #include "Resources/OpenGLPipeline.h"
@@ -130,5 +131,10 @@ namespace Sunset
         const std::shared_ptr<Buffer> &indexBuffer, const VertexLayout &vertexLayout)
     {
         return std::make_shared<OpenGLMesh>(vertexBuffer, indexBuffer, vertexLayout);
+    }
+
+    std::shared_ptr<Framebuffer> OpenGLRenderAPI::CreateFramebuffer(const FramebufferSpecification &spec)
+    {
+        return std::make_shared<OpenGLFramebuffer>(spec);
     }
 }

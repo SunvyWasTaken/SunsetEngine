@@ -8,6 +8,7 @@
 
 namespace Sunset
 {
+    class Framebuffer;
     class World;
     class WorldHierarchyPanel;
 
@@ -20,5 +21,6 @@ namespace Sunset
         void OnDraw() override;
     private:
         std::unique_ptr<WorldHierarchyPanel> m_WorldHierarchy;
+        std::shared_ptr<Framebuffer> m_Framebuffer;
     };
 } // Sunset

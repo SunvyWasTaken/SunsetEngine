@@ -3,6 +3,8 @@
 //
 
 #include "RenderCommand.h"
+
+#include "Framebuffer.h"
 #include "RenderAPI.h"
 #include "Render/Resources/Buffer.h"
 #include "Render/Resources/Mesh.h"
@@ -137,5 +139,13 @@ namespace Sunset
         vertexBuffer->SetData(data, typeSize, size);
         std::shared_ptr<Buffer> indexBuffer = nullptr;
         return GetRenderAPI().CreateMesh(vertexBuffer, indexBuffer, layout);
+    }
+}
+
+namespace Sunset
+{
+    std::shared_ptr<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec)
+    {
+        return GetRenderAPI().CreateFramebuffer(spec);
     }
 }

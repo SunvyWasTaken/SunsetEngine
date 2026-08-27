@@ -48,6 +48,8 @@ namespace Sunset
         std::shared_ptr<Mesh> CreateMesh(const std::shared_ptr<Buffer> &vertexBuffer,
             const std::shared_ptr<Buffer> &indexBuffer, const VertexLayout &vertexLayout) override;
 
+        std::shared_ptr<Framebuffer> CreateFramebuffer(const FramebufferSpecification &spec) override;
+
     private:
 
         struct OpenGLData;

@@ -9,6 +9,7 @@
 
 #include "Core/GameInstance.h"
 #include "Panels/WorldHierarchyPanel.h"
+#include "Render/Core/Framebuffer.h"
 #include "Render/Core/RenderAPI.h"
 #include "Render/Core/RenderCommand.h"
 #include "SaveSystem/SaveSystem.h"
@@ -27,6 +28,7 @@ namespace Sunset
 {
     EditorLayer::EditorLayer()
         : m_WorldHierarchy(nullptr)
+        , m_Framebuffer(nullptr)
     {
     }
 
@@ -38,6 +40,7 @@ namespace Sunset
     {
         Layer::Init();
         m_WorldHierarchy = std::make_unique<WorldHierarchyPanel>(GetGameInstance()->m_ActiveWorld);
+        m_Framebuffer = Framebuffer::Create({1280, 720});
     }
 
     void EditorLayer::OnDraw()
@@ -104,8 +107,7 @@ namespace Sunset
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
         ImGui::Begin("Viewport");
         const auto& size = ImGui::GetContentRegionAvail();
-
-        ImGui::Image(nullptr, size);
+        ImGui::Image(m_Framebuffer->GetColorAttachmentRenderID(), size);
         ImGui::End();
         ImGui::PopStyleVar();
 

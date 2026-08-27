@@ -6,6 +6,8 @@
 
 namespace Sunset
 {
+    struct FramebufferSpecification;
+    class Framebuffer;
     class Camera;
     class Drawable;
     class VertexLayout;
@@ -55,5 +57,7 @@ namespace Sunset
         virtual std::shared_ptr<Pipeline> CreatePipeline(const RenderState& state) = 0;
 
         virtual std::shared_ptr<Mesh> CreateMesh(const std::shared_ptr<Buffer>& vertexBuffer, const std::shared_ptr<Buffer>& indexBuffer, const VertexLayout& vertexLayout) = 0;
+
+        virtual std::shared_ptr<Framebuffer> CreateFramebuffer(const FramebufferSpecification& spec) = 0;
     };
 } // Sunset
