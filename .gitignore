@@ -1,3 +1,6 @@
 /Sandbox/
 .idea/
 /Game/
+.obsidian/
+*.bin
+imgui.ini

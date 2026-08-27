@@ -16,7 +16,7 @@
 
 namespace
 {
-    struct ImGuiDemoDockspaceArgs
+    struct ImGuiDockspaceArgs
     {
         bool                IsFullscreen = true;
         bool                KeepWindowPadding = false; // Keep WindowPadding to help understand that DockSpace() is a widget inside the window.
@@ -47,7 +47,7 @@ namespace Sunset
     {
         Layer::OnDraw();
 
-        static ImGuiDemoDockspaceArgs args;
+        static ImGuiDockspaceArgs args;
 
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking;
         if (args.IsFullscreen)
