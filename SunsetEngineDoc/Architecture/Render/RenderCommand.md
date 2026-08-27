@@ -37,3 +37,18 @@ void RenderCommand::Submit(const Drawable& obj, const glm::mat4& model)
 ```
 
 Donc le submit va rajouté va crée une cmd. pour ajouté le Drawable dans la bonne [[DrawQueue]]. Mais comment?
+
+je pensais faire un truc du genre
+```cpp
+void RenderCommand::Submit(const Drawable& obj, const glm::mat4& model)
+{
+	if (obj.Opaque)
+		RenderAPI().Submit(OpaqueQueue, obj);
+	
+	if (obj.Transparent)
+		RenderAPI().Submit(TransparentQueue, obj);
+		
+	// ...
+}
+```
+Je trouve la solution pas encore très viable mais pour le moment je ne vois que ça concrètement.

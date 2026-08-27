@@ -1,36 +1,66 @@
+Le [[RenderPass]] est une opération de rendu qui consomme des ressources et produit/modifie des ressources.
 
-```txt
-Un RenderPass décrit une étape logique du rendu, mais c'est son exécution qui orchestre concrètement les commandes de rendu nécessaires pour produire ses outputs.
-```
+Il reçoit des données transmis depuis un [[RenderContext]] qu'il va transformer en suivant les étapes d'écrite dans `void operator()(RenderContext& context)`.
 
-Le render pass c'est une étapes du Pipeline de rendu.
-Il reçoit des données qu'il va transformer en suivant la méthode qu'on lui à donnée.
-Le résultat est ensuite stocker dans un [[Framebuffer]]. A savoir que le RenderPass n'as pas accès à sont résultat (à cause d'optimisation matériel).
-Par contr un [[RenderPass]] peut possèder des Subpass si la même pass doit être effectuer plusieurs fois ou si il y a plusieurs étapes à faire en une (de ce que j'ai compris).
+Le résultat est ensuite stocker dans un Attachment/Texture ou plusieurs *(BaseColor, DephTexture)*. Contenu par un [[RenderTarget]].
 
 ```cpp
 class RenderPass
 {
 public:
 	virtual ~RenderPass() = default;
-	virtual void operator()(RenderContext& context)
-	{
-		// ici je dois mettre quoi concrètement?...
-	}
-	// je sais pas si il doit y avoir autre chose en plus...
+	
+	// décrit les étapes à réaliser.
+	// C'est t'as recette.
+	// écrit chaque étapes que ton render doit faire.
+	virtual void operator()(RenderContext& context) = 0;
 }
 ```
 
 <u>Exemple :</u>
 
+Exemple d'une Pass simple avec des objets à rendre.
 ```cpp
 class BaseColorPass final : public RenderPass
 {
 	~BaseColorPass() override = default;
 	
 	void operator()(RenderContext& context) override
-	{
+	{	
+		context.BindRenderTarget(context.GetTarget("BaseColor"));
+	
+		context.SetPipeline(m_BaseColorPipeline);
 		
+		auto& baseColorQueue = context.GetQueue("BaseColor");
+		
+		context.Draw(baseColorQueue);
+	}
+	
+	Pipeline m_BaseColorPipeline;
+}
+```
+
+Exemple d'une Pass autre qu'avec des objets.
+```cpp
+class PostProcessPass final : public RenderPass
+{
+	~PostProcessPass() override = default;
+	
+	void operator()(RenderContext& context) override
+	{
+		auto input = context.Read("LastImage");
+		
+		// Bind le framebuffer de Final image
+		// pour que le travail soit effecture dessus
+		context.BindRenderTarget(context.GetTarget("FinalImage"));
+		
+		// Bind le shader en charge de la modification 
+		context.BindPipeline(m_PostProcessPipeline);
+		
+		// Bind la texture à utilisé. I guess.
+		context.BindTexture(0, input);
+		
+		context.DrawFullscreen();
 	}
 }
 ```
