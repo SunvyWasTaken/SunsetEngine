@@ -3,7 +3,7 @@
 Le [[Layer]] permet à [Application](lien obsidian) de ne pas connaitre tous les systems qu'il doit exécuter.
 Le [[Layer]] est une sorte de module de comportement.
 
-'''cpp
+```cpp
 class Layer
 {
 public:
@@ -17,14 +17,14 @@ public:
 
     virtual void OnEvent(Event& event) {}
 };
-'''
+```
 
 Donc a ce moment je peux intégré n'importe quel autre comportement.
 Un layer devient nécessaire quand un comportement devient suffisamment indépendant.
 
 ## Exemple
 
-'''cpp
+```cpp
 class EditorLayer : public Layer
 {
     void OnUpdate(float dt) override
@@ -37,4 +37,4 @@ class EditorLayer : public Layer
         // rendu de l'éditeur
     }
 };
-'''
+```
