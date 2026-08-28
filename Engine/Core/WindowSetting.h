@@ -6,20 +6,12 @@
 
 namespace Sunset
 {
-    enum class WindowGraphicsAPI
-    {
-        None,
-        OpenGL,
-        Vulkan
-    };
-
     struct WindowSetting
     {
         std::string_view WindowTitle{"SunsetEngine"};
-        glm::ivec2 WindowSize{1280, 720};
-        WindowGraphicsAPI GraphicsAPI = WindowGraphicsAPI::OpenGL;
+        glm::ivec2 WindowSize{1920, 1080};
         bool vSync{true};
-        float HeadlessTickRate{60.0f};
         bool Headless{false};
+        float HeadlessTickRate{60.0f};
     };
 }

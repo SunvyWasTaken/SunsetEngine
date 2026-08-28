@@ -12,12 +12,6 @@
 
 namespace Sunset
 {
-    EditorApplication::EditorApplication(const WindowSetting &setting)
-        : Application(setting)
-    {
-
-    }
-
     void EditorApplication::OnDestroy()
     {
         Application::OnDestroy();
@@ -40,8 +34,6 @@ namespace Sunset
 
     void EditorApplication::EndFrame()
     {
-        Application::EndFrame();
-
         if (!PrintScreen::Get().empty())
         {
             ImGui::Begin("Stats", nullptr);
@@ -63,6 +55,8 @@ namespace Sunset
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        Application::EndFrame();
     }
 
     void EditorApplication::OnWindowReady()

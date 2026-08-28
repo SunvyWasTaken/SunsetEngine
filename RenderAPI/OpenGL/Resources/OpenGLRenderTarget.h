@@ -3,19 +3,19 @@
 //
 
 #pragma once
-#include "Render/Core/Framebuffer.h"
+#include "Render/Resources/RenderTarget.h"
 
 namespace Sunset
 {
-    class OpenGLFramebuffer final : public Framebuffer
+    class OpenGLRenderTarget final : public RenderTarget
     {
     public:
-        explicit OpenGLFramebuffer(const FramebufferSpecification& specification);
-        ~OpenGLFramebuffer() override;
+        explicit OpenGLRenderTarget(const RenderTargetSpecification& specification);
+        ~OpenGLRenderTarget() override;
 
         std::uint32_t GetColorAttachmentRenderID() const override;
 
-        const FramebufferSpecification & GetSpecification() const override { return spec; }
+        const RenderTargetSpecification & GetSpecification() const override { return spec; }
 
         void Invalidate();
 
@@ -27,6 +27,6 @@ namespace Sunset
 
         std::uint32_t m_RenderID;
         std::uint32_t m_ColorAttachment, m_DepthAttachment;
-        FramebufferSpecification spec;
+        RenderTargetSpecification spec;
     };
 } // Sunset

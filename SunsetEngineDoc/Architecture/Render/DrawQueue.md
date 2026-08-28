@@ -1,4 +1,4 @@
-#Idea
+#Idea #Deprecated
 ## Concept
 
 La [[DrawQueue]] est juste un objet qui va possède une liste de [[DrawCmd]]

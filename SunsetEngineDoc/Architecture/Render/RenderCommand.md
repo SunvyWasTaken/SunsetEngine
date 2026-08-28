@@ -1,7 +1,7 @@
 #Idea
 ## Concept
 
-Render command possède la liste des commands.
+Render encapsule les commandes bas niveaux.
 
 ```cpp
 // RenderCommand.h

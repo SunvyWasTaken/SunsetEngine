@@ -5,13 +5,12 @@
 #include "EditorLayer.h"
 
 #include <imgui.h>
-#include <memory>
 
-#include "Core/GameInstance.h"
+#include "GameFramework/World/Entity.h"
+#include "GameFramework/World/World.h"
+#include "GameFramework/Components/InputComponent.h"
 #include "Panels/WorldHierarchyPanel.h"
-#include "Render/Core/Framebuffer.h"
-#include "Render/Core/RenderAPI.h"
-#include "Render/Core/RenderCommand.h"
+#include "../../Engine/Render/Resources/RenderTarget.h"
 #include "SaveSystem/SaveSystem.h"
 
 namespace
@@ -36,11 +35,20 @@ namespace Sunset
     {
     }
 
+
     void EditorLayer::Init()
     {
         Layer::Init();
-        m_WorldHierarchy = std::make_unique<WorldHierarchyPanel>(GetGameInstance()->m_ActiveWorld);
-        m_Framebuffer = Framebuffer::Create({1280, 720});
+        m_World = std::make_shared<World>();
+        m_WorldHierarchy = std::make_unique<WorldHierarchyPanel>(m_World);
+        m_Framebuffer = RenderTarget::Create({1280, 720});
+    }
+
+    void EditorLayer::OnUpdate(float dt)
+    {
+        Layer::OnUpdate(dt);
+
+        m_World->Update(dt);
     }
 
     void EditorLayer::OnDraw()
@@ -85,11 +93,11 @@ namespace Sunset
                 if (ImGui::MenuItem("New Project")) { /* ... */ }
                 if (ImGui::MenuItem("Open"))
                 {
-                    SaveSystem::Load(SAVE_PATH "World.bin", *(GetGameInstance()->m_ActiveWorld.get()));
+                    SaveSystem::Load(SAVE_PATH "World.bin", *(m_World.get()));
                 }
                 if (ImGui::MenuItem("Save"))
                 {
-                    SaveSystem::Save(SAVE_PATH "World.bin", *(GetGameInstance()->m_ActiveWorld.get()));
+                    SaveSystem::Save(SAVE_PATH "World.bin", *(m_World.get()));
                 }
                 ImGui::EndMenu();
             }
@@ -117,10 +125,19 @@ namespace Sunset
         ImGui::Begin("Panel");
         if (ImGui::Button("Add Entity"))
         {
-            GetGameInstance()->m_ActiveWorld->CreateEntity("Entity");
+            m_World->CreateEntity("Entity");
         }
         ImGui::End();
 
         m_WorldHierarchy->OnImGuiRender();
+    }
+
+    bool EditorLayer::OnEvent(const Event::Type &event)
+    {
+        m_World->Each<InputComponent>([&](const Entity& entity, InputComponent& comp)
+        {
+            comp.OnEvent(event);
+        });
+        return Layer::OnEvent(event);
     }
 } // Sunset

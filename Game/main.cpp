@@ -13,26 +13,9 @@
 #include "Core/GameModuleLoader.h"
 #include "Render/Core/RenderCommand.h"
 
-#include <cstdlib>
-
-namespace
-{
-    constexpr Sunset::WindowGraphicsAPI SelectGraphicsAPI()
-    {
-    #ifdef SUNSET_VULKAN
-        return Sunset::WindowGraphicsAPI::Vulkan;
-    #elif defined(SUNSET_OPENGL)
-        return Sunset::WindowGraphicsAPI::OpenGL;
-    #else
-        return Sunset::WindowGraphicsAPI::None;
-    #endif
-    }
-}
-
 int main()
 {
     Sunset::WindowSetting setting{SUNSET_GAME_NAME};
-    setting.GraphicsAPI = SelectGraphicsAPI();
 
     Sunset::Application app{setting};
     app.SetWindow(std::make_unique<Sunset::GLFWWindow>(setting));

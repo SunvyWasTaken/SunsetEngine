@@ -1,4 +1,4 @@
-#Idea
+#Idea #Deprecated
 ## Concept
 
 Le [[RenderContext]] est l'interface par laquelle le RenderPass passe pour effectuer des rendu. Afin de ne pas dépendre d'un context global issue de [RenderCommand](obsidian://open?vault=SunsetEngineDoc&file=RenderCommand).

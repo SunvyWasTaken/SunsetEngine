@@ -6,7 +6,7 @@
 
 namespace Sunset
 {
-    struct FramebufferSpecification
+    struct RenderTargetSpecification
     {
         std::uint32_t Width, Height;
         std::uint32_t Samples = 1;
@@ -14,16 +14,16 @@ namespace Sunset
         bool SwapChainTarget = false;
     };
 
-    class Framebuffer
+    class RenderTarget
     {
     public:
-        static std::shared_ptr<Framebuffer> Create(const FramebufferSpecification& spec);
+        static std::shared_ptr<RenderTarget> Create(const RenderTargetSpecification& spec);
     public:
-        virtual ~Framebuffer() = default;
+        virtual ~RenderTarget() = default;
 
         virtual std::uint32_t GetColorAttachmentRenderID() const = 0;
 
-        virtual const FramebufferSpecification& GetSpecification() const = 0;
+        virtual const RenderTargetSpecification& GetSpecification() const = 0;
 
         virtual void Bind() = 0;
         virtual void UnBind() = 0;

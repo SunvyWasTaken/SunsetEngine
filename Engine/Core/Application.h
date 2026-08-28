@@ -5,7 +5,6 @@
 #pragma once
 
 #include "WindowSetting.h"
-#include "Input.h"
 #include "LayerStack.h"
 
 namespace Sunset
@@ -18,6 +17,7 @@ namespace Sunset
     {
     public:
         explicit Application(const WindowSetting& setting = WindowSetting{});
+
         virtual ~Application();
 
         void SetWindow(std::unique_ptr<Window> window);
@@ -27,18 +27,24 @@ namespace Sunset
         void Run();
 
         virtual void OnDestroy();
-        virtual void BeginFrame();
-        virtual void EndFrame();
 
         virtual void OnWindowReady();
 
+        virtual void BeginFrame();
+
+        void Update(float deltatime);
+
+        void Render();
+
+        virtual void EndFrame();
+
         void OnEvent(const Event::Type& event);
 
+#pragma region Layer
         template <typename T, typename ...Args>
         void PushOverlay(Args&& ...args)
         {
             m_LayerStack.PushOverlay<T>(std::forward<Args>(args)...);
-            m_LayerStack.LastOverlay()->SetAppContext(m_GameInstance.get());
             m_LayerStack.LastOverlay()->Init();
         }
 
@@ -47,7 +53,6 @@ namespace Sunset
         void PushLayer(Args&&... args)
         {
             m_LayerStack.PushLayer<T>(std::forward<Args>(args)...);
-            m_LayerStack.back()->SetAppContext(m_GameInstance.get());
             m_LayerStack.back()->Init();
         }
 
@@ -56,7 +61,6 @@ namespace Sunset
         void AddLayer(Layer* layer)
         {
             m_LayerStack.AddLayer(layer);
-            m_LayerStack.back()->SetAppContext(m_GameInstance.get());
             m_LayerStack.back()->Init();
         }
 
@@ -90,16 +94,14 @@ namespace Sunset
                m_LayerStack.Clear();
             });
         }
-
-        template <typename T, typename ...Args>
-        void SetGameInstance(Args&&... args)
-        {
-            m_GameInstance = std::make_unique<T>(std::forward<Args>(args)...);
-        }
+#pragma endregion // Layer
 
         static const WindowSetting& GetSetting();
+
         static Application& GetApplication();
+
         static void* GetWindow();
+
         static bool IsHeadless();
 
         static void CloseApplication();
@@ -107,7 +109,6 @@ namespace Sunset
     private:
         LayerStack m_LayerStack;
         std::unique_ptr<Window> m_Window;
-        std::unique_ptr<GameInstance> m_GameInstance;
         std::vector<std::function<void()>> m_CommandBuffer;
     };
 }

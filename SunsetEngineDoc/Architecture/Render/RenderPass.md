@@ -1,4 +1,4 @@
-#Idea
+#Idea #Deprecated
 ## Concept
 
 Le [[RenderPass]] est une opération de rendu qui consomme des ressources et produit/modifie des ressources.

@@ -8,7 +8,6 @@
 #include "GameFramework/Components/InputComponent.h"
 #include "GameFramework/World/Entity.h"
 #include "GameFramework/World/World.h"
-#include "GameInstance.h"
 #include "Layer.h"
 #include "Network/NetworkService.h"
 #include "Render/Core/RenderCommand.h"
@@ -20,42 +19,6 @@ namespace
     Sunset::Application* app = nullptr;
     Sunset::WindowSetting AppSetting;
     bool IsAppRunning = true;
-
-    struct EMA
-    {
-        std::vector<float> dts;
-        size_t currentIndex = 0;
-        const size_t nbrFrame = 60;
-
-        EMA()
-        {
-            dts.reserve(nbrFrame);
-        }
-
-        void Display() const
-        {
-            float sommeDt = 0;
-            for (const auto dt : dts)
-            {
-                sommeDt += dt;
-            }
-            sommeDt /= dts.size();
-            PRINTSCREEN("FPS : {}", floor(1.f/sommeDt));
-        }
-
-        void Add(const float dt)
-        {
-            if (dts.size() < nbrFrame)
-                dts.emplace_back(dt);
-            else
-            {
-                dts[currentIndex++] = dt;
-                if (currentIndex >= nbrFrame)
-                    currentIndex = 0;
-            }
-
-        }
-    }fpsema;
 
     void ResizeWindow(const glm::ivec2& setting)
     {
@@ -69,7 +32,6 @@ namespace Sunset
     Application::Application(const WindowSetting& setting)
         : m_LayerStack()
         , m_Window(nullptr)
-        , m_GameInstance(std::make_unique<GameInstance>())
         , m_CommandBuffer()
     {
         Log::Init();
@@ -101,6 +63,7 @@ namespace Sunset
     {
         if (!m_Window)
             throw std::runtime_error("Application window has not been configured");
+
         OnWindowReady();
     }
 
@@ -114,43 +77,14 @@ namespace Sunset
             std::chrono::duration<float> dt = now - prev;
             prev = now;
 
-            if (m_Window)
-            {
-                m_GameInstance->m_ActiveWorld->BeginInput();
-                m_Window->PollEvents();
-            }
+            BeginFrame();
+
+            Update(dt.count());
 
             if (!AppSetting.Headless)
-            {
-                fpsema.Add(dt.count());
-                fpsema.Display();
-            }
+                Render();
 
-            if (NetworkService::IsInitialized())
-                NetworkService::Get().Update(dt.count());
-
-            {
-                SS_PROFILE_SCOPE("Logic part");
-                m_GameInstance->Update(dt.count());
-                for (const auto& layer : m_LayerStack)
-                {
-                    layer->OnUpdate(dt.count());
-                }
-            }
-
-            if (!AppSetting.Headless)
-            {
-                AudioSystem::Update();
-
-                SS_PROFILE_SCOPE("Render part");
-                BeginFrame();
-
-                for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )
-                    (*--layer)->OnDraw();
-
-                EndFrame();
-                m_Window->Present();
-            }
+            EndFrame();
 
             if (!m_CommandBuffer.empty())
             {
@@ -180,19 +114,50 @@ namespace Sunset
 
         m_CommandBuffer.clear();
         m_LayerStack.Clear();
-        m_GameInstance.reset();
         RenderCommand::Shutdown();
         m_Window.reset();
     }
 
     void Application::BeginFrame()
     {
+        if (m_Window)
+        {
+            m_Window->PollEvents();
+        }
+
         RenderCommand::BeginFrame();
+    }
+
+    void Application::Update(const float deltatime)
+    {
+        SS_PROFILE_SCOPE("Logic part");
+        if (!IsHeadless())
+        {
+            AudioSystem::Update();
+        }
+
+        if (NetworkService::IsInitialized())
+            NetworkService::Get().Update(deltatime);
+
+        for (const auto& layer : m_LayerStack)
+        {
+            layer->OnUpdate(deltatime);
+        }
+    }
+
+    void Application::Render()
+    {
+        SS_PROFILE_SCOPE("Render part");
+
+        for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )
+            (*--layer)->OnDraw();
     }
 
     void Application::EndFrame()
     {
         RenderCommand::EndFrame();
+
+        m_Window->Present();
     }
 
     void Application::OnWindowReady()
@@ -207,15 +172,12 @@ namespace Sunset
             const auto&[size] = std::get<Event::Window>(event);
             ResizeWindow(size);
         }
+
         for (const auto& layer : m_LayerStack)
         {
             if (layer->OnEvent(event))
                 return;
         }
-        m_GameInstance->m_ActiveWorld->Each<InputComponent>([&](const Entity& entity, InputComponent& comp)
-        {
-            comp.OnEvent(event);
-        });
     }
 
     const WindowSetting& Application::GetSetting()

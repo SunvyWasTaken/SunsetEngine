@@ -170,8 +170,6 @@ namespace Sunset
 
     void GLFWWindow::Initialize(const WindowSetting &properties)
     {
-        m_GraphicsAPI = properties.GraphicsAPI;
-
         if (s_WindowCount == 0)
         {
             glfwSetErrorCallback(GlfwErrorCallback);
@@ -185,12 +183,12 @@ namespace Sunset
 
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-        if (m_GraphicsAPI == WindowGraphicsAPI::Vulkan)
-        {
-            glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        }
-        else if (m_GraphicsAPI == WindowGraphicsAPI::OpenGL)
-        {
+        // if (m_GraphicsAPI == WindowGraphicsAPI::Vulkan)
+        // {
+        //     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        // }
+        // else if (m_GraphicsAPI == WindowGraphicsAPI::OpenGL)
+        // {
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -198,7 +196,7 @@ namespace Sunset
     #ifndef NDEBUG
             glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
     #endif
-        }
+        // }
 
         m_WindowHandle = glfwCreateWindow(static_cast<int>(properties.WindowSize.x), static_cast<int>(properties.WindowSize.y), properties.WindowTitle.data(), nullptr, nullptr);
 
@@ -254,7 +252,7 @@ namespace Sunset
 
     void GLFWWindow::Present()
     {
-        if (m_GraphicsAPI == WindowGraphicsAPI::OpenGL)
+        // if (m_GraphicsAPI == WindowGraphicsAPI::OpenGL)
             glfwSwapBuffers(m_WindowHandle);
     }
 
@@ -270,11 +268,11 @@ namespace Sunset
 
     void GLFWWindow::SetVSync(bool enabled)
     {
-        if (m_GraphicsAPI == WindowGraphicsAPI::OpenGL)
-        {
+        // if (m_GraphicsAPI == WindowGraphicsAPI::OpenGL)
+        // {
             glfwMakeContextCurrent(m_WindowHandle);
             glfwSwapInterval(enabled ? 1 : 0);
-        }
+        // }
 
         m_Data.VSync = enabled;
     }

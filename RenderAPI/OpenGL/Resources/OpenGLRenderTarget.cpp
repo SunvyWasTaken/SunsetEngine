@@ -2,31 +2,31 @@
 // Created by sunvy on 26/08/2026.
 //
 
-#include "OpenGLFramebuffer.h"
+#include "OpenGLRenderTarget.h"
 
 #include <glad/glad.h>
 
 namespace Sunset
 {
-    OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification &specification)
+    OpenGLRenderTarget::OpenGLRenderTarget(const RenderTargetSpecification &specification)
         : m_RenderID(0)
         , spec(specification)
     {
         Invalidate();
     }
 
-    OpenGLFramebuffer::~OpenGLFramebuffer()
+    OpenGLRenderTarget::~OpenGLRenderTarget()
     {
         LOG("OpenGL", trace, "OpenGL Framebuffer {} destroy", m_RenderID);
         glDeleteFramebuffers(1, &m_RenderID);
     }
 
-    std::uint32_t OpenGLFramebuffer::GetColorAttachmentRenderID() const
+    std::uint32_t OpenGLRenderTarget::GetColorAttachmentRenderID() const
     {
         return m_ColorAttachment;
     }
 
-    void OpenGLFramebuffer::Invalidate()
+    void OpenGLRenderTarget::Invalidate()
     {
         glCreateFramebuffers(1, &m_RenderID);
         glBindFramebuffer(GL_FRAMEBUFFER, m_RenderID);
@@ -54,12 +54,12 @@ namespace Sunset
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void OpenGLFramebuffer::Bind()
+    void OpenGLRenderTarget::Bind()
     {
         glBindFramebuffer(GL_FRAMEBUFFER, m_RenderID);
     }
 
-    void OpenGLFramebuffer::UnBind()
+    void OpenGLRenderTarget::UnBind()
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }

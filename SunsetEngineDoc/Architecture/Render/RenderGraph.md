@@ -1,4 +1,4 @@
-#Idea
+#Idea #Deprecated
 ## Concept
 
 Le [[RenderGraph]] orchestre les [[RenderPass]] et leur dépendance.

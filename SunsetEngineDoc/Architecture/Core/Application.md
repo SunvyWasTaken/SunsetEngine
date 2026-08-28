@@ -22,8 +22,4 @@ while(IsAppRunning)
 }
 ```
 
-C'est aussi lui qui possède le [[World]] actuel.
-
-Il est aussi charger de call [[RenderCommand]]. C'est à dire les fonction BeginFrame(), EndFrame() et Shutdown().
-
-*Je pense que je dois changer cela. Parce que cela veut dire que litteralement j'ai mon objet Render qui flot dans le vide. Si par pur hasard j'oublie de call shutdown il sera la tous seul. :/*
+Application est aussi responsable de la vie de [[Window]] et [[Renderer]].

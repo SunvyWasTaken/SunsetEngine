@@ -8,7 +8,7 @@
 
 namespace Sunset
 {
-    class Framebuffer;
+    class RenderTarget;
     class World;
     class WorldHierarchyPanel;
 
@@ -17,10 +17,18 @@ namespace Sunset
     public:
         EditorLayer();
         ~EditorLayer() override;
+
         void Init() override;
+
+        void OnUpdate(float dt) override;
+
         void OnDraw() override;
+
+        bool OnEvent(const Event::Type &event) override;
+
     private:
+        std::shared_ptr<World> m_World;
         std::unique_ptr<WorldHierarchyPanel> m_WorldHierarchy;
-        std::shared_ptr<Framebuffer> m_Framebuffer;
+        std::shared_ptr<RenderTarget> m_Framebuffer;
     };
 } // Sunset

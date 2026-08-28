@@ -4,7 +4,7 @@
 
 #include "RenderCommand.h"
 
-#include "Framebuffer.h"
+#include "../Resources/RenderTarget.h"
 #include "RenderAPI.h"
 #include "Render/Resources/Buffer.h"
 #include "Render/Resources/Mesh.h"
@@ -144,7 +144,7 @@ namespace Sunset
 
 namespace Sunset
 {
-    std::shared_ptr<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec)
+    std::shared_ptr<RenderTarget> RenderTarget::Create(const RenderTargetSpecification& spec)
     {
         return GetRenderAPI().CreateFramebuffer(spec);
     }

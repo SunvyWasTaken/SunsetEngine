@@ -5,19 +5,16 @@
 #pragma once
 
 #include "Core/Event.h"
-#include "SRmGUI.h"
 
 namespace Sunset
 {
-    class World;
-    class GameInstance;
-
     class Layer
     {
         friend class Application;
     public:
-        Layer();
-        virtual ~Layer();
+        Layer() = default;
+
+        virtual ~Layer() = default;
 
         virtual void Init() {};
 
@@ -26,26 +23,5 @@ namespace Sunset
         virtual void OnDraw();
 
         virtual bool OnEvent(const Event::Type& event);
-
-        [[nodiscard]]
-        GameInstance* GetGameInstance() const
-        {
-            if (!m_GameInstance)
-                return nullptr;
-
-            return m_GameInstance;
-        }
-
-        [[nodiscard]]
-        World* GetWorld() const;
-
-        void AddToViewport(const SRmGUI::WidgetPtr& widget);
-        SRmGUI::Context& GetUIContext();
-
-    private:
-        void SetAppContext(GameInstance* gameInstance);
-    private:
-        GameInstance* m_GameInstance = nullptr;
-        SRmGUI::Context& m_UIContext;
     };
 }

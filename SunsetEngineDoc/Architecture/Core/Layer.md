@@ -1,6 +1,6 @@
 ## Concept
 
-Le [[Layer]] permet à [Application](lien obsidian) de ne pas connaitre tous les systems qu'il doit exécuter.
+Le [[Layer]] permet à [Application](obsidian://open?vault=SunsetEngineDoc&file=Application) de ne pas connaitre tous les systems qu'il doit exécuter.
 Le [[Layer]] est une sorte de module de comportement.
 
 ```cpp
