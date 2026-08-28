@@ -1,9 +1,15 @@
+#Idea
+## Concept
 
 Le [[RenderTarget]] est la structure contenant le ColorAttachment et DepthAttachment.
 
 ```cpp
 class RenderTarget
 {
+public:
+	// Cet fonction est implementer ailleurs.
+	// Le RenderAPI ce charge de crée la bonne implémentation.
+	static RenderTarget* Create(const RenderTargetSpecification& specification);
 public:
 	virtual ~RenderTarget() = default;
 	
@@ -12,8 +18,8 @@ public:
 	// le bind suivant override juste le précédent
 	virtual void UnBind() = 0;
 	
-	virtual std::uint32_t GetColorTexture() const = 0;
-	virtual std::uint32_t GetDepthTexture() const = 0;
+	virtual std::uint32_t ColorAttachment() const = 0;
+	virtual std::uint32_t DepthAttachment() const = 0;
 }
 ```
 
@@ -38,17 +44,26 @@ public:
 		// ...
 	}
 	
-	uint32_t GetColorTexture() const override
+	uint32_t ColorAttachment() const override
 	{
 		return m_ColorTexture;
 	}
-	uint32_t GetDepthTexture() const override
+	uint32_t DepthAttachment() const override
 	{
 		return m_DepthTexture;
 	}
 private:
 	uint32_t m_Framebuffer = 0;
-	uint32_t m_ColorTexture = 0;
-	uint32_t m_DepthTexture = 0;
+	uint32_t m_ColorAttachment = 0;
+	uint32_t m_DepthAttachment = 0;
 };
+```
+
+## How to Use
+
+```cpp
+auto worldTarget = RenderTarget::Create({
+	.Width = 1920,
+	.Height = 1080
+});
 ```

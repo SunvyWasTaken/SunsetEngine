@@ -1,3 +1,6 @@
+#Idea
+## Concept
+
 Le [[RenderPass]] est une opération de rendu qui consomme des ressources et produit/modifie des ressources.
 
 Il reçoit des données transmis depuis un [[RenderContext]] qu'il va transformer en suivant les étapes d'écrite dans `void operator()(RenderContext& context)`.
@@ -16,8 +19,7 @@ public:
 	virtual void operator()(RenderContext& context) = 0;
 }
 ```
-
-<u>Exemple :</u>
+## Exemple
 
 Exemple d'une Pass simple avec des objets à rendre.
 ```cpp
@@ -28,7 +30,7 @@ class BaseColorPass final : public RenderPass
 	void operator()(RenderContext& context) override
 	{	
 		context.BindRenderTarget(context.GetTarget("BaseColor"));
-	
+		
 		context.SetPipeline(m_BaseColorPipeline);
 		
 		auto& baseColorQueue = context.GetQueue("BaseColor");
@@ -62,5 +64,17 @@ class PostProcessPass final : public RenderPass
 		
 		context.DrawFullscreen();
 	}
+}
+```
+
+## How to Use
+
+```cpp
+{
+	BaseColorPass baseColorPass;
+	
+	RenderContext context;
+	
+	baseColorPass(context);
 }
 ```

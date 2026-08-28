@@ -1,3 +1,6 @@
+#Idea
+## Concept
+
 Render command possède la liste des commands.
 
 ```cpp
@@ -12,7 +15,9 @@ public:
 	// ect...
 }
 ```
+
 Donc dans les fonction call du render command on va call les fonction depuis le [[RenderAPI]].
+
 ```cpp
 // RenderCommand.cpp
 void RenderCommand::BeginFrame()
@@ -51,4 +56,5 @@ void RenderCommand::Submit(const Drawable& obj, const glm::mat4& model)
 	// ...
 }
 ```
+
 Je trouve la solution pas encore très viable mais pour le moment je ne vois que ça concrètement.
