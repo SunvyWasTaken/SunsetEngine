@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Render/Core/RenderHandles.h"
 #include "Render/Resources/Buffer.h"
 
 namespace Sunset
@@ -20,8 +21,11 @@ namespace Sunset
         void SetData(const void *data, std::size_t typeSize, std::size_t size) override;
 
         [[nodiscard]] std::size_t Count() const override;
+
+        [[nodiscard]] BufferHandle Get() const override;
+
     private:
-        std::uint32_t id;
+        BufferHandle id;
         std::size_t m_Size;
         BufferType m_Type;
     };

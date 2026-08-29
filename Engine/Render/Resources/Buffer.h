@@ -7,6 +7,8 @@
 
 namespace Sunset
 {
+    struct BufferHandle;
+
     enum class BufferType
     {
         Vertex,
@@ -24,6 +26,7 @@ namespace Sunset
         virtual void Bind() = 0;
         virtual void SetData(const void* data, std::size_t typeSize, std::size_t size) = 0;
         [[nodiscard]] virtual std::size_t Count() const = 0;
+        [[nodiscard]] virtual BufferHandle Get() const = 0;
     };
 }
 

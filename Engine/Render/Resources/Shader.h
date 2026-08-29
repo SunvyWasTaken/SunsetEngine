@@ -6,6 +6,8 @@
 
 namespace Sunset
 {
+    struct ShaderHandle;
+
     class Shader
     {
     public:
@@ -14,6 +16,8 @@ namespace Sunset
         virtual ~Shader() = default;
 
         virtual void Bind() const = 0;
+
+        [[nodiscard]] virtual ShaderHandle Get() const = 0;
 
         virtual void SetFloat(const std::string_view& name, float value) const = 0;
         virtual void SetInt(const std::string_view& name, int value) const = 0;

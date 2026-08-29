@@ -12,7 +12,7 @@ namespace Sunset
 {
     class SpriteRenderComponent : public Component
     {
-        friend class SpriteRenderSystem;
+        friend class BuildRenderScene;
     public:
         SpriteRenderComponent();
     private:

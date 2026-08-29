@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Render/Core/RenderHandles.h"
 #include "Render/Resources/Mesh.h"
 
 namespace Sunset
@@ -17,8 +18,10 @@ namespace Sunset
 
         void Bind() override;
 
+        [[nodiscard]] MeshHandle Get() const override;
+
     private:
 
-        std::uint32_t id;
+        MeshHandle id{};
     };
 } // Sunset

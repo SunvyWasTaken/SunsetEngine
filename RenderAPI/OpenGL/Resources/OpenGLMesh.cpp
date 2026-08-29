@@ -35,6 +35,7 @@ namespace Sunset
     OpenGLMesh::OpenGLMesh(const std::shared_ptr<Buffer> &vertexBuffer, const std::shared_ptr<Buffer> &indexBuffer,
         const VertexLayout &vertexLayout)
             : Mesh(vertexBuffer, indexBuffer, vertexLayout)
+            , id(0)
     {
         glGenVertexArrays(1, &id);
         glBindVertexArray(id);
@@ -69,5 +70,10 @@ namespace Sunset
     void OpenGLMesh::Bind()
     {
         glBindVertexArray(id);
+    }
+
+    MeshHandle OpenGLMesh::Get() const
+    {
+        return id;
     }
 } // Sunset

@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Render/Core/RenderHandles.h"
+
 namespace Sunset
 {
     class Pipeline;
@@ -26,6 +28,8 @@ namespace Sunset
         ~Material();
 
         void Bind() const;
+
+        [[nodiscard]] MaterialHandle Get() const { return {}; };
 
         void UniformBind() const;
 

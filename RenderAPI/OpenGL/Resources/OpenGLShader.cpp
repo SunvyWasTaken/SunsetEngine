@@ -81,6 +81,11 @@ namespace Sunset
         glUseProgram(id);
     }
 
+    ShaderHandle OpenGLShader::Get() const
+    {
+        return id;
+    }
+
     void OpenGLShader::SetFloat(const std::string_view &name, float value) const
     {
         glUniform1f(glGetUniformLocation(id, name.data()), value);

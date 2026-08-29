@@ -66,4 +66,9 @@ namespace Sunset
     {
         return m_Size;
     }
+
+    BufferHandle OpenGLBuffer::Get() const
+    {
+        return id;
+    }
 } // Sunset

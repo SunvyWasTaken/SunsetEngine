@@ -7,6 +7,7 @@
 
 namespace Sunset
 {
+    struct MeshHandle;
     class Buffer;
 
     class Mesh
@@ -17,6 +18,8 @@ namespace Sunset
         Mesh(const std::shared_ptr<Buffer>& vertexBuffer, const std::shared_ptr<Buffer>& indexBuffer, const VertexLayout& layout);
         virtual ~Mesh() = default;
         virtual void Bind() = 0;
+
+        [[nodiscard]] virtual MeshHandle Get() const = 0;
 
         std::shared_ptr<Buffer> m_VertexBuffer;
         std::shared_ptr<Buffer> m_IndexBuffer;

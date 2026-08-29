@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Render/Core/RenderHandles.h"
 #include "Render/Resources/Shader.h"
 
 namespace Sunset
@@ -17,6 +18,8 @@ namespace Sunset
 
          void Bind() const override;
 
+        [[nodiscard]] ShaderHandle Get() const override;
+
          void SetFloat(const std::string_view& name, float value) const override;
          void SetInt(const std::string_view& name, int value) const override;
          void SetVec2(const std::string_view& name, const glm::vec2& value) const override;
@@ -25,6 +28,6 @@ namespace Sunset
          void SetMat4(const std::string_view& name, const glm::mat4& value) const override;
 
     private:
-        std::uint32_t id = 0;
+        ShaderHandle id;
     };
 } // Sunset
