@@ -6,8 +6,10 @@
 
 #include <GLFW/glfw3.h>
 
-#include <cstdlib>
-// #include "Render/Core/GraphicsContext.h"
+#ifdef SUNSET_OPENGL
+#include "OpenGLContext.h"
+#endif
+#include "Core/GraphicContext.h"
 
 namespace
 {
@@ -187,16 +189,6 @@ namespace Sunset
         // {
         //     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         // }
-        // else if (m_GraphicsAPI == WindowGraphicsAPI::OpenGL)
-        // {
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    #ifndef NDEBUG
-            glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
-    #endif
-        // }
 
         m_WindowHandle = glfwCreateWindow(static_cast<int>(properties.WindowSize.x), static_cast<int>(properties.WindowSize.y), properties.WindowTitle.data(), nullptr, nullptr);
 
@@ -210,15 +202,19 @@ namespace Sunset
 
         ++s_WindowCount;
 
+#ifdef SUNSET_OPENGL
+        m_GraphicsContext = std::make_unique<OpenGLContext>(m_WindowHandle);
+#elif defined(SUNSET_VULKAN)
+        m_GraphicsContext = std::make_shared<VulkanContext>(m_WindowHandle);
+#endif
+
+        m_GraphicsContext->Init();
+
         m_Data.Title = properties.WindowTitle.data();
         m_Data.Size = properties.WindowSize;
         m_Data.VSync = properties.vSync;
 
         glfwSetWindowUserPointer(m_WindowHandle, &m_Data);
-
-        // m_GraphicsContext = std::make_unique<OpenGLContext>(m_WindowHandle);
-        //
-        // m_GraphicsContext->Init();
 
         RegisterCallbacks();
         SetVSync(m_Data.VSync);
@@ -231,7 +227,7 @@ namespace Sunset
 
     void GLFWWindow::Shutdown()
     {
-        // m_GraphicsContext.reset();
+        m_GraphicsContext.reset();
 
         if (m_WindowHandle != nullptr)
         {
@@ -252,8 +248,7 @@ namespace Sunset
 
     void GLFWWindow::Present()
     {
-        // if (m_GraphicsAPI == WindowGraphicsAPI::OpenGL)
-            glfwSwapBuffers(m_WindowHandle);
+        m_GraphicsContext->SwapBuffers();
     }
 
     bool GLFWWindow::ShouldClose() const

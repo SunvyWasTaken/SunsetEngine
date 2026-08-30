@@ -11,7 +11,7 @@ namespace Sunset
         m_Camera = camera;
     }
 
-    const std::vector<DrawCmd> & RenderScene::GetObjects()
+    const std::vector<DrawCmd> & RenderScene::GetObjects() const
     {
         return m_ObjectToRender;
     }

@@ -16,13 +16,13 @@ namespace Sunset
         {
         }
 
-        template <typename T>
-        requires std::is_arithmetic_v<T>
-        ResourceHandle& operator=(T value)
-        {
-            id = value;
-            return *this;
-        }
+        // template <typename T>
+        // requires std::is_arithmetic_v<T>
+        // ResourceHandle& operator=(T value)
+        // {
+        //     id = value;
+        //     return *this;
+        // }
 
         [[nodiscard]] explicit operator bool() const
         {
@@ -42,10 +42,25 @@ namespace Sunset
         std::uint32_t id = 0;
     };
 
-    struct BufferHandle : ResourceHandle { using ResourceHandle::ResourceHandle; using ResourceHandle::operator=; };
-    struct MeshHandle : ResourceHandle { using ResourceHandle::ResourceHandle; using ResourceHandle::operator=; };
-    struct MaterialHandle : ResourceHandle { using ResourceHandle::ResourceHandle; using ResourceHandle::operator=; };
-    struct ShaderHandle : ResourceHandle { using ResourceHandle::ResourceHandle; using ResourceHandle::operator=; };
+    struct BufferHandle : ResourceHandle { using ResourceHandle::ResourceHandle; };
+    struct MeshHandle : ResourceHandle { using ResourceHandle::ResourceHandle; };
+    struct MaterialHandle : ResourceHandle { using ResourceHandle::ResourceHandle; };
+    struct ShaderHandle : ResourceHandle { using ResourceHandle::ResourceHandle; };
 }
+
+template <typename T>
+requires std::is_base_of_v<Sunset::ResourceHandle, T>
+struct std::formatter<T> : std::formatter<std::uint32_t>
+{
+    template <typename FormatContext>
+    auto format(const Sunset::ResourceHandle& v, FormatContext& ctx) const
+    {
+        return std::format_to(
+            ctx.out(),
+            "{}",
+            v.id
+        );
+    }
+};
 
 #endif //SUNSETENGINE_RENDERHANDLES_H

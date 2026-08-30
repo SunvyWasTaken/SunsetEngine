@@ -7,6 +7,10 @@ add_library(SunsetPlatformGLFW STATIC)
 add_library(Sunset::PlatformGLFW ALIAS SunsetPlatformGLFW)
 set_target_properties(SunsetPlatformGLFW PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
+if (SUNSET_USE_OPENGL)
+    target_compile_definitions(SunsetPlatformGLFW PRIVATE SUNSET_OPENGL)
+endif ()
+
 target_sources(
         SunsetPlatformGLFW
         PRIVATE

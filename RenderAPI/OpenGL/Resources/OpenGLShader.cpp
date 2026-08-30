@@ -57,7 +57,7 @@ namespace Sunset
         if (!CheckShaderCompileStatus(fragmentShader, "Fragment"))
             throw std::runtime_error("Fragment shader compilation failed");
 
-        id = glCreateProgram();
+        id = ShaderHandle{glCreateProgram()};
         glAttachShader(id, vertexShader);
         glAttachShader(id, fragmentShader);
         glLinkProgram(id);

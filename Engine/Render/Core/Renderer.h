@@ -6,8 +6,11 @@
 
 namespace Sunset
 {
+    class RenderScene;
+
     class Renderer
     {
-
+    public:
+        void RenderScene(const RenderScene& scene);
     };
 } // Sunset

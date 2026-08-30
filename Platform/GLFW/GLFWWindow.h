@@ -61,7 +61,7 @@ namespace Sunset
         };
 
         GLFWwindow* m_WindowHandle = nullptr;
-        // std::unique_ptr<GraphicsContext> m_GraphicsContext;
+        std::unique_ptr<GraphicsContext> m_GraphicsContext;
 
         WindowData m_Data;
 
