@@ -18,6 +18,10 @@ namespace Sunset
         void BeginFrame() override;
         void EndFrame() override;
 
+        void BeginScene(const Camera &camera) override;
+
+        void EndScene() override;
+
         void Submit(const Drawable &drawable, const glm::mat4 &transform) override;
 
         void UseCamera(const Camera &camera) override;

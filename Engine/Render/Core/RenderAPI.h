@@ -30,6 +30,10 @@ namespace Sunset
         virtual void BeginFrame() = 0;
         virtual void EndFrame() = 0;
 
+        virtual void BeginScene(const Camera& camera) = 0;
+
+        virtual void EndScene() = 0;
+
         virtual void Submit(const Drawable& drawable, const glm::mat4& transform) = 0;
 
         virtual void UseCamera(const Camera& camera) = 0;

@@ -21,7 +21,7 @@ namespace Sunset
 
         world.Each<TransformComponent, SpriteRenderComponent>([&](const Entity&, const TransformComponent& transform, const SpriteRenderComponent& Sprc)
         {
-            scene.m_ObjectToRender.emplace_back(Sprc.m_drawable.m_Mesh->Get(), Sprc.m_drawable.m_Material->Get(), transform.GetWorldMatrix());
+            scene.m_ObjectToRender.emplace_back(&Sprc.m_drawable, transform.GetWorldMatrix());
         });
 
         // world.Each<TransformComponent, MeshComponent>([&](const Entity&, const TransformComponent& transform, const MeshComponent& mesh)

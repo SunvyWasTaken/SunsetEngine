@@ -10,7 +10,8 @@
 #include "GameFramework/World/World.h"
 #include "Layer.h"
 #include "Network/NetworkService.h"
-#include "Render/Core/RenderCommand.h"
+#include "Render/Core/Renderer.h"
+#include "Render/Core/RenderAPI.h"
 #include "Window.h"
 #include "WindowSetting.h"
 
@@ -23,7 +24,7 @@ namespace
     void ResizeWindow(const glm::ivec2& setting)
     {
         AppSetting.WindowSize = setting;
-        Sunset::RenderCommand::SetViewport(setting);
+        Sunset::Application::GetAPI()->SetViewport(setting);
     }
 }
 
@@ -32,6 +33,7 @@ namespace Sunset
     Application::Application(const WindowSetting& setting)
         : m_LayerStack()
         , m_Window(nullptr)
+        , m_Renderer(nullptr)
         , m_CommandBuffer()
     {
         Log::Init();
@@ -57,6 +59,11 @@ namespace Sunset
     {
         m_Window = std::move(window);
         m_Window->BindEvent([this](const Event::Type& event) { OnEvent(event); });
+    }
+
+    void Application::SetRenderAPI(std::unique_ptr<RenderAPI> API)
+    {
+        m_Renderer = std::make_unique<Renderer>(std::move(API));
     }
 
     void Application::InitializeWindow()
@@ -114,7 +121,7 @@ namespace Sunset
 
         m_CommandBuffer.clear();
         m_LayerStack.Clear();
-        RenderCommand::Shutdown();
+        m_Renderer.reset();
         m_Window.reset();
     }
 
@@ -125,7 +132,7 @@ namespace Sunset
             m_Window->PollEvents();
         }
 
-        RenderCommand::BeginFrame();
+        GetAPI()->BeginFrame();
     }
 
     void Application::Update(const float deltatime)
@@ -150,12 +157,12 @@ namespace Sunset
         SS_PROFILE_SCOPE("Render part");
 
         for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )
-            (*--layer)->OnDraw();
+            (*--layer)->OnDraw(m_Renderer.get());
     }
 
     void Application::EndFrame()
     {
-        RenderCommand::EndFrame();
+        GetAPI()->EndFrame();
 
         m_Window->Present();
     }
@@ -196,6 +203,14 @@ namespace Sunset
             return nullptr;
 
         return app->m_Window->GetNativeHandle();
+    }
+
+    RenderAPI * Application::GetAPI()
+    {
+        if (!app)
+            return nullptr;
+
+        return app->m_Renderer->m_API.get();
     }
 
     bool Application::IsHeadless()

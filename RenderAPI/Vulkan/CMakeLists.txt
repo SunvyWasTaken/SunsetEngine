@@ -8,8 +8,6 @@ add_library(SunsetBackEndVulkan STATIC)
 add_library(Sunset::Vulkan ALIAS SunsetBackEndVulkan)
 set_target_properties(SunsetBackEndVulkan PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
-target_compile_definitions(SunsetBackEndVulkan PUBLIC SUNSET_VULKAN)
-
 target_sources(
         SunsetBackEndVulkan
         PRIVATE

@@ -7,7 +7,6 @@
 #include "GameFramework/Components/TransformComponent.h"
 #include "GameFramework/World/Entity.h"
 #include "GameFramework/World/World.h"
-#include "../../Render/Core/RenderCommand.h"
 
 namespace Sunset
 {

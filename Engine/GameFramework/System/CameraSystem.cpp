@@ -7,7 +7,6 @@
 #include "GameFramework/Components/CameraComponent.h"
 #include "GameFramework/World/World.h"
 #include "GameFramework/World/Entity.h"
-#include "Render/Core/RenderCommand.h"
 
 namespace Sunset
 {

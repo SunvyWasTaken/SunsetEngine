@@ -64,6 +64,16 @@ namespace Sunset
         data->m_DrawQueue.Flush();
     }
 
+    void OpenGLRenderAPI::BeginScene(const Camera &camera)
+    {
+        data->m_DrawQueue.UseCamera(camera);
+    }
+
+    void OpenGLRenderAPI::EndScene()
+    {
+        data->m_DrawQueue.Flush();
+    }
+
     void OpenGLRenderAPI::Submit(const Drawable &drawable, const glm::mat4 &transform)
     {
         data->m_DrawQueue.Submit(drawable, transform);

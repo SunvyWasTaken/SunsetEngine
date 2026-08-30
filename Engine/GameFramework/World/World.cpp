@@ -17,7 +17,6 @@
 #include "GameFramework/System/NativeScriptingSystem.h"
 #include "GameFramework/System/RenderMeshSystem.h"
 #include "Network/NetworkService.h"
-#include "Render/Core/RenderCommand.h"
 #include "SaveSystem/SaveSystem.h"
 
 namespace
@@ -205,17 +204,17 @@ namespace Sunset
     {
         SS_PROFILE_FUNCTION();
 
-        if (!Application::IsHeadless())
-        {
-            for (const auto view = m_Registry.view<CameraComponent>(); const auto entity : view)
-            {
-                if (const auto& cam = m_Registry.get<CameraComponent>(entity); cam.Primary)
-                {
-                    RenderCommand::UseCamera(cam.camera);
-                    break;
-                }
-            }
-        }
+        // if (!Application::IsHeadless())
+        // {
+        //     for (const auto view = m_Registry.view<CameraComponent>(); const auto entity : view)
+        //     {
+        //         if (const auto& cam = m_Registry.get<CameraComponent>(entity); cam.Primary)
+        //         {
+        //             RenderCommand::UseCamera(cam.camera);
+        //             break;
+        //         }
+        //     }
+        // }
 
         for (const auto& system : m_Systems)
             system->Update(dt);

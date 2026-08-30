@@ -6,6 +6,10 @@
 
 namespace Sunset
 {
+    RenderScene::~RenderScene()
+    {
+    }
+
     void RenderScene::BeginScene(const Camera &camera)
     {
         m_Camera = camera;

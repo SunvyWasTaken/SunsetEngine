@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Core/Layer.h"
+#include "Render/Core/RenderScene.h"
 
 namespace Sunset
 {
@@ -22,7 +23,7 @@ namespace Sunset
 
         void OnUpdate(float dt) override;
 
-        void OnDraw() override;
+        void OnDraw(Renderer* renderer) override;
 
         bool OnEvent(const Event::Type &event) override;
 
@@ -30,5 +31,7 @@ namespace Sunset
         std::shared_ptr<World> m_World;
         std::unique_ptr<WorldHierarchyPanel> m_WorldHierarchy;
         std::shared_ptr<RenderTarget> m_Framebuffer;
+        RenderScene m_RenderScene;
+        Camera m_Camera;
     };
 } // Sunset

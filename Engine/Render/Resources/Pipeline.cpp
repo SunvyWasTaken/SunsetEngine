@@ -4,10 +4,13 @@
 
 #include "Pipeline.h"
 
-#include "Shader.h"
-#include "Render/Core/RenderCommand.h"
+#include "Core/Application.h"
+#include "Render/Core/RenderAPI.h"
 
 namespace Sunset
 {
-
+    std::shared_ptr<Pipeline> Pipeline::Create(const RenderState &state)
+    {
+        return Application::GetAPI()->CreatePipeline(state);
+    }
 } // Sunset

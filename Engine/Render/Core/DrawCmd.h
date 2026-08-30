@@ -6,18 +6,17 @@
 
 #include <glm/fwd.hpp>
 
-#include "RenderHandles.h"
-
 namespace Sunset
 {
+    class Drawable;
+
     struct DrawCmd final
     {
-        DrawCmd(const MeshHandle& meshHandle, const MaterialHandle& materialHandle, const glm::mat4& modelMatrix)
-            : mesh(meshHandle), material(materialHandle), transform(modelMatrix)
+        DrawCmd(const Drawable* drawable, const glm::mat4& modelMatrix)
+            : m_Drawable(drawable), transform(modelMatrix)
         {}
 
-        MeshHandle mesh;
-        MaterialHandle material;
+        const Drawable* m_Drawable;
         glm::mat4 transform;
     };
 }

@@ -3,17 +3,19 @@
 //
 
 #pragma once
+
 #include "Render/Resources/Camera.h"
+#include "DrawCmd.h"
 
 namespace Sunset
 {
-    struct DrawCmd;
-
     class RenderScene
     {
         friend class BuildRenderScene;
         friend class Renderer;
     public:
+        ~RenderScene();
+
         void BeginScene(const Camera& camera);
 
         const std::vector<DrawCmd>& GetObjects() const;

@@ -55,10 +55,12 @@ if (SUNSET_USE_GLFW)
 endif ()
 
 if (SUNSET_USE_OPENGL)
+    target_compile_definitions(SunsetEngine_compiler_flags INTERFACE SUNSET_OPENGL)
     target_link_libraries(SunsetRuntime INTERFACE Sunset::BackendOpenGL)
 endif ()
 
 if (SUNSET_USE_VULKAN)
+    target_compile_definitions(SunsetEngine_compiler_flags INTERFACE SUNSET_VULKAN)
     target_link_libraries(SunsetRuntime INTERFACE Sunset::Vulkan)
 endif ()
 

@@ -8,9 +8,12 @@
 
 #include "GameFramework/World/Entity.h"
 #include "GameFramework/World/World.h"
+#include "GameFramework/Components/CameraComponent.h"
 #include "GameFramework/Components/InputComponent.h"
 #include "Panels/WorldHierarchyPanel.h"
-#include "../../Engine/Render/Resources/RenderTarget.h"
+#include "Render/Resources/RenderTarget.h"
+#include "Render/Core/BuildRenderScene.h"
+#include "Render/Core/Renderer.h"
 #include "SaveSystem/SaveSystem.h"
 
 namespace
@@ -51,9 +54,23 @@ namespace Sunset
         m_World->Update(dt);
     }
 
-    void EditorLayer::OnDraw()
+    void EditorLayer::OnDraw(Renderer* renderer)
     {
-        Layer::OnDraw();
+        Layer::OnDraw(renderer);
+
+        BuildRenderScene scene;
+
+        m_Framebuffer->Bind();
+        m_World->Each<CameraComponent>([&](const Entity&, const CameraComponent& camera)
+        {
+            if (camera.Primary)
+            {
+                m_RenderScene.BeginScene(camera.camera);
+            }
+        });
+        scene(*(m_World.get()), m_RenderScene);
+        renderer->RenderScene(m_RenderScene);
+        m_Framebuffer->UnBind();
 
         static ImGuiDockspaceArgs args;
 

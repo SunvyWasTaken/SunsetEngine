@@ -8,6 +8,8 @@
 
 namespace Sunset
 {
+    class Renderer;
+
     class Layer
     {
         friend class Application;
@@ -20,7 +22,7 @@ namespace Sunset
 
         virtual void OnUpdate(float dt);
 
-        virtual void OnDraw();
+        virtual void OnDraw(Renderer* renderer);
 
         virtual bool OnEvent(const Event::Type& event);
     };
