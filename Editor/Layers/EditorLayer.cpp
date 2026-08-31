@@ -6,6 +6,7 @@
 
 #include <imgui.h>
 
+#include "Core/Application.h"
 #include "GameFramework/World/Entity.h"
 #include "GameFramework/World/World.h"
 #include "GameFramework/Components/CameraComponent.h"
@@ -24,6 +25,8 @@ namespace
         bool                KeepWindowPadding = false; // Keep WindowPadding to help understand that DockSpace() is a widget inside the window.
         ImGuiDockNodeFlags  DockSpaceFlags  = ImGuiDockNodeFlags_None;
     };
+
+    ImVec2 viewportSize = ImVec2(1280, 720);
 }
 
 namespace Sunset
@@ -61,6 +64,7 @@ namespace Sunset
         BuildRenderScene scene;
 
         m_Framebuffer->Bind();
+        renderer->SetViewport({viewportSize.x, viewportSize.y});
         m_World->Each<CameraComponent>([&](const Entity&, const CameraComponent& camera)
         {
             if (camera.Primary)
@@ -71,6 +75,7 @@ namespace Sunset
         scene(*(m_World.get()), m_RenderScene);
         renderer->RenderScene(m_RenderScene);
         m_Framebuffer->UnBind();
+        renderer->SetViewport(Application::GetSetting().WindowSize);
 
         static ImGuiDockspaceArgs args;
 
@@ -131,8 +136,8 @@ namespace Sunset
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
         ImGui::Begin("Viewport");
-        const auto& size = ImGui::GetContentRegionAvail();
-        ImGui::Image(m_Framebuffer->GetColorAttachmentRenderID(), size);
+        viewportSize = ImGui::GetContentRegionAvail();
+        ImGui::Image(m_Framebuffer->GetColorAttachmentRenderID(), viewportSize);
         ImGui::End();
         ImGui::PopStyleVar();
 

@@ -61,7 +61,7 @@ namespace Sunset
 
     void OpenGLRenderAPI::EndFrame()
     {
-        data->m_DrawQueue.Flush();
+        // data->m_DrawQueue.Flush();
     }
 
     void OpenGLRenderAPI::BeginScene(const Camera &camera)

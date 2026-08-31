@@ -15,7 +15,8 @@ namespace Sunset
     public:
         explicit Renderer(std::unique_ptr<RenderAPI> renderAPI);
         ~Renderer();
-        void RenderScene(const RenderScene& scene);
+        void SetViewport(const glm::ivec2& viewportSize);
+        void RenderScene(const RenderScene& scene) const;
     private:
         std::unique_ptr<RenderAPI> m_API;
     };
