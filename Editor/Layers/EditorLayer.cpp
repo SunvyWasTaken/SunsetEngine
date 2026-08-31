@@ -65,13 +65,16 @@ namespace Sunset
 
         m_Framebuffer->Bind();
         renderer->SetViewport({viewportSize.x, viewportSize.y});
-        m_World->Each<CameraComponent>([&](const Entity&, const CameraComponent& camera)
-        {
-            if (camera.Primary)
-            {
-                m_RenderScene.BeginScene(camera.camera);
-            }
-        });
+
+        // Camera cam;
+        // m_World->Each<CameraComponent>([&](const Entity&, const CameraComponent& camera)
+        // {
+        //     if (camera.Primary)
+        //     {
+        //         cam = camera.camera;
+        //     }
+        // });
+        m_RenderScene.BeginScene(m_Camera);
         scene(*(m_World.get()), m_RenderScene);
         renderer->RenderScene(m_RenderScene);
         m_Framebuffer->UnBind();
@@ -156,10 +159,21 @@ namespace Sunset
 
     bool EditorLayer::OnEvent(const Event::Type &event)
     {
-        m_World->Each<InputComponent>([&](const Entity& entity, InputComponent& comp)
+        // m_World->Each<InputComponent>([&](const Entity& entity, InputComponent& comp)
+        // {
+        //     comp.OnEvent(event);
+        // });
+        if (auto* keyboard = std::get_if<Event::Keyboard>(&event))
         {
-            comp.OnEvent(event);
-        });
+            if (keyboard->key == Key::W)
+                m_Camera.AddPosition(m_Camera.GetForward());
+            else if (keyboard->key == Key::S)
+                m_Camera.AddPosition(-m_Camera.GetForward());
+            else if (keyboard->key == Key::A)
+                m_Camera.AddPosition(-m_Camera.GetRight());
+            else if (keyboard->key == Key::D)
+                m_Camera.AddPosition(m_Camera.GetRight());
+        }
         return Layer::OnEvent(event);
     }
 } // Sunset
