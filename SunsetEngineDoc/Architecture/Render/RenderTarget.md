@@ -66,4 +66,12 @@ auto worldTarget = RenderTarget::Create({
 	.Width = 1920,
 	.Height = 1080
 });
+
+worldTarget.Bind();
+// Don't forget to clear the. render target otherwise it's gonna be black
+renderer.Clear();
+// ...
+// do rendering here
+// ...
+worldTarget.UnBind();
 ```
