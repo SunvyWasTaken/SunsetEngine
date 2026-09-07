@@ -1,6 +1,6 @@
 # SunsetEngine
 
-SunsetEngine est un prototype de moteur de jeu C++23 conçu comme une bibliothèque statique modulaire. Il fournit un socle applicatif, un rendu OpenGL, un ECS basé sur EnTT, une pile de layers, un système d'entrées configurable, une couche réseau ENet, une interface retained-mode via SRmGUI, ainsi que des outils de sauvegarde, de profiling et de debug.
+SunsetEngine est un prototype de moteur de jeu C++23 conçu comme une bibliothèque statique modulaire. Il fournit un socle applicatif, un rendu OpenGL, un ECS basé sur EnTT, une pile de layers, un système d'entrées configurable, une couche réseau ENet, une interface retained-mode via SRmGUI, ainsi que des outils de sauvegarde, de profiling et de debug. il y a aussi un editor pour cree des jeux plus simplement. j'aiemrais que a terme je puisse utiliser le moteur ou plutot le layer applicatif pour des appications autre que du jeux video
 
 Le dépôt contient également un exécutable d'éditeur en cours de construction, destiné à valider les systèmes du moteur dans une application réelle.
 
