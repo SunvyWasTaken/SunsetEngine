@@ -4,8 +4,6 @@
 
 #include "EditorLayer.h"
 
-#include <imgui.h>
-
 #include "Core/Application.h"
 #include "GameFramework/World/Entity.h"
 #include "GameFramework/World/World.h"
@@ -13,7 +11,6 @@
 #include "GameFramework/Components/InputComponent.h"
 #include "Panels/WorldHierarchyPanel.h"
 #include "Render/Resources/RenderTarget.h"
-#include "Render/Core/BuildRenderScene.h"
 #include "Render/Core/Renderer.h"
 #include "SaveSystem/SaveSystem.h"
 
@@ -25,8 +22,6 @@ namespace
         bool                KeepWindowPadding = false; // Keep WindowPadding to help understand that DockSpace() is a widget inside the window.
         ImGuiDockNodeFlags  DockSpaceFlags  = ImGuiDockNodeFlags_None;
     };
-
-    ImVec2 viewportSize = ImVec2(1280, 720);
 }
 
 namespace Sunset
@@ -47,7 +42,9 @@ namespace Sunset
         Layer::Init();
         m_World = std::make_shared<World>();
         m_WorldHierarchy = std::make_unique<WorldHierarchyPanel>(m_World);
+        m_ContentBrowserPanel.SetWorld(m_World);
         m_Framebuffer = RenderTarget::Create({1280, 720});
+        m_Camera.SetPosition({0, 0, 10});
     }
 
     void EditorLayer::OnUpdate(float dt)
@@ -61,8 +58,37 @@ namespace Sunset
     {
         Layer::OnDraw(renderer);
 
-        BuildRenderScene scene;
+        RenderWorldViewport(renderer);
 
+        DrawDockspace();
+
+        DrawViewportPanel();
+
+        DrawPanels();
+    }
+
+    bool EditorLayer::OnEvent(const Event::Type &event)
+    {
+        // m_World->Each<InputComponent>([&](const Entity& entity, InputComponent& comp)
+        // {
+        //     comp.OnEvent(event);
+        // });
+        if (auto* keyboard = std::get_if<Event::Keyboard>(&event))
+        {
+            if (keyboard->key == Key::W)
+                m_Camera.AddPosition(m_Camera.GetForward());
+            else if (keyboard->key == Key::S)
+                m_Camera.AddPosition(-m_Camera.GetForward());
+            else if (keyboard->key == Key::A)
+                m_Camera.AddPosition(-m_Camera.GetRight());
+            else if (keyboard->key == Key::D)
+                m_Camera.AddPosition(m_Camera.GetRight());
+        }
+        return Layer::OnEvent(event);
+    }
+
+    void EditorLayer::RenderWorldViewport(Renderer *renderer)
+    {
         m_Framebuffer->Bind();
         renderer->SetViewport({viewportSize.x, viewportSize.y});
 
@@ -75,11 +101,14 @@ namespace Sunset
         //     }
         // });
         m_RenderScene.BeginScene(m_Camera);
-        scene(*(m_World.get()), m_RenderScene);
+        m_BuildRenderScene(*(m_World.get()), m_RenderScene);
         renderer->RenderScene(m_RenderScene);
         m_Framebuffer->UnBind();
         renderer->SetViewport(Application::GetSetting().WindowSize);
+    }
 
+    void EditorLayer::DrawDockspace()
+    {
         static ImGuiDockspaceArgs args;
 
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking;
@@ -113,6 +142,16 @@ namespace Sunset
         if (args.IsFullscreen)
             ImGui::PopStyleVar(2);
 
+        DrawMenuBar();
+
+        ImGuiID docspace_id = ImGui::GetID("MainDockSpace");
+        ImGui::DockSpace(docspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
+
+        ImGui::End();
+    }
+
+    void EditorLayer::DrawMenuBar()
+    {
         if (ImGui::BeginMenuBar()) {
             if (ImGui::BeginMenu("File")) {
                 if (ImGui::MenuItem("New Project")) { /* ... */ }
@@ -126,24 +165,29 @@ namespace Sunset
                 }
                 ImGui::EndMenu();
             }
-            if (ImGui::BeginMenu("Edit")) { /* ... */ ImGui::EndMenu(); }
-            if (ImGui::BeginMenu("View")) { /* ... */ ImGui::EndMenu(); }
+            // if (ImGui::BeginMenu("Edit")) { /* ... */ ImGui::EndMenu(); }
+            // if (ImGui::BeginMenu("View")) { /* ... */ ImGui::EndMenu(); }
             ImGui::EndMenuBar();
         }
+    }
 
-        ImGuiID docspace_id = ImGui::GetID("MainDockSpace");
-        ImGui::DockSpace(docspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
-
-        ImGui::End();
-
-
+    void EditorLayer::DrawViewportPanel()
+    {
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
         ImGui::Begin("Viewport");
-        viewportSize = ImGui::GetContentRegionAvail();
+        const auto& AvailableSpace = ImGui::GetContentRegionAvail();
+        if (viewportSize.x != AvailableSpace.x || viewportSize.y != AvailableSpace.y)
+        {
+            viewportSize = AvailableSpace;
+            m_Framebuffer = RenderTarget::Create({static_cast<uint32_t>(viewportSize.x), static_cast<uint32_t>(viewportSize.y)});
+        }
         ImGui::Image(m_Framebuffer->GetColorAttachmentRenderID(), viewportSize);
         ImGui::End();
         ImGui::PopStyleVar();
+    }
 
+    void EditorLayer::DrawPanels()
+    {
         ImGui::Begin("Panel");
         if (ImGui::Button("Add Entity"))
         {
@@ -153,25 +197,5 @@ namespace Sunset
 
         m_WorldHierarchy->OnImGuiRender();
         m_ContentBrowserPanel.OnImGuiRender();
-    }
-
-    bool EditorLayer::OnEvent(const Event::Type &event)
-    {
-        // m_World->Each<InputComponent>([&](const Entity& entity, InputComponent& comp)
-        // {
-        //     comp.OnEvent(event);
-        // });
-        if (auto* keyboard = std::get_if<Event::Keyboard>(&event))
-        {
-            if (keyboard->key == Key::W)
-                m_Camera.AddPosition(m_Camera.GetForward());
-            else if (keyboard->key == Key::S)
-                m_Camera.AddPosition(-m_Camera.GetForward());
-            else if (keyboard->key == Key::A)
-                m_Camera.AddPosition(-m_Camera.GetRight());
-            else if (keyboard->key == Key::D)
-                m_Camera.AddPosition(m_Camera.GetRight());
-        }
-        return Layer::OnEvent(event);
     }
 } // Sunset

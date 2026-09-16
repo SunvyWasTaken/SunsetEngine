@@ -21,6 +21,8 @@ namespace Sunset
 
         std::uint32_t GetHeight() const override;
 
+        std::uint32_t GetRenderID() const override;
+
         TextureFormat GetFormat() const override;
     private:
         std::uint32_t id;

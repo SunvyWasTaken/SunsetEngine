@@ -73,6 +73,11 @@ namespace Sunset
         return height;
     }
 
+    std::uint32_t OpenGLTexture::GetRenderID() const
+    {
+        return id;
+    }
+
     TextureFormat OpenGLTexture::GetFormat() const
     {
         return format;
