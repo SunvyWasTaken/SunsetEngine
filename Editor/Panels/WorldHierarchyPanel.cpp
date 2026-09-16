@@ -336,6 +336,17 @@ namespace Sunset
         m_Context = context;
     }
 
+    Entity WorldHierarchyPanel::GetSelectedEntity() const
+    {
+        return m_SelectedEntity;
+    }
+
+    void WorldHierarchyPanel::SetSelectedEntity(const Entity& entity)
+    {
+        m_SelectedEntity = entity;
+        selected = entity ? entity.GetId() : entt::null;
+    }
+
     void WorldHierarchyPanel::OnImGuiRender()
     {
         ImGui::Begin("Hierarchy");

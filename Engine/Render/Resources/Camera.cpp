@@ -53,6 +53,7 @@ namespace Sunset
         , m_Pitch(0.f)
         , m_Fov(45.f)
         , m_CameraDistance(50000.f)
+        , m_AspectRatio(0.0f)
         , OrthographicSize(10.f)
         , NearPlaneDistance(-100.f)
         , FarPlaneDistance(100.f)
@@ -67,7 +68,12 @@ namespace Sunset
     glm::mat4 Camera::GetProjection() const
     {
         const glm::ivec2& src = Application::GetSetting().WindowSize;
-        const float aspect = static_cast<float>(src.x) / static_cast<float>(src.y);
+        const float aspect = m_AspectRatio > 0.0f ? m_AspectRatio : static_cast<float>(src.x) / static_cast<float>(src.y);
+        return GetProjection(aspect);
+    }
+
+    glm::mat4 Camera::GetProjection(float aspect) const
+    {
         if (m_ProjectionType == ProjectionType::Orthographic)
         {
             const float halfHeight = OrthographicSize * 0.5f;
@@ -135,6 +141,11 @@ namespace Sunset
     void Camera::SetForward(const glm::vec3& forward)
     {
         m_Forward = forward;
+    }
+
+    void Camera::SetAspectRatio(float aspectRatio)
+    {
+        m_AspectRatio = aspectRatio;
     }
 
     void Camera::AddPosition(const glm::vec3& position)

@@ -20,6 +20,8 @@
 
 namespace
 {
+    constexpr const char* CONTENT_BROWSER_ITEM_PAYLOAD = "CONTENT_BROWSER_ITEM";
+
     const std::filesystem::path CONTENT_BROWSER_PATH = CONTENT_PATH;
     std::filesystem::path currentPath = CONTENT_BROWSER_PATH;
 
@@ -102,6 +104,17 @@ namespace
 
         return {clicked, doubleClicked};
     }
+
+    void BeginContentBrowserDragSource(const std::filesystem::directory_entry& entry)
+    {
+        if (ImGui::BeginDragDropSource())
+        {
+            const std::string sourcePath = entry.path().string();
+            ImGui::SetDragDropPayload(CONTENT_BROWSER_ITEM_PAYLOAD, sourcePath.c_str(), sourcePath.size() + 1);
+            ImGui::Text("%s", entry.path().filename().string().c_str());
+            ImGui::EndDragDropSource();
+        }
+    }
 }
 
 namespace Sunset
@@ -112,6 +125,83 @@ namespace Sunset
     void ContentBrowserPanel::SetWorld(const std::shared_ptr<World>& world)
     {
         m_World = world;
+    }
+
+    void ContentBrowserPanel::SetCurrentWorldPath(const std::filesystem::path& path)
+    {
+        m_CurrentWorldPath = path;
+    }
+
+    const std::filesystem::path& ContentBrowserPanel::GetCurrentWorldPath() const
+    {
+        return m_CurrentWorldPath;
+    }
+
+    void ContentBrowserPanel::MoveEntryToDirectory(const std::filesystem::path& sourcePath, const std::filesystem::path& destinationDirectory)
+    {
+        m_ContentBrowserError.clear();
+
+        std::error_code error;
+        const std::filesystem::path canonicalSource = std::filesystem::weakly_canonical(sourcePath, error);
+        if (error)
+        {
+            m_ContentBrowserError = "Could not resolve source path.";
+            return;
+        }
+
+        const std::filesystem::path canonicalDestinationDirectory = std::filesystem::weakly_canonical(destinationDirectory, error);
+        if (error)
+        {
+            m_ContentBrowserError = "Could not resolve destination folder.";
+            return;
+        }
+
+        if (canonicalSource == canonicalDestinationDirectory)
+            return;
+
+        if (std::filesystem::is_directory(canonicalSource, error))
+        {
+            const std::filesystem::path relative = std::filesystem::relative(canonicalDestinationDirectory, canonicalSource, error);
+            if (!error && !relative.empty() && relative.native()[0] != '.')
+            {
+                m_ContentBrowserError = "Cannot move a folder inside itself.";
+                return;
+            }
+            error.clear();
+        }
+
+        const std::filesystem::path targetPath = canonicalDestinationDirectory / sourcePath.filename();
+        if (std::filesystem::exists(targetPath, error))
+        {
+            m_ContentBrowserError = "An item with this name already exists in the target folder.";
+            return;
+        }
+
+        std::filesystem::rename(canonicalSource, targetPath, error);
+        if (error)
+        {
+            m_ContentBrowserError = "Could not move item.";
+            return;
+        }
+
+        if (!m_CurrentWorldPath.empty())
+        {
+            error.clear();
+            const std::filesystem::path currentWorldPath = std::filesystem::weakly_canonical(m_CurrentWorldPath, error);
+            if (!error)
+            {
+                if (currentWorldPath == canonicalSource)
+                {
+                    m_CurrentWorldPath = targetPath;
+                }
+                else if (std::filesystem::is_directory(targetPath))
+                {
+                    const std::filesystem::path relativeWorldPath = std::filesystem::relative(currentWorldPath, canonicalSource, error);
+                    if (!error && !relativeWorldPath.empty() && relativeWorldPath.native()[0] != '.')
+                        m_CurrentWorldPath = targetPath / relativeWorldPath;
+                }
+            }
+        }
     }
 
     void ContentBrowserPanel::OnImGuiRender()
@@ -169,6 +259,19 @@ namespace Sunset
             if (file.is_directory())
             {
                 const BrowserItemAction action = DrawBrowserItem(file, m_FolderIcon.get(), tileSize, iconSize);
+                BeginContentBrowserDragSource(file);
+
+                bool movedItemIntoFolder = false;
+                if (ImGui::BeginDragDropTarget())
+                {
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(CONTENT_BROWSER_ITEM_PAYLOAD))
+                    {
+                        const auto* sourcePath = static_cast<const char*>(payload->Data);
+                        MoveEntryToDirectory(sourcePath, file.path());
+                        movedItemIntoFolder = true;
+                    }
+                    ImGui::EndDragDropTarget();
+                }
 
                 const std::string popupID = "FolderContext_" + file.path().string();
                 if (ImGui::BeginPopupContextItem(popupID.c_str()))
@@ -187,7 +290,7 @@ namespace Sunset
                     ImGui::EndPopup();
                 }
 
-                if (action.clicked)
+                if (action.clicked && !movedItemIntoFolder)
                 {
                     currentPath = file.path();
                 }
@@ -195,14 +298,20 @@ namespace Sunset
             else
             {
                 const BrowserItemAction action = DrawBrowserItem(file, m_FileIcon.get(), tileSize, iconSize);
+                BeginContentBrowserDragSource(file);
+
                 if (action.doubleClicked && m_World && file.path().extension() == ".bin")
                 {
-                    SaveSystem::Load(file.path(), *m_World);
+                    if (SaveSystem::Load(file.path(), *m_World))
+                        m_CurrentWorldPath = file.path();
                 }
             }
 
             column = (column + 1) % columns;
         }
+
+        if (!m_ContentBrowserError.empty())
+            ImGui::TextColored(ImVec4(0.95f, 0.25f, 0.25f, 1.0f), "%s", m_ContentBrowserError.c_str());
 
         if (m_ShouldOpenRenamePopup)
         {

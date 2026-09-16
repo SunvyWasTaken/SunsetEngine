@@ -16,6 +16,9 @@ namespace Sunset
 
         void SetContext(const std::shared_ptr<World>& context);
 
+        Entity GetSelectedEntity() const;
+        void SetSelectedEntity(const Entity& entity);
+
         void OnImGuiRender();
     private:
         void DrawNodeEntity(const Entity& entity);

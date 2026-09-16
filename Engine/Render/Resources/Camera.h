@@ -39,6 +39,8 @@ namespace Sunset
         [[nodiscard]]
         glm::mat4 GetProjection() const;
         [[nodiscard]]
+        glm::mat4 GetProjection(float aspect) const;
+        [[nodiscard]]
         glm::mat4 GetViewMatrix() const;
 
         [[nodiscard]]
@@ -64,6 +66,8 @@ namespace Sunset
 
         void SetForward(const glm::vec3& forward);
 
+        void SetAspectRatio(float aspectRatio);
+
         void AddPosition(const glm::vec3& position);
 
         void SetPosition(const glm::vec3& position);
@@ -84,6 +88,7 @@ namespace Sunset
         float m_Yaw, m_Pitch;
         float m_Fov;
         float m_CameraDistance;
+        float m_AspectRatio;
 
         float OrthographicSize;
         float NearPlaneDistance;
