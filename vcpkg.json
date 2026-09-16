@@ -1,7 +1,8 @@
 {
   "name" : "sunset-engine",
-  "version-string" : "1.0.0",
-  "dependencies" : [
+  "version-string" : "0.2.1",
+  "dependencies" :
+  [
     "assimp",
     "enet",
     "entt",
@@ -9,10 +10,11 @@
     "glfw3",
     "glm",
     {
-      "name" : "imgui",
-      "features" : [ "glfw-binding", "opengl3-binding", "docking-experimental" ]
+    "name" : "imgui",
+    "features" : [ "glfw-binding", "opengl3-binding", "docking-experimental" ]
     },
     "imgui-node-editor",
+    "imguizmo",
     "openal-soft",
     "spdlog",
     "libsndfile"

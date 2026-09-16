@@ -26,8 +26,10 @@ target_compile_definitions(SunsetEngine_compiler_flags INTERFACE
 )
 
 if(PRODUCTION_BUILD)
+    target_compile_definitions(SunsetEngine_compiler_flags INTERFACE CONTENT_PATH=\"./Content/)
     target_compile_definitions(SunsetEngine_compiler_flags INTERFACE SAVE_PATH=\"./Save\")
 else ()
+    target_compile_definitions(SunsetEngine_compiler_flags INTERFACE CONTENT_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/Content/\")
     target_compile_definitions(SunsetEngine_compiler_flags INTERFACE SAVE_PATH=\"${CMAKE_SOURCE_DIR}/Save/\")
 endif ()
 

@@ -144,9 +144,6 @@ namespace Sunset
         ImGui::End();
         ImGui::PopStyleVar();
 
-        ImGui::Begin("Content");
-        ImGui::End();
-
         ImGui::Begin("Panel");
         if (ImGui::Button("Add Entity"))
         {
@@ -155,6 +152,7 @@ namespace Sunset
         ImGui::End();
 
         m_WorldHierarchy->OnImGuiRender();
+        m_ContentBrowserPanel.OnImGuiRender();
     }
 
     bool EditorLayer::OnEvent(const Event::Type &event)

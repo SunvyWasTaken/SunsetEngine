@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Core/Layer.h"
+#include "Panels/ContentBrowserPanel.h"
 #include "Render/Core/RenderScene.h"
 
 namespace Sunset
@@ -30,6 +31,7 @@ namespace Sunset
     private:
         std::shared_ptr<World> m_World;
         std::unique_ptr<WorldHierarchyPanel> m_WorldHierarchy;
+        ContentBrowserPanel m_ContentBrowserPanel;
         std::shared_ptr<RenderTarget> m_Framebuffer;
         RenderScene m_RenderScene;
         Camera m_Camera;
