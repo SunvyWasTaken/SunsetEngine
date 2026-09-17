@@ -52,6 +52,15 @@ namespace
         archive(component);
         entity.AddComponent<ComponentType>(std::move(component));
     }
+
+    template <typename ComponentType>
+    void CloneComponent(const entt::registry& sourceRegistry, Sunset::Entity& targetEntity, const entt::entity sourceEntity)
+    {
+        if (!sourceRegistry.all_of<ComponentType>(sourceEntity))
+            return;
+
+        targetEntity.AddComponent<ComponentType>(sourceRegistry.get<ComponentType>(sourceEntity));
+    }
 }
 
 namespace Sunset
@@ -174,6 +183,7 @@ namespace Sunset
     World::World()
         : m_Registry()
     {
+        LOG("Engine", info, "World Creation")
         RegisterEngineSystems(*this);
     }
 
@@ -200,6 +210,15 @@ namespace Sunset
         return false;
     }
 
+    void World::StartUpdate()
+    {
+        for (const auto& view = m_Registry.view<NativeScriptComponent>(); const auto entity : view)
+        {
+            auto& script = m_Registry.get<NativeScriptComponent>(entity);
+            script.Start({this, entity});
+        }
+    }
+
     void World::Update(float dt)
     {
         SS_PROFILE_FUNCTION();
@@ -216,8 +235,14 @@ namespace Sunset
         //     }
         // }
 
-        for (const auto& system : m_Systems)
-            system->Update(dt);
+        // for (const auto& system : m_Systems)
+        //     system->Update(dt);
+
+        Each<NativeScriptComponent>([&](const Entity& entity, NativeScriptComponent& script)
+        {
+            for (const auto& it : script.m_ScriptEntitys)
+                it->OnUpdate(dt);
+        });
     }
 
     Entity World::FindEntityByName(const std::string &name)
@@ -246,6 +271,33 @@ namespace Sunset
         const auto id = static_cast<entt::entity>(entity);
         if (m_Registry.valid(id))
             m_Registry.destroy(id);
+    }
+
+    std::shared_ptr<World> World::Clone() const
+    {
+        auto clonedWorld = std::make_shared<World>();
+        clonedWorld->m_Registry.clear();
+        clonedWorld->m_LocalPeerId = m_LocalPeerId;
+
+        for (const auto view = m_Registry.view<entt::entity>(); const auto sourceEntity : view)
+        {
+            Entity targetEntity{clonedWorld.get(), clonedWorld->m_Registry.create(sourceEntity)};
+
+            CloneComponent<TagComponent>(m_Registry, targetEntity, sourceEntity);
+            CloneComponent<TransformComponent>(m_Registry, targetEntity, sourceEntity);
+            CloneComponent<CameraComponent>(m_Registry, targetEntity, sourceEntity);
+            CloneComponent<InputComponent>(m_Registry, targetEntity, sourceEntity);
+            CloneComponent<SpriteRenderComponent>(m_Registry, targetEntity, sourceEntity);
+
+            if (m_Registry.all_of<NativeScriptComponent>(sourceEntity))
+            {
+                auto& clonedScript = targetEntity.AddComponent<NativeScriptComponent>();
+                const auto& sourceScript = m_Registry.get<NativeScriptComponent>(sourceEntity);
+                clonedScript.InstantiateScriptEntity = sourceScript.InstantiateScriptEntity;
+            }
+        }
+
+        return clonedWorld;
     }
 
     void Serialize(BinaryOutputArchive& archive, World& world)

@@ -4,6 +4,7 @@
 
 #include "WorldHierarchyPanel.h"
 
+#include <algorithm>
 #include <imgui.h>
 #include <glm/gtc/type_ptr.inl>
 
@@ -13,6 +14,7 @@
 #include "GameFramework/Components/TransformComponent.h"
 #include "GameFramework/World/Entity.h"
 #include "GameFramework/World/ScriptEntity.h"
+#include "GameFramework/World/ScriptRegistry.h"
 
 namespace
 {
@@ -399,6 +401,35 @@ namespace Sunset
                             m_SelectedEntity.AddComponent<TransformComponent>();
                         }
                         ImGui::CloseCurrentPopup();
+                    }
+                    if (ImGui::Button("Native Script Component"))
+                    {
+                        ImGui::OpenPopup("Add Native Script");
+                    }
+                    if (ImGui::BeginPopup("Add Native Script"))
+                    {
+                        const auto& scripts = ScriptRegistry::GetScripts();
+                        if (scripts.empty())
+                            ImGui::TextDisabled("No native scripts registered");
+
+                        auto* component = entity.GetComponent<NativeScriptComponent>();
+                        for (const auto& script : scripts)
+                        {
+                            const bool alreadyAttached = component
+                                && std::ranges::find(component->GetRegisteredScriptNames(), script.Name)
+                                    != component->GetRegisteredScriptNames().end();
+                            if (ImGui::MenuItem(script.Name.c_str(), nullptr, alreadyAttached, !alreadyAttached))
+                            {
+                                if (!component)
+                                {
+                                    Entity target = entity;
+                                    component = &target.AddComponent<NativeScriptComponent>();
+                                }
+                                ScriptRegistry::AddScriptTo(*component, script.Name);
+                                SetSelectedEntity(entity);
+                            }
+                        }
+                        ImGui::EndPopup();
                     }
                     ImGui::EndPopup();
                 }

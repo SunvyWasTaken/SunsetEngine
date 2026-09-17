@@ -15,12 +15,6 @@ namespace Sunset
         IWorldSystem::Update(dt);
         m_World->Each<NativeScriptComponent>([&](const Entity& entity, NativeScriptComponent& script)
         {
-            // Todo move the instantiate to the BeginPlayScene.
-            if (script.m_ScriptEntitys.empty())
-            {
-              script.Start(m_World, entity);
-            }
-
             for (const auto& it : script.m_ScriptEntitys)
               it->OnUpdate(dt);
         });

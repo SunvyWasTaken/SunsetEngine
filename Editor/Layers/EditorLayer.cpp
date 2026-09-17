@@ -10,13 +10,16 @@
 #include "Core/Application.h"
 #include "Core/FileDialog.h"
 #include "GameFramework/World/Entity.h"
+#include "GameFramework/World/ScriptEntity.h"
 #include "GameFramework/World/World.h"
 #include "GameFramework/Components/CameraComponent.h"
 #include "GameFramework/Components/InputComponent.h"
+#include "GameFramework/Components/NativeScriptComponent.h"
 #include "GameFramework/Components/SpriteRenderComponent.h"
 #include "GameFramework/Components/TransformComponent.h"
 #include "Panels/WorldHierarchyPanel.h"
 #include "Render/Resources/RenderTarget.h"
+#include "Render/Resources/Texture.h"
 #include "Render/Core/Renderer.h"
 #include "SaveSystem/SaveSystem.h"
 
@@ -26,6 +29,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 #include <ImGuizmo.h>
+#include <stb_image.h>
 
 namespace
 {
@@ -71,6 +75,28 @@ namespace
             viewportMin.y + (1.0f - (ndc.y * 0.5f + 0.5f)) * viewportSize.y
         };
     }
+
+    std::unique_ptr<Sunset::Texture> LoadTexture(const char* filepath)
+    {
+        int width = 0;
+        int height = 0;
+        int channels = 0;
+        stbi_uc* data = stbi_load(filepath, &width, &height, &channels, STBI_rgb_alpha);
+
+        if (!data)
+            return nullptr;
+
+        Sunset::TextureDescription desc;
+        desc.width = static_cast<std::uint32_t>(width);
+        desc.height = static_cast<std::uint32_t>(height);
+        desc.format = Sunset::TextureFormat::RGBA;
+        desc.data = data;
+
+        std::unique_ptr<Sunset::Texture> texture = Sunset::Texture::Create(desc);
+        stbi_image_free(data);
+
+        return texture;
+    }
 }
 
 namespace Sunset
@@ -89,18 +115,73 @@ namespace Sunset
     void EditorLayer::Init()
     {
         Layer::Init();
-        m_World = std::make_shared<World>();
-        m_WorldHierarchy = std::make_unique<WorldHierarchyPanel>(m_World);
-        m_ContentBrowserPanel.SetWorld(m_World);
+        SetActiveWorld(std::make_shared<World>());
+        m_PlayIcon = LoadTexture(SUNSET_EDITOR_LOCAL_RESOURCES "Icons/jouer.png");
+        m_PauseIcon = LoadTexture(SUNSET_EDITOR_LOCAL_RESOURCES "Icons/pause.png");
         m_Framebuffer = RenderTarget::Create({1280, 720});
         m_Camera.SetPosition({0, 0, 10});
+    }
+
+    void EditorLayer::SetActiveWorld(const std::shared_ptr<World>& world)
+    {
+        m_World = world;
+        if (m_WorldHierarchy)
+            m_WorldHierarchy->SetContext(m_World);
+        else
+            m_WorldHierarchy = std::make_unique<WorldHierarchyPanel>(m_World);
+
+        m_WorldHierarchy->SetSelectedEntity({});
+        m_ContentBrowserPanel.SetWorld(m_World);
+    }
+
+    void EditorLayer::StartPlayMode()
+    {
+        if (!std::holds_alternative<EditorState::Edit>(m_EditorState))
+            return;
+
+        m_EditorWorld = m_World;
+        std::shared_ptr<World> runtimeWorld = m_EditorWorld->Clone();
+        SetActiveWorld(runtimeWorld);
+        m_World->StartUpdate();
+        m_EditorState = EditorState::Play{};
+    }
+
+    void EditorLayer::StopPlayMode()
+    {
+        if (std::holds_alternative<EditorState::Edit>(m_EditorState))
+            return;
+
+        m_World->Each<NativeScriptComponent>([](const Entity&, NativeScriptComponent& script)
+        {
+            script.Stop();
+        });
+
+        SetActiveWorld(m_EditorWorld ? m_EditorWorld : std::make_shared<World>());
+        m_EditorWorld.reset();
+        m_EditorState = EditorState::Edit{};
+    }
+
+    void EditorLayer::PausePlayMode()
+    {
+        if (std::holds_alternative<EditorState::Play>(m_EditorState))
+            m_EditorState = EditorState::Pause{};
+    }
+
+    void EditorLayer::ResumePlayMode()
+    {
+        if (std::holds_alternative<EditorState::Pause>(m_EditorState))
+            m_EditorState = EditorState::Play{};
     }
 
     void EditorLayer::OnUpdate(float dt)
     {
         Layer::OnUpdate(dt);
 
-        m_World->Update(dt);
+        if (std::holds_alternative<EditorState::Play>(m_EditorState))
+        {
+            m_World->BeginInput();
+            m_World->Update(dt);
+        }
     }
 
     void EditorLayer::OnDraw(Renderer* renderer)
@@ -110,6 +191,8 @@ namespace Sunset
         RenderWorldViewport(renderer);
 
         DrawDockspace();
+
+        DrawToolbar();
 
         DrawViewportPanel();
 
@@ -122,6 +205,9 @@ namespace Sunset
         // {
         //     comp.OnEvent(event);
         // });
+        if (std::holds_alternative<EditorState::Play>(m_EditorState))
+            m_World->OnEvent(event);
+        else
         if (auto* keyboard = std::get_if<Event::Keyboard>(&event))
         {
             if (keyboard->key == Key::W)
@@ -133,6 +219,7 @@ namespace Sunset
             else if (keyboard->key == Key::D)
                 m_Camera.AddPosition(m_Camera.GetRight());
         }
+
         return Layer::OnEvent(event);
     }
 
@@ -140,16 +227,17 @@ namespace Sunset
     {
         m_Framebuffer->Bind();
         renderer->SetViewport({viewportSize.x, viewportSize.y});
-
-        // Camera cam;
-        // m_World->Each<CameraComponent>([&](const Entity&, const CameraComponent& camera)
-        // {
-        //     if (camera.Primary)
-        //     {
-        //         cam = camera.camera;
-        //     }
-        // });
         Camera viewportCamera = m_Camera;
+        if (std::holds_alternative<EditorState::Play>(m_EditorState))
+        {
+            m_World->Each<CameraComponent>([&](const Entity&, const CameraComponent& camera)
+            {
+                if (camera.Primary)
+                {
+                    viewportCamera = camera.camera;
+                }
+            });
+        }
         viewportCamera.SetAspectRatio(viewportSize.y > 0.0f ? viewportSize.x / viewportSize.y : 1.0f);
         m_RenderScene.BeginScene(viewportCamera);
         m_BuildRenderScene(*(m_World.get()), m_RenderScene);
@@ -206,13 +294,14 @@ namespace Sunset
         if (ImGui::BeginMenuBar()) {
             if (ImGui::BeginMenu("File")) {
                 if (ImGui::MenuItem("New Project")) { /* ... */ }
-                if (ImGui::MenuItem("Open"))
+                const bool canEditWorldFile = std::holds_alternative<EditorState::Edit>(m_EditorState);
+                if (ImGui::MenuItem("Open", nullptr, false, canEditWorldFile))
                 {
                     const auto worldPath = FileDialog::OpenFile("Open World", CONTENT_PATH, "bin");
                     if (worldPath && SaveSystem::Load(*worldPath, *(m_World.get())))
                         m_ContentBrowserPanel.SetCurrentWorldPath(*worldPath);
                 }
-                if (ImGui::MenuItem("Save"))
+                if (ImGui::MenuItem("Save", nullptr, false, canEditWorldFile))
                 {
                     const std::filesystem::path& currentWorldPath = m_ContentBrowserPanel.GetCurrentWorldPath();
                     if (!currentWorldPath.empty())
@@ -235,6 +324,48 @@ namespace Sunset
         }
 
         DrawSaveWorldAsPopup();
+    }
+
+    void EditorLayer::DrawToolbar()
+    {
+        ImGui::Begin("Toolbar", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+        if (std::holds_alternative<EditorState::Edit>(m_EditorState))
+        {
+            if (DrawToolbarImageButton("PlayButton", m_PlayIcon.get(), "Play"))
+                StartPlayMode();
+        }
+        else
+        {
+            if (std::holds_alternative<EditorState::Play>(m_EditorState))
+            {
+                if (DrawToolbarImageButton("PauseButton", m_PauseIcon.get(), "Pause"))
+                    PausePlayMode();
+            }
+            else
+            {
+                if (DrawToolbarImageButton("ResumeButton", m_PlayIcon.get(), "Resume"))
+                    ResumePlayMode();
+            }
+
+            ImGui::SameLine();
+            if (ImGui::Button("Stop"))
+                StopPlayMode();
+        }
+
+        ImGui::End();
+    }
+
+    bool EditorLayer::DrawToolbarImageButton(const char* id, const Texture* icon, const char* fallbackLabel)
+    {
+        if (!icon)
+            return ImGui::Button(fallbackLabel);
+
+        return ImGui::ImageButton(
+            id,
+            ImTextureRef(static_cast<ImTextureID>(icon->GetRenderID())),
+            ImVec2(24.0f, 24.0f)
+        );
     }
 
     void EditorLayer::DrawSaveWorldAsPopup()

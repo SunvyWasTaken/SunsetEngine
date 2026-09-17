@@ -33,9 +33,13 @@ namespace Sunset
 
         std::vector<std::unique_ptr<ScriptEntity>> m_ScriptEntitys;
 
-        void Start(World* world, const Entity& entity);
+        void Start(const Entity& entity);
+        void Stop();
+        void AddRegisteredScript(const std::string& name, std::function<ScriptEntity*()> instantiate);
+        const std::vector<std::string>& GetRegisteredScriptNames() const;
 
         std::vector<std::function<ScriptEntity*()>> InstantiateScriptEntity;
+        std::vector<std::string> RegisteredScriptNames;
         // void(*DestroyScriptEntity)(NativeScriptComponent*);
 
         template <typename T, typename ...Args>
@@ -58,4 +62,10 @@ namespace Sunset
             // DestroyScriptEntity = [](NativeScriptComponent* self){ delete static_cast<T*>(self->m_ScriptEntitys); };
         }
     };
+
+    class BinaryInputArchive;
+    class BinaryOutputArchive;
+
+    void Serialize(BinaryInputArchive& archive, NativeScriptComponent& component);
+    void Serialize(BinaryOutputArchive& archive, NativeScriptComponent& component);
 } // Sunset

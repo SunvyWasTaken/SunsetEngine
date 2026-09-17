@@ -45,6 +45,9 @@ namespace Sunset
         ReflectionType Properties() override;
     };
 
-    template <typename Archive>
-    void Serialize(Archive& ar, TagComponent& component);
+    class BinaryInputArchive;
+    class BinaryOutputArchive;
+
+    void Serialize(BinaryInputArchive& archive, TagComponent& component);
+    void Serialize(BinaryOutputArchive& archive, TagComponent& component);
 } // Sunset

@@ -46,6 +46,8 @@ namespace Sunset
 
         bool OnEvent(const Event::Type& event);
 
+        void StartUpdate();
+
         void Update(float dt);
 
         template <typename T>
@@ -93,6 +95,7 @@ namespace Sunset
 
         Entity CreateEntity(const std::string& name);
         void DestroyEntity(const Entity& entity);
+        std::shared_ptr<World> Clone() const;
 
     private:
         entt::registry m_Registry;

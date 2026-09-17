@@ -207,9 +207,9 @@ namespace Sunset
     void ContentBrowserPanel::OnImGuiRender()
     {
         if (!m_FolderIcon)
-            m_FolderIcon = LoadTexture(SUNSET_EDITOR_LOCAL_RESOURCES "Folder.png");
+            m_FolderIcon = LoadTexture(SUNSET_EDITOR_LOCAL_RESOURCES "Icons/Folder.png");
         if (!m_FileIcon)
-            m_FileIcon = LoadTexture(SUNSET_EDITOR_LOCAL_RESOURCES "File.png");
+            m_FileIcon = LoadTexture(SUNSET_EDITOR_LOCAL_RESOURCES "Icons/File.png");
 
         ImGui::Begin("Content");
 

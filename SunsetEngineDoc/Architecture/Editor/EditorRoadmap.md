@@ -1,21 +1,24 @@
-#Todo
 # Editor Roadmap
 
 Objectif: rendre l'editeur capable de produire un jeu complet de A a Z, depuis la creation d'une scene jusqu'a l'export jouable.
 
 ## 1. Mode Play / Stop
 
-- Ajouter un bouton Play / Stop dans l'editeur.
-- Separer le monde d'edition du monde runtime.
-- Au Play, copier ou serialiser/deserialiser le World courant dans un RuntimeWorld.
-- Au Stop, detruire le RuntimeWorld et revenir au World d'edition intact.
-- Eviter que les scripts modifies pendant le Play changent definitivement la scene.
+- [x] Ajouter un bouton Play / Stop dans l'editeur.
+- [x] Separer le monde d'edition du monde runtime.
+- [x] Au Play, cloner le World courant dans un RuntimeWorld.
+- [x] Au Stop, detruire le RuntimeWorld et revenir au World d'edition intact.
+- [x] Eviter que les scripts modifies pendant le Play changent definitivement la scene.
+- [x] Lancer `OnBeginPlay`, `OnUpdate` et `OnEndPlay` des scripts runtime.
+- [ ] Ajouter un indicateur visuel clair du mode Play.
+- [ ] Bloquer ou filtrer les actions editor dangereuses pendant le Play.
 
 ## 2. Gestion de scenes
 
-- Introduire un vrai concept de scene/world asset.
-- Supporter New Scene, Open Scene, Save, Save As.
-- Stocker le chemin de la scene courante.
+- [ ] Introduire un vrai concept de scene/world asset.
+- [x] Supporter Open Scene, Save et Save As basiques.
+- [ ] Supporter New Scene proprement.
+- [x] Stocker le chemin de la scene courante.
 - Afficher un etat dirty quand la scene a ete modifiee.
 - Demander confirmation avant de fermer ou charger une autre scene si des modifications ne sont pas sauvegardees.
 
@@ -55,10 +58,11 @@ Objectif: rendre l'editeur capable de produire un jeu complet de A a Z, depuis l
 
 ## 7. Picking robuste dans le viewport
 
-- Remplacer le picking approximatif par un framebuffer d'ID.
-- Rendre chaque entite selectionnable avec un identifiant unique.
-- Lire le pixel sous la souris au clic.
-- Supporter sprites, meshes 3D et objets superposes.
+- [x] Ajouter une selection viewport approximative pour les sprites.
+- [ ] Remplacer le picking approximatif par un framebuffer d'ID.
+- [ ] Rendre chaque entite selectionnable avec un identifiant unique.
+- [ ] Lire le pixel sous la souris au clic.
+- [ ] Supporter sprites, meshes 3D et objets superposes.
 
 ## 8. Inspector complet
 
@@ -87,7 +91,7 @@ Objectif: rendre l'editeur capable de produire un jeu complet de A a Z, depuis l
 
 - Afficher une grid dans le viewport.
 - Ajouter snap position, rotation et scale.
-- Integrer le snap avec ImGuizmo.
+- Integrer le snap avec [[ImGuizmo]].
 - Rendre les valeurs configurables dans l'editeur.
 
 ## 12. Camera editor
@@ -120,11 +124,12 @@ Objectif: rendre l'editeur capable de produire un jeu complet de A a Z, depuis l
 
 ## Ordre recommande
 
-1. Mode Play / Stop.
+1. Dirty flag et confirmations de scene.
 2. Undo / Redo pour transforms et creation/suppression d'entites.
-3. Scene asset propre avec dirty flag.
+3. Scene asset propre avec New Scene.
 4. Add/Remove component dans l'inspector.
 5. Asset references avec UUID et metadata.
-6. Build standalone.
+6. Picking par framebuffer d'ID.
+7. Build standalone.
 
-Le point le plus important est le mode Play / Stop. Tant que l'editeur et le runtime manipulent le meme World sans isolation, tester le jeu peut modifier ou casser la scene d'edition.
+Le mode Play / Stop de base existe maintenant. La priorite suivante est de fiabiliser l'edition autour de la scene: dirty flag, confirmations, undo/redo et workflow scene asset.
