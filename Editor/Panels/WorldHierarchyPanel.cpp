@@ -5,10 +5,12 @@
 #include "WorldHierarchyPanel.h"
 
 #include <algorithm>
+#include <cctype>
 #include <imgui.h>
 #include <glm/gtc/type_ptr.inl>
 
 #include "GameFramework/Components/Component.h"
+#include "GameFramework/Components/ComponentRegistry.h"
 #include "GameFramework/Components/InputComponent.h"
 #include "GameFramework/Components/NativeScriptComponent.h"
 #include "GameFramework/Components/TransformComponent.h"
@@ -19,6 +21,21 @@
 namespace
 {
     entt::entity selected = entt::null;
+    char addComponentSearch[128]{};
+
+    bool MatchesComponentSearch(const Sunset::ComponentRegistryEntry& entry, const std::string& search)
+    {
+        if (search.empty())
+            return true;
+
+        std::string label = entry.Category + "/" + entry.Name;
+        std::ranges::transform(label, label.begin(), [](const unsigned char character)
+        {
+            return static_cast<char>(std::tolower(character));
+        });
+
+        return label.find(search) != std::string::npos;
+    }
 
     bool HasSpecializedComponentDrawer(const entt::id_type typeId)
     {
@@ -386,51 +403,58 @@ namespace Sunset
             {
                 if (ImGui::Button("AddComponent"))
                 {
+                    addComponentSearch[0] = '\0';
                     ImGui::OpenPopup("Add Component##1");
                 }
                 if (ImGui::BeginPopup("Add Component##1"))
                 {
-                    // for (auto& component : ComponentRegister::register)
-                    // {
-                    //
-                    // }
-                    if (ImGui::Button("Transform Component"))
-                    {
-                        if (m_SelectedEntity)
-                        {
-                            m_SelectedEntity.AddComponent<TransformComponent>();
-                        }
-                        ImGui::CloseCurrentPopup();
-                    }
-                    if (ImGui::Button("Native Script Component"))
-                    {
-                        ImGui::OpenPopup("Add Native Script");
-                    }
-                    if (ImGui::BeginPopup("Add Native Script"))
-                    {
-                        const auto& scripts = ScriptRegistry::GetScripts();
-                        if (scripts.empty())
-                            ImGui::TextDisabled("No native scripts registered");
+                    ImGui::InputTextWithHint("##ComponentSearch", "Search components...", addComponentSearch, sizeof(addComponentSearch));
 
-                        auto* component = entity.GetComponent<NativeScriptComponent>();
-                        for (const auto& script : scripts)
+                    std::string search{addComponentSearch};
+                    std::ranges::transform(search, search.begin(), [](const unsigned char character)
+                    {
+                        return static_cast<char>(std::tolower(character));
+                    });
+
+                    std::string category;
+                    bool categoryOpen = false;
+                    bool added = false;
+
+                    for (const auto& component : ComponentRegistry::GetEntries())
+                    {
+                        if (!MatchesComponentSearch(component, search))
+                            continue;
+
+                        if (component.Category != category)
                         {
-                            const bool alreadyAttached = component
-                                && std::ranges::find(component->GetRegisteredScriptNames(), script.Name)
-                                    != component->GetRegisteredScriptNames().end();
-                            if (ImGui::MenuItem(script.Name.c_str(), nullptr, alreadyAttached, !alreadyAttached))
+                            if (categoryOpen)
+                                ImGui::EndMenu();
+
+                            category = component.Category;
+                            categoryOpen = ImGui::BeginMenu(category.c_str());
+                        }
+
+                        if (!categoryOpen)
+                            continue;
+
+                        const bool canAdd = !component.Has(entity);
+                        if (ImGui::MenuItem(component.Name.c_str(), nullptr, false, canAdd))
+                        {
+                            Entity target = entity;
+                            if (component.Add(target))
                             {
-                                if (!component)
-                                {
-                                    Entity target = entity;
-                                    component = &target.AddComponent<NativeScriptComponent>();
-                                }
-                                ScriptRegistry::AddScriptTo(*component, script.Name);
-                                SetSelectedEntity(entity);
+                                SetSelectedEntity(target);
+                                added = true;
                             }
                         }
-                        ImGui::EndPopup();
                     }
+
+                    if (categoryOpen)
+                        ImGui::EndMenu();
+
+                    if (added)
+                        ImGui::CloseCurrentPopup();
+
                     ImGui::EndPopup();
                 }
                 if (ImGui::Button("Destroy Entity"))
@@ -478,6 +502,23 @@ namespace Sunset
                     ImGui::Separator();
                     ImGui::Text(properties.Name.c_str());
                     DrawEditorObject(se.get(), properties);
+                }
+
+                const auto& scripts = ScriptRegistry::GetScripts();
+                if (scripts.empty())
+                {
+                    ImGui::TextDisabled("No native scripts registered");
+                }
+                else if (ImGui::BeginCombo("Add Script", "Select script"))
+                {
+                    for (const auto& script : scripts)
+                    {
+                        const bool alreadyAttached = std::ranges::find(tc->GetRegisteredScriptNames(), script.Name)
+                            != tc->GetRegisteredScriptNames().end();
+                        if (ImGui::MenuItem(script.Name.c_str(), nullptr, false, !alreadyAttached))
+                            ScriptRegistry::AddScriptTo(*tc, script.Name);
+                    }
+                    ImGui::EndCombo();
                 }
                 ImGui::TreePop();
             }

@@ -37,5 +37,6 @@ namespace Sunset
         static const std::vector<ScriptRegistryEntry>& GetScripts();
         static const ScriptRegistryEntry* Find(std::string_view name);
         static bool AddScriptTo(NativeScriptComponent& component, std::string_view name);
+        static void Clear();
     };
 } // Sunset

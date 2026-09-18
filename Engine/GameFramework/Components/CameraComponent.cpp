@@ -6,6 +6,8 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+#include "SaveSystem/BinaryArchive.h"
+
 namespace Sunset
 {
     void CameraComponent::SetProjectionType(const ProjectionType& projectionType)
@@ -16,6 +18,7 @@ namespace Sunset
     ReflectionType CameraComponent::Properties()
     {
         ReflectionType properties;
+        properties.Field("Activate", &CameraComponent::Primary);
         properties.EnumField<CameraComponent, ProjectionType>("Projection Type", [](void* instance) -> ProjectionType*
         {
             auto* component = static_cast<CameraComponent*>(instance);
@@ -52,9 +55,45 @@ namespace Sunset
         Primary = active;
     }
 
-    template<typename Archive>
-    void Serialize(Archive &ar, CameraComponent &component)
+    void Serialize(BinaryInputArchive& archive, CameraComponent& component)
     {
+        archive(component.Primary);
+        archive(component.camera);
+    }
 
+    void Serialize(BinaryOutputArchive& archive, CameraComponent& component)
+    {
+        archive(component.Primary);
+        archive(component.camera);
+    }
+
+    void Serialize(BinaryInputArchive& archive, Camera& camera)
+    {
+        archive(camera.m_Position);
+        archive(camera.m_Forward);
+        archive(camera.m_Up);
+        archive(camera.m_Yaw);
+        archive(camera.m_Pitch);
+        archive(camera.m_Fov);
+        archive(camera.m_CameraDistance);
+        archive(camera.OrthographicSize);
+        archive(camera.NearPlaneDistance);
+        archive(camera.FarPlaneDistance);
+        archive(camera.m_ProjectionType);
+    }
+
+    void Serialize(BinaryOutputArchive& archive, Camera& camera)
+    {
+        archive(camera.m_Position);
+        archive(camera.m_Forward);
+        archive(camera.m_Up);
+        archive(camera.m_Yaw);
+        archive(camera.m_Pitch);
+        archive(camera.m_Fov);
+        archive(camera.m_CameraDistance);
+        archive(camera.OrthographicSize);
+        archive(camera.NearPlaneDistance);
+        archive(camera.FarPlaneDistance);
+        archive(camera.m_ProjectionType);
     }
 } // Sunset

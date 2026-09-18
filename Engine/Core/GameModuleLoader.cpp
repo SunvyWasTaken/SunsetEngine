@@ -4,6 +4,9 @@
 
 #include "GameModuleLoader.h"
 
+#include "GameFramework/Components/ComponentRegistry.h"
+#include "GameFramework/World/ScriptRegistry.h"
+
 #if _WIN32
 #include <window.h>
 #define LOADDL(...) LoadLibraryW(__VA_ARGS__)
@@ -70,6 +73,10 @@ namespace Sunset
             m_Destroy(module);
             module = nullptr;
         }
+
+        // These callbacks are compiled in the game module and must not outlive its DLL.
+        ScriptRegistry::Clear();
+        ComponentRegistry::ClearProjectComponents();
 
         if (m_Handle)
         {

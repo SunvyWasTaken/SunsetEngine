@@ -48,4 +48,9 @@ namespace Sunset
         component.AddRegisteredScript(entry->Name, entry->Instantiate);
         return true;
     }
+
+    void ScriptRegistry::Clear()
+    {
+        s_Scripts.clear();
+    }
 } // Sunset

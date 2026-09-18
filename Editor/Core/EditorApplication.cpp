@@ -9,6 +9,7 @@
 #include <imgui_impl_opengl3.h>
 
 #include "Core/GameModuleLoader.h"
+#include "SaveSystem/SaveSystem.h"
 
 namespace Sunset
 {
@@ -66,6 +67,7 @@ namespace Sunset
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
+        SaveSystem::CreateFolder(SAVE_PATH);
         io.IniFilename = SAVE_PATH "imgui.ini";
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable;
         io.FontDefault = io.Fonts->AddFontFromFileTTF(SUNSET_EDITOR_LOCAL_RESOURCES "JetBrainMono/JetBrainsMono-Regular.ttf", 18.f);

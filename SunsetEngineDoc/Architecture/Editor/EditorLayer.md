@@ -1,5 +1,4 @@
 (Editor/Layers/EditorLayer.h)
-
 ## Concept
 
 [[EditorLayer]] est le layer principal de l'editeur.

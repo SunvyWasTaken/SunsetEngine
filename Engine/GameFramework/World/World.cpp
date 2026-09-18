@@ -65,36 +65,6 @@ namespace
 
 namespace Sunset
 {
-    void Serialize(BinaryInputArchive& archive, Camera& camera)
-    {
-        archive(camera.m_Position);
-        archive(camera.m_Forward);
-        archive(camera.m_Up);
-        archive(camera.m_Yaw);
-        archive(camera.m_Pitch);
-        archive(camera.m_Fov);
-        archive(camera.m_CameraDistance);
-        archive(camera.OrthographicSize);
-        archive(camera.NearPlaneDistance);
-        archive(camera.FarPlaneDistance);
-        archive(camera.m_ProjectionType);
-    }
-
-    void Serialize(BinaryOutputArchive& archive, Camera& camera)
-    {
-        archive(camera.m_Position);
-        archive(camera.m_Forward);
-        archive(camera.m_Up);
-        archive(camera.m_Yaw);
-        archive(camera.m_Pitch);
-        archive(camera.m_Fov);
-        archive(camera.m_CameraDistance);
-        archive(camera.OrthographicSize);
-        archive(camera.NearPlaneDistance);
-        archive(camera.FarPlaneDistance);
-        archive(camera.m_ProjectionType);
-    }
-
     void Serialize(BinaryInputArchive& archive, TagComponent& component)
     {
         archive(component.Tag);
@@ -123,18 +93,6 @@ namespace Sunset
         archive(component.OwnerPeerId);
         archive(component.bSyncPositionInWorld);
         archive(component.bBroadcastPositionInWorld);
-    }
-
-    void Serialize(BinaryInputArchive& archive, CameraComponent& component)
-    {
-        archive(component.Primary);
-        archive(component.camera);
-    }
-
-    void Serialize(BinaryOutputArchive& archive, CameraComponent& component)
-    {
-        archive(component.Primary);
-        archive(component.camera);
     }
 
     void Serialize(BinaryInputArchive& archive, InputBindingInfo& binding)
