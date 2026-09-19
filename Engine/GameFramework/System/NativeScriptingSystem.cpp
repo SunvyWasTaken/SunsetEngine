@@ -13,10 +13,9 @@ namespace Sunset
     void NativeScriptingSystem::Update(const float dt)
     {
         IWorldSystem::Update(dt);
-        m_World->Each<NativeScriptComponent>([&](const Entity& entity, NativeScriptComponent& script)
+        m_World->Each<NativeScriptComponent>([dt](const Entity&, NativeScriptComponent& script)
         {
-            for (const auto& it : script.m_ScriptEntitys)
-              it->OnUpdate(dt);
+            script.Update(dt);
         });
     }
 } // Sunset

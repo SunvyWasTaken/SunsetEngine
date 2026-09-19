@@ -4,6 +4,9 @@
 
 #pragma once
 
+#include <istream>
+#include <ostream>
+
 namespace Sunset
 {
     template <typename Archive, typename T>
@@ -48,7 +51,7 @@ namespace Sunset
     class BinaryInputArchive
     {
     public:
-        explicit BinaryInputArchive(std::ifstream& stream)
+        explicit BinaryInputArchive(std::istream& stream)
             : m_Stream(stream)
         {
         }
@@ -98,7 +101,7 @@ namespace Sunset
         }
 
     private:
-        std::ifstream& m_Stream;
+        std::istream& m_Stream;
     };
 
     template <>

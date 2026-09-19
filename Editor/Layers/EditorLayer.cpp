@@ -179,8 +179,8 @@ namespace Sunset
 
         if (std::holds_alternative<EditorState::Play>(m_EditorState))
         {
-            m_World->BeginInput();
             m_World->Update(dt);
+            m_World->BeginInput();
         }
     }
 

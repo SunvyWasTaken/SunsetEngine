@@ -15,6 +15,8 @@ namespace Sunset
     class Entity;
     class World;
     class ScriptEntity;
+    class BinaryInputArchive;
+    class BinaryOutputArchive;
 
     class NativeScriptComponent : public Component
     {
@@ -34,20 +36,21 @@ namespace Sunset
         std::vector<std::unique_ptr<ScriptEntity>> m_ScriptEntitys;
 
         void Start(const Entity& entity);
+        void Update(float dt);
         void Stop();
         void AddRegisteredScript(const std::string& name, std::function<ScriptEntity*()> instantiate);
         const std::vector<std::string>& GetRegisteredScriptNames() const;
+        void CopyConfigurationTo(NativeScriptComponent& target) const;
 
         std::vector<std::function<ScriptEntity*()>> InstantiateScriptEntity;
         std::vector<std::string> RegisteredScriptNames;
-        // void(*DestroyScriptEntity)(NativeScriptComponent*);
 
         template <typename T, typename ...Args>
         requires(std::is_base_of_v<ScriptEntity, T>)
         void Bind(Args&&... args)
         {
             using ArgsTuple = std::tuple<std::decay_t<Args>...>;
-            InstantiateScriptEntity.emplace_back([storedArgs = ArgsTuple{std::forward<Args>(args)...}]() mutable
+            AddScriptFactory([storedArgs = ArgsTuple{std::forward<Args>(args)...}]() mutable
             {
                 return std::apply(
                     []<typename... T0>(T0&&... unpackedArgs) -> ScriptEntity*
@@ -59,12 +62,18 @@ namespace Sunset
                     storedArgs
                 );
             });
-            // DestroyScriptEntity = [](NativeScriptComponent* self){ delete static_cast<T*>(self->m_ScriptEntitys); };
         }
-    };
 
-    class BinaryInputArchive;
-    class BinaryOutputArchive;
+    private:
+        friend void Serialize(BinaryInputArchive& archive, NativeScriptComponent& component);
+        friend void Serialize(BinaryOutputArchive& archive, NativeScriptComponent& component);
+
+        void AddScriptFactory(std::function<ScriptEntity*()> instantiate);
+        void InstantiateMissingScripts(const Entity& entity);
+
+        std::vector<std::size_t> m_RegisteredScriptIndices;
+        std::vector<bool> m_ScriptStarted;
+    };
 
     void Serialize(BinaryInputArchive& archive, NativeScriptComponent& component);
     void Serialize(BinaryOutputArchive& archive, NativeScriptComponent& component);

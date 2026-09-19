@@ -8,6 +8,7 @@
 #include "ScriptEntity.h"
 #include "Core/Application.h"
 #include "GameFramework/Components/CameraComponent.h"
+#include "GameFramework/Components/ComponentRegistry.h"
 #include "GameFramework/Components/InputComponent.h"
 #include "GameFramework/Components/NativeScriptComponent.h"
 #include "GameFramework/Components/SpriteRenderComponent.h"
@@ -19,10 +20,12 @@
 #include "Network/NetworkService.h"
 #include "SaveSystem/SaveSystem.h"
 
+#include <sstream>
+
 namespace
 {
     constexpr std::uint32_t WorldSaveMagic = 0x44574E53; // SNWD
-    constexpr std::uint32_t WorldSaveVersion = 1;
+    constexpr std::uint32_t WorldSaveVersion = 3;
 
     void RegisterEngineSystems(Sunset::World& world)
     {
@@ -48,9 +51,8 @@ namespace
         if (!hasComponent)
             return;
 
-        ComponentType component{};
+        auto& component = entity.AddComponent<ComponentType>();
         archive(component);
-        entity.AddComponent<ComponentType>(std::move(component));
     }
 
     template <typename ComponentType>
@@ -196,10 +198,9 @@ namespace Sunset
         // for (const auto& system : m_Systems)
         //     system->Update(dt);
 
-        Each<NativeScriptComponent>([&](const Entity& entity, NativeScriptComponent& script)
+        Each<NativeScriptComponent>([dt](const Entity&, NativeScriptComponent& script)
         {
-            for (const auto& it : script.m_ScriptEntitys)
-                it->OnUpdate(dt);
+            script.Update(dt);
         });
     }
 
@@ -239,6 +240,7 @@ namespace Sunset
 
         for (const auto view = m_Registry.view<entt::entity>(); const auto sourceEntity : view)
         {
+            Entity sourceEntityHandle{const_cast<World*>(this), sourceEntity};
             Entity targetEntity{clonedWorld.get(), clonedWorld->m_Registry.create(sourceEntity)};
 
             CloneComponent<TagComponent>(m_Registry, targetEntity, sourceEntity);
@@ -251,7 +253,15 @@ namespace Sunset
             {
                 auto& clonedScript = targetEntity.AddComponent<NativeScriptComponent>();
                 const auto& sourceScript = m_Registry.get<NativeScriptComponent>(sourceEntity);
-                clonedScript.InstantiateScriptEntity = sourceScript.InstantiateScriptEntity;
+                sourceScript.CopyConfigurationTo(clonedScript);
+            }
+
+            for (const auto& component : ComponentRegistry::GetEntries())
+            {
+                if (component.Source == ComponentRegistrySource::Project && component.Has(sourceEntityHandle))
+                {
+                    component.Copy(sourceEntityHandle, targetEntity);
+                }
             }
         }
 
@@ -286,6 +296,31 @@ namespace Sunset
             SaveComponent<CameraComponent>(archive, world.m_Registry, enttEntity);
             SaveComponent<InputComponent>(archive, world.m_Registry, enttEntity);
             SaveComponent<SpriteRenderComponent>(archive, world.m_Registry, enttEntity);
+            SaveComponent<NativeScriptComponent>(archive, world.m_Registry, enttEntity);
+
+            std::uint64_t projectComponentCount = 0;
+            for (const auto& component : ComponentRegistry::GetEntries())
+                if (component.Source == ComponentRegistrySource::Project && component.Has(entity))
+                    ++projectComponentCount;
+
+            archive(projectComponentCount);
+            for (const auto& component : ComponentRegistry::GetEntries())
+            {
+                if (component.Source != ComponentRegistrySource::Project || !component.Has(entity))
+                    continue;
+
+                std::string componentName = component.Name;
+                archive(componentName);
+
+                std::ostringstream payloadStream(std::ios::out | std::ios::binary);
+                BinaryOutputArchive payloadArchive(payloadStream);
+                Entity componentEntity = entity;
+                component.Save(payloadArchive, componentEntity);
+
+                const std::string payloadData = payloadStream.str();
+                std::vector<std::uint8_t> payload(payloadData.begin(), payloadData.end());
+                archive(payload);
+            }
         });
     }
 
@@ -321,6 +356,29 @@ namespace Sunset
             LoadComponent<CameraComponent>(archive, entity);
             LoadComponent<InputComponent>(archive, entity);
             LoadComponent<SpriteRenderComponent>(archive, entity);
+            LoadComponent<NativeScriptComponent>(archive, entity);
+
+            std::uint64_t projectComponentCount = 0;
+            archive(projectComponentCount);
+            for (std::uint64_t componentIndex = 0; componentIndex < projectComponentCount; ++componentIndex)
+            {
+                std::string componentName;
+                std::vector<std::uint8_t> payload;
+                archive(componentName);
+                archive(payload);
+
+                const auto* component = ComponentRegistry::FindProjectComponent(componentName);
+                if (!component)
+                {
+                    LOG("Engine", warn, "World references unavailable project component '{}'", componentName)
+                    continue;
+                }
+
+                const std::string payloadData(payload.begin(), payload.end());
+                std::istringstream payloadStream(payloadData, std::ios::in | std::ios::binary);
+                BinaryInputArchive payloadArchive(payloadStream);
+                component->Load(payloadArchive, entity);
+            }
         }
     }
 } // Sunset

@@ -67,6 +67,16 @@ namespace Sunset
 
     bool ComponentRegistry::RegisterEntry(ComponentRegistryEntry entry)
     {
+        const auto duplicateName = std::ranges::find_if(s_Entries, [&entry](const ComponentRegistryEntry& current)
+        {
+            return current.Name == entry.Name && current.TypeId != entry.TypeId;
+        });
+        if (duplicateName != s_Entries.end())
+        {
+            LOG("Engine", error, "Component name '{}' is already registered by another type", entry.Name)
+            return false;
+        }
+
         const auto existing = std::ranges::find_if(s_Entries, [typeId = entry.TypeId](const ComponentRegistryEntry& current)
         {
             return current.TypeId == typeId;
@@ -88,6 +98,17 @@ namespace Sunset
     {
         EnsureEngineComponentsRegistered();
         return s_Entries;
+    }
+
+    const ComponentRegistryEntry* ComponentRegistry::FindProjectComponent(const std::string_view name)
+    {
+        EnsureEngineComponentsRegistered();
+
+        const auto entry = std::ranges::find_if(s_Entries, [name](const ComponentRegistryEntry& current)
+        {
+            return current.Source == ComponentRegistrySource::Project && current.Name == name;
+        });
+        return entry == s_Entries.end() ? nullptr : &*entry;
     }
 
     void ComponentRegistry::ClearProjectComponents()
