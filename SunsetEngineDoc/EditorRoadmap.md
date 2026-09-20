@@ -1,5 +1,6 @@
 # Editor Roadmap
 
+voir si je peux pas le rendre compatible avec un llm
 Objectif: rendre l'editeur capable de produire un jeu complet de A a Z, depuis la creation d'une scene jusqu'a l'export jouable.
 
 ## 1. Mode Play / Stop
