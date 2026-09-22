@@ -33,6 +33,8 @@
 
 namespace
 {
+    bool ViewportHover = false;
+
     struct ImGuiDockspaceArgs
     {
         bool                IsFullscreen = true;
@@ -207,18 +209,18 @@ namespace Sunset
         // });
         if (std::holds_alternative<EditorState::Play>(m_EditorState))
             m_World->OnEvent(event);
-        else
-        if (auto* keyboard = std::get_if<Event::Keyboard>(&event))
-        {
-            if (keyboard->key == Key::W)
-                m_Camera.AddPosition(m_Camera.GetForward());
-            else if (keyboard->key == Key::S)
-                m_Camera.AddPosition(-m_Camera.GetForward());
-            else if (keyboard->key == Key::A)
-                m_Camera.AddPosition(-m_Camera.GetRight());
-            else if (keyboard->key == Key::D)
-                m_Camera.AddPosition(m_Camera.GetRight());
-        }
+        else if (ViewportHover)
+            if (auto* keyboard = std::get_if<Event::Keyboard>(&event))
+            {
+                if (keyboard->key == Key::W)
+                    m_Camera.AddPosition(m_Camera.GetForward());
+                else if (keyboard->key == Key::S)
+                    m_Camera.AddPosition(-m_Camera.GetForward());
+                else if (keyboard->key == Key::A)
+                    m_Camera.AddPosition(-m_Camera.GetRight());
+                else if (keyboard->key == Key::D)
+                    m_Camera.AddPosition(m_Camera.GetRight());
+            }
 
         return Layer::OnEvent(event);
     }
@@ -432,6 +434,7 @@ namespace Sunset
     {
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
         ImGui::Begin("Viewport");
+        ViewportHover = ImGui::IsWindowHovered();
         const auto& AvailableSpace = ImGui::GetContentRegionAvail();
         if (viewportSize.x != AvailableSpace.x || viewportSize.y != AvailableSpace.y)
         {

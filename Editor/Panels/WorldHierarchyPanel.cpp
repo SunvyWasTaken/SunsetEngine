@@ -277,11 +277,16 @@ namespace
                 }
                 case Sunset::ReflectionFieldType::String:
                 {
+                    constexpr size_t maxLength = 255;
+
                     void* ptr = type.GetPtr(instance);
-                    char buffer[256] = {};
-                    strcpy(buffer, static_cast<std::string*>(ptr)->c_str());
-                    if (ImGui::InputText("Tag", buffer, sizeof(buffer)))
-                        static_cast<std::string*>(ptr)->assign(buffer);
+                    auto& value = *(static_cast<std::string*>(ptr));
+                    std::array<char, maxLength + 1> buffer{};
+                    const std::size_t length = std::min(value.size(), maxLength);
+                    std::memcpy(buffer.data(), value.c_str(), length);
+
+                    if (ImGui::InputText(type.Name.c_str(), buffer.data(), buffer.size()))
+                        value.assign(buffer.data());
 
                     break;
                 }
