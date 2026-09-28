@@ -44,12 +44,73 @@ namespace Sunset
             }
             ImGui::End();
         }
-        if (!ProfileData::Get().empty())
+        const auto& profiles = ProfileData::Get();
+        if (!profiles.empty())
         {
-            ImGui::Begin("Profiling", nullptr);
-            for (const auto& it : ProfileData::Get())
+            if (ImGui::Begin("Profiling", nullptr, ImGuiWindowFlags_HorizontalScrollbar))
             {
-                ImGui::Text("%s", it.c_str());
+                auto first = profiles.front().start;
+                auto last = profiles.front().end;
+                float labelWidth = 90.0f;
+                for (const auto& profile : profiles)
+                {
+                    if (profile.start < first) first = profile.start;
+                    if (profile.end > last) last = profile.end;
+                    const float nameWidth = ImGui::CalcTextSize(profile.name.c_str()).x + 16.0f;
+                    if (nameWidth > labelWidth) labelWidth = nameWidth;
+                }
+                if (labelWidth > 220.0f) labelWidth = 220.0f;
+
+                const float frameMs = std::chrono::duration<float, std::milli>(last - first).count();
+                ImGui::Text("Frame %.2f ms", frameMs);
+
+                const float availableWidth = ImGui::GetContentRegionAvail().x;
+                const float width = availableWidth > 480.0f ? availableWidth : 480.0f;
+                const float durationWidth = 82.0f;
+                const float padding = 8.0f;
+                const float plotX = labelWidth + padding;
+                const float plotWidth = width - plotX - durationWidth - padding;
+                const float rowHeight = ImGui::GetTextLineHeightWithSpacing() + 6.0f;
+                const float rowsHeight = padding * 2.0f + rowHeight * static_cast<float>(profiles.size());
+                const float axisHeight = ImGui::GetTextLineHeightWithSpacing() + 4.0f;
+
+                const ImVec2 origin = ImGui::GetCursorScreenPos();
+                ImGui::Dummy(ImVec2(width, rowsHeight + axisHeight));
+                ImDrawList* drawList = ImGui::GetWindowDrawList();
+                drawList->PushClipRect(origin, ImVec2(origin.x + width, origin.y + rowsHeight + axisHeight), true);
+                drawList->AddRect(origin, ImVec2(origin.x + width, origin.y + rowsHeight),
+                                  ImGui::GetColorU32(ImGuiCol_Border));
+
+                for (size_t i = 0; i < profiles.size(); ++i)
+                {
+                    const auto& profile = profiles[i];
+                    const float startMs = std::chrono::duration<float, std::milli>(profile.start - first).count();
+                    const float durationMs = std::chrono::duration<float, std::milli>(profile.end - profile.start).count();
+                    const float y = origin.y + padding + rowHeight * static_cast<float>(i);
+                    const float barStart = origin.x + plotX + (frameMs > 0.0f ? startMs / frameMs * plotWidth : 0.0f);
+                    const float barEnd = origin.x + plotX + (frameMs > 0.0f ? (startMs + durationMs) / frameMs * plotWidth : 0.0f);
+
+                    drawList->PushClipRect(ImVec2(origin.x + padding, y),
+                                           ImVec2(origin.x + labelWidth, y + rowHeight), true);
+                    drawList->AddText(ImVec2(origin.x + padding, y + 3.0f),
+                                      ImGui::GetColorU32(ImGuiCol_Text), profile.name.c_str());
+                    drawList->PopClipRect();
+
+                    drawList->AddRectFilled(ImVec2(barStart, y + 3.0f),
+                                            ImVec2(barEnd, y + rowHeight - 3.0f),
+                                            ImGui::GetColorU32(ImGuiCol_PlotHistogram));
+                    const std::string durationLabel = std::format("{:.2f} ms", durationMs);
+                    drawList->AddText(ImVec2(origin.x + width - durationWidth + padding, y + 3.0f),
+                                      ImGui::GetColorU32(ImGuiCol_Text), durationLabel.c_str());
+                }
+
+                const float axisY = origin.y + rowsHeight + 2.0f;
+                drawList->AddText(ImVec2(origin.x + plotX, axisY),
+                                  ImGui::GetColorU32(ImGuiCol_TextDisabled), "0 ms");
+                const std::string endLabel = std::format("{:.2f} ms", frameMs);
+                drawList->AddText(ImVec2(origin.x + plotX + plotWidth - ImGui::CalcTextSize(endLabel.c_str()).x, axisY),
+                                  ImGui::GetColorU32(ImGuiCol_TextDisabled), endLabel.c_str());
+                drawList->PopClipRect();
             }
             ImGui::End();
         }

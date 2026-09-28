@@ -8,15 +8,13 @@ namespace
 {
     std::mutex ProfilingDataMutex;
 
-    std::vector<std::string> ProfilingData;
+    std::vector<Sunset::ProfilEntry> ProfilingData;
 
-    void Add(const std::string& data)
+    void Add(Sunset::ProfilEntry& data)
     {
         std::scoped_lock lock(ProfilingDataMutex);
         ProfilingData.emplace_back(data);
     }
-
-    #define SS_ADD_PROFILING_DATA(data, ...) ::Add(std::format(data, ##__VA_ARGS__));
 }
 
 namespace Sunset
@@ -27,26 +25,21 @@ namespace Sunset
         ProfilingData.clear();
     }
 
-    std::vector<std::string> & ProfileData::Get()
+    std::vector<ProfilEntry> & ProfileData::Get()
     {
         std::scoped_lock lock(ProfilingDataMutex);
         return ProfilingData;
     }
 
     Profiling::Profiling(const std::string_view &_name)
-        : name(_name)
     {
-        m_StartTimePoint = std::chrono::high_resolution_clock::now();
+        entry.name = _name;
+        entry.start = std::chrono::high_resolution_clock::now();
     }
 
     Profiling::~Profiling()
     {
-        const auto endTimePoint = std::chrono::high_resolution_clock::now();
-
-        long long start = std::chrono::time_point_cast<std::chrono::microseconds>(m_StartTimePoint).time_since_epoch().count();
-        long long end = std::chrono::time_point_cast<std::chrono::microseconds>(endTimePoint).time_since_epoch().count();
-
-        const float duration = (end - start) * 0.001f;
-        SS_ADD_PROFILING_DATA("{:.3f}ms : {}", duration, name);
+        entry.end = std::chrono::high_resolution_clock::now();
+        ::Add(entry);
     }
 }

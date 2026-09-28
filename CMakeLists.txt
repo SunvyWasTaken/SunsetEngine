@@ -22,6 +22,7 @@ target_compile_definitions(SunsetEngine_compiler_flags INTERFACE
         $<$<CONFIG:Debug>:SS_DEBUG>
         $<$<CONFIG:RelWithDebInfo>:SS_PROFILING>
         $<$<CONFIG:RelWithDebInfo>:SS_DEBUG>
+        $<$<CONFIG:Release>:SS_PROFILING>
         $<$<CONFIG:Release>:SS_RELEASE>
 )
 

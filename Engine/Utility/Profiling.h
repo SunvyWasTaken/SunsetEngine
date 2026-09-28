@@ -6,10 +6,17 @@
 
 namespace Sunset
 {
+    struct ProfilEntry
+    {
+        std::string name;
+        std::chrono::high_resolution_clock::time_point start;
+        std::chrono::high_resolution_clock::time_point end;
+    };
+
     struct ProfileData
     {
         static void Free();
-        static std::vector<std::string>& Get();
+        static std::vector<ProfilEntry>& Get();
     };
 
     struct Profiling final
@@ -18,8 +25,7 @@ namespace Sunset
 
         ~Profiling();
 
-        std::chrono::high_resolution_clock::time_point m_StartTimePoint;
-        const std::string name;
+        ProfilEntry entry;
     };
 }
 
