@@ -84,13 +84,18 @@ namespace Sunset
             std::chrono::duration<float> dt = now - prev;
             prev = now;
 
-            BeginFrame();
+            ProfileData::start = std::chrono::high_resolution_clock::now();
+            {
+                SS_PROFILE_SCOPE("Begin Frame");
+                BeginFrame();
+            }
 
             Update(dt.count());
 
             if (!AppSetting.Headless)
                 Render();
 
+            ProfileData::end = std::chrono::high_resolution_clock::now();
             EndFrame();
 
             if (!m_CommandBuffer.empty())
@@ -127,6 +132,7 @@ namespace Sunset
 
     void Application::BeginFrame()
     {
+        SS_PROFILE_SCOPE("App Begin Frame");
         if (m_Window)
         {
             m_Window->PollEvents();

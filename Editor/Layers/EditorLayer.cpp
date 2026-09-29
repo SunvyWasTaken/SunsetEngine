@@ -118,8 +118,8 @@ namespace Sunset
     {
         Layer::Init();
         SetActiveWorld(std::make_shared<World>());
-        m_PlayIcon = LoadTexture(SUNSET_EDITOR_LOCAL_RESOURCES "Icons/jouer.png");
-        m_PauseIcon = LoadTexture(SUNSET_EDITOR_LOCAL_RESOURCES "Icons/pause.png");
+        m_PlayIcon = LoadTexture(EDITOR_RESOURCES "Icons/jouer.png");
+        m_PauseIcon = LoadTexture(EDITOR_RESOURCES "Icons/pause.png");
         m_Framebuffer = RenderTarget::Create({1280, 720});
         m_Camera.SetPosition({0, 0, 10});
     }
@@ -317,6 +317,10 @@ namespace Sunset
                         m_SaveWorldAsError.clear();
                         m_ShouldOpenSaveWorldAsPopup = true;
                     }
+                }
+                if (ImGui::MenuItem("Import", nullptr, false, canEditWorldFile))
+                {
+                    const auto worldPath = FileDialog::OpenFile("Asset", SUNSET_RESOURCES, "obj");
                 }
                 ImGui::EndMenu();
             }

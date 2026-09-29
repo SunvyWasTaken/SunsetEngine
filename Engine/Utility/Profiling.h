@@ -16,6 +16,8 @@ namespace Sunset
     struct ProfileData
     {
         static void Free();
+        static std::chrono::high_resolution_clock::time_point start;
+        static std::chrono::high_resolution_clock::time_point end;
         static std::vector<ProfilEntry>& Get();
     };
 

@@ -20,11 +20,26 @@ target_link_libraries(SunsetEditor PRIVATE
 
 add_dependencies(SunsetEditor Sunset::Game)
 
-target_compile_definitions(SunsetEditor
-        PUBLIC
-            LOCAL_PATH="${CMAKE_BINARY_DIR}/"
-        PRIVATE
-            SUNSET_EDITOR_LOCAL_RESOURCES=\"${CMAKE_CURRENT_SOURCE_DIR}/Resources/\"
-            SUNSET_EDITOR_GAME_MODULE_PATH=\"$<TARGET_FILE:${SUNSET_GAME_TARGET}>\"
-            SUNSET_EDITOR_GAME_NAME=\"${SUNSET_GAME_TARGET}\"
-)
+if(PRODUCTION_BUILD)
+    target_compile_definitions(SunsetEditor
+            PUBLIC
+                LOCAL_PATH="${CMAKE_BINARY_DIR}/"
+            PRIVATE
+                EDITOR_RESOURCES=\"Resources/\"
+                SUNSET_RESOURCES=\"Resources/\"
+                CONTENT_PATH=\"./Content/
+                SUNSET_EDITOR_GAME_MODULE_PATH=\"$<TARGET_FILE:${SUNSET_GAME_TARGET}>\"
+                SUNSET_EDITOR_GAME_NAME=\"${SUNSET_GAME_TARGET}\"
+    )
+else()
+    target_compile_definitions(SunsetEditor
+            PUBLIC
+                LOCAL_PATH="${CMAKE_BINARY_DIR}/"
+            PRIVATE
+                EDITOR_RESOURCES=\"${CMAKE_CURRENT_SOURCE_DIR}/Resources/\"
+                SUNSET_RESOURCES=\"${CMAKE_SOURCE_DIR}/Resources/\"
+                CONTENT_PATH=\"${CMAKE_SOURCE_DIR}/Content/\"
+                SUNSET_EDITOR_GAME_MODULE_PATH=\"$<TARGET_FILE:${SUNSET_GAME_TARGET}>\"
+                SUNSET_EDITOR_GAME_NAME=\"${SUNSET_GAME_TARGET}\"
+    )
+endif()

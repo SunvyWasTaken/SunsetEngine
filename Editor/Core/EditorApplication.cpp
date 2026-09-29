@@ -27,6 +27,7 @@ namespace Sunset
     void EditorApplication::BeginFrame()
     {
         Application::BeginFrame();
+        SS_PROFILE_FUNCTION();
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -49,8 +50,8 @@ namespace Sunset
         {
             if (ImGui::Begin("Profiling", nullptr, ImGuiWindowFlags_HorizontalScrollbar))
             {
-                auto first = profiles.front().start;
-                auto last = profiles.front().end;
+                auto first = ProfileData::start;
+                auto last = ProfileData::end;
                 float labelWidth = 90.0f;
                 for (const auto& profile : profiles)
                 {
@@ -131,7 +132,7 @@ namespace Sunset
         SaveSystem::CreateFolder(SAVE_PATH);
         io.IniFilename = SAVE_PATH "imgui.ini";
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable;
-        io.FontDefault = io.Fonts->AddFontFromFileTTF(SUNSET_EDITOR_LOCAL_RESOURCES "JetBrainMono/JetBrainsMono-Regular.ttf", 18.f);
+        io.FontDefault = io.Fonts->AddFontFromFileTTF(EDITOR_RESOURCES "JetBrainMono/JetBrainsMono-Regular.ttf", 18.f);
 
         ImGui::StyleColorsDark();
         ImGuiStyle& style = ImGui::GetStyle();

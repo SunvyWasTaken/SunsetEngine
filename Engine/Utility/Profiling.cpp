@@ -19,6 +19,9 @@ namespace
 
 namespace Sunset
 {
+    std::chrono::high_resolution_clock::time_point ProfileData::start{};
+    std::chrono::high_resolution_clock::time_point ProfileData::end{};
+
     void ProfileData::Free()
     {
         std::scoped_lock lock(ProfilingDataMutex);
