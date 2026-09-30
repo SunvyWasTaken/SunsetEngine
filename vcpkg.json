@@ -17,6 +17,7 @@
     "imguizmo",
     "openal-soft",
     "spdlog",
-    "libsndfile"
+    "libsndfile",
+    "yaml-cpp"
   ]
 }

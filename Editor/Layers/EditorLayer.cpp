@@ -31,6 +31,8 @@
 #include <ImGuizmo.h>
 #include <stb_image.h>
 
+#include "Core/AssetImporter.h"
+
 namespace
 {
     bool ViewportHover = false;
@@ -299,7 +301,7 @@ namespace Sunset
                 const bool canEditWorldFile = std::holds_alternative<EditorState::Edit>(m_EditorState);
                 if (ImGui::MenuItem("Open", nullptr, false, canEditWorldFile))
                 {
-                    const auto worldPath = FileDialog::OpenFile("Open World", CONTENT_PATH, "bin");
+                    const auto worldPath = FileDialog::OpenFile("Open World", CONTENT_PATH, {{"World files", "*.bin"}});
                     if (worldPath && SaveSystem::Load(*worldPath, *(m_World.get())))
                         m_ContentBrowserPanel.SetCurrentWorldPath(*worldPath);
                 }
@@ -320,7 +322,8 @@ namespace Sunset
                 }
                 if (ImGui::MenuItem("Import", nullptr, false, canEditWorldFile))
                 {
-                    const auto worldPath = FileDialog::OpenFile("Asset", SUNSET_RESOURCES, "obj");
+                    const auto assetPath = FileDialog::OpenFile("Asset", SUNSET_RESOURCES);
+                    Sunset::AssetImporter::Import(assetPath.value());
                 }
                 ImGui::EndMenu();
             }

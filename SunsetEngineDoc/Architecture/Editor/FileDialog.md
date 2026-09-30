@@ -4,11 +4,14 @@
 
 [[FileDialog]] encapsule l'ouverture d'une fenetre native du systeme pour choisir un fichier.
 
-Il est utilise par [[EditorLayer]] pour `File > Open`.
+Il est utilise par [[EditorLayer]] pour `File > Open` et `File > Import`.
 
 ```cpp
-auto path = FileDialog::OpenFile("Open World", CONTENT_PATH, "bin");
+auto worldPath = FileDialog::OpenFile("Open World", CONTENT_PATH, {{"World files", "*.bin"}});
+auto assetPath = FileDialog::OpenFile("Asset", SUNSET_RESOURCES);
 ```
+
+Le troisieme argument est une liste facultative de filtres `{libelle, motif}`. Sans filtre, tous les fichiers sont affiches. Avec des filtres, le dialogue propose aussi « All files ».
 
 La fonction retourne:
 
@@ -33,8 +36,7 @@ Sous Windows, l'implementation utilise l'API native `GetOpenFileNameA`.
 Dans [[EditorLayer]], l'ouverture d'un world fait:
 
 ```cpp
-const auto worldPath = FileDialog::OpenFile("Open World", CONTENT_PATH, "bin");
+const auto worldPath = FileDialog::OpenFile("Open World", CONTENT_PATH, {{"World files", "*.bin"}});
 if (worldPath && SaveSystem::Load(*worldPath, *m_World))
 	m_ContentBrowserPanel.SetCurrentWorldPath(*worldPath);
 ```
-

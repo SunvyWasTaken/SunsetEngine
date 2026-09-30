@@ -17,17 +17,16 @@
 namespace
 {
 #ifdef _WIN32
-    std::string BuildWindowsFilter(std::string_view extensionFilter)
+    std::string BuildWindowsFilter(std::initializer_list<Sunset::FileDialog::Filter> filters)
     {
-        std::string pattern = "*.";
-        pattern += extensionFilter;
-
-        std::string filter = "World files (";
-        filter += pattern;
-        filter += ')';
-        filter.push_back('\0');
-        filter += pattern;
-        filter.push_back('\0');
+        std::string filter;
+        for (const auto& entry : filters)
+        {
+            filter += entry.label;
+            filter.push_back('\0');
+            filter += entry.pattern;
+            filter.push_back('\0');
+        }
         filter += "All files";
         filter.push_back('\0');
         filter += "*.*";
@@ -88,12 +87,12 @@ namespace Sunset
     std::optional<std::filesystem::path> FileDialog::OpenFile(
         std::string_view title,
         const std::filesystem::path& initialDirectory,
-        std::string_view extensionFilter
+        std::initializer_list<Filter> filters
     )
     {
 #ifdef _WIN32
         char filepath[MAX_PATH] = {};
-        std::string filter = BuildWindowsFilter(extensionFilter);
+        std::string filter = BuildWindowsFilter(filters);
         const std::string initialDirectoryString = initialDirectory.string();
         const std::string titleString = std::string(title);
 
@@ -114,24 +113,40 @@ namespace Sunset
 #else
         const std::string titleArg = ShellQuote(std::string(title));
         const std::string initialDirectoryArg = ShellQuote(initialDirectory.string());
-        const std::string extension = std::string(extensionFilter);
 
         if (CommandExists("zenity"))
         {
-            const std::string command =
+            std::string command =
                 "zenity --file-selection --title=" + titleArg +
-                " --filename=" + ShellQuote((initialDirectory / "").string()) +
-                " --file-filter=" + ShellQuote("World files (*." + extension + ") | *." + extension);
+                " --filename=" + ShellQuote((initialDirectory / "").string());
+
+            for (const auto& filter : filters)
+                command += " --file-filter=" + ShellQuote(std::string(filter.label) + " | " + std::string(filter.pattern));
+            if (filters.size() != 0)
+                command += " --file-filter=" + ShellQuote("All files | *");
 
             return RunFileDialogCommand(command);
         }
 
         if (CommandExists("kdialog"))
         {
-            const std::string command =
+            std::string command =
                 "kdialog --title " + titleArg +
-                " --getopenfilename " + initialDirectoryArg +
-                " " + ShellQuote("*." + extension + "|World files (*." + extension + ")");
+                " --getopenfilename " + initialDirectoryArg;
+
+            if (filters.size() != 0)
+            {
+                std::string filterList;
+                for (const auto& filter : filters)
+                {
+                    filterList += filter.pattern;
+                    filterList += '|';
+                    filterList += filter.label;
+                    filterList += '\n';
+                }
+                filterList += "*|All files";
+                command += " " + ShellQuote(filterList);
+            }
 
             return RunFileDialogCommand(command);
         }

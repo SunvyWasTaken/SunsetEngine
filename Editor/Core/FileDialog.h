@@ -5,6 +5,7 @@
 #pragma once
 
 #include <filesystem>
+#include <initializer_list>
 #include <optional>
 #include <string_view>
 
@@ -12,10 +13,16 @@ namespace Sunset
 {
     struct FileDialog final
     {
+        struct Filter
+        {
+            std::string_view label;
+            std::string_view pattern;
+        };
+
         static std::optional<std::filesystem::path> OpenFile(
             std::string_view title,
             const std::filesystem::path& initialDirectory,
-            std::string_view extensionFilter
+            std::initializer_list<Filter> filters = {}
         );
     };
 } // Sunset

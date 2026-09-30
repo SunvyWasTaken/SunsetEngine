@@ -13,6 +13,12 @@ project(
 #delete the out folder after changing if visual studio doesn't recognize the change
 set(PRODUCTION_BUILD OFF CACHE BOOL "Make this a production build" FORCE)
 
+configure_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Version.h.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/generated/Version.h"
+        @ONLY
+)
+
 add_library(SunsetEngine_compiler_flags INTERFACE)
 
 target_compile_features(SunsetEngine_compiler_flags INTERFACE cxx_std_23)
@@ -50,6 +56,8 @@ add_library(SunsetRuntime INTERFACE)
 add_library(Sunset::Runtime ALIAS SunsetRuntime)
 
 target_link_libraries(SunsetRuntime INTERFACE Sunset::Engine)
+
+target_include_directories(SunsetRuntime INTERFACE "${CMAKE_CURRENT_BINARY_DIR}/generated")
 
 if (SUNSET_USE_GLFW)
     target_link_libraries(SunsetRuntime INTERFACE Sunset::PlatformGLFW)

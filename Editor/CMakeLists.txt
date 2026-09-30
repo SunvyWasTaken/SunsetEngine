@@ -3,6 +3,7 @@ file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.cp
 find_package(imgui CONFIG REQUIRED)
 find_package(imguizmo CONFIG REQUIRED)
 find_package(unofficial-imgui-node-editor CONFIG REQUIRED)
+find_package(yaml-cpp CONFIG REQUIRED)
 
 add_executable(SunsetEditor ${MY_SOURCES})
 
@@ -16,6 +17,7 @@ target_link_libraries(SunsetEditor PRIVATE
         imgui::imgui
         imguizmo::imguizmo
         unofficial::imgui-node-editor::imgui-node-editor
+        yaml-cpp::yaml-cpp
 )
 
 add_dependencies(SunsetEditor Sunset::Game)
