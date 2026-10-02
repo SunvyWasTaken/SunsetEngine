@@ -6,17 +6,13 @@
 
 #include "Entity.h"
 #include "ScriptEntity.h"
-#include "Core/Application.h"
 #include "GameFramework/Components/CameraComponent.h"
 #include "GameFramework/Components/ComponentRegistry.h"
 #include "GameFramework/Components/InputComponent.h"
 #include "GameFramework/Components/NativeScriptComponent.h"
 #include "GameFramework/Components/SpriteRenderComponent.h"
 #include "GameFramework/Components/TransformComponent.h"
-#include "GameFramework/System/CameraSystem.h"
-#include "GameFramework/System/IWorldSystem.h"
 #include "GameFramework/System/NativeScriptingSystem.h"
-#include "GameFramework/System/RenderMeshSystem.h"
 #include "Network/NetworkService.h"
 #include "SaveSystem/SaveSystem.h"
 

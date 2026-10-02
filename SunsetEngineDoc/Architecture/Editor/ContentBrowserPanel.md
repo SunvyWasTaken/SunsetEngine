@@ -38,15 +38,20 @@ Le bouton retour revient au dossier racine `CONTENT_PATH`.
 
 ## Creation et renommage
 
-Un clic droit dans la fenetre ouvre le menu de creation:
+Un clic droit dans l'espace vide de la fenetre ouvre le menu de creation:
 
 - `Create Folder`
 
-Un clic droit sur un dossier ouvre un menu contextuel:
+Un clic droit sur un fichier ou un dossier ouvre un menu contextuel:
 
 - `Rename`
 
-Le rename ouvre une popup modale, verifie que le nom n'est pas vide et refuse d'ecraser un fichier ou dossier existant.
+Le renommage ouvre une popup modale partagee avec les autres panneaux de l'editeur.
+Pour les fichiers, seul le nom est modifiable; l'extension est conservee.
+La popup refuse les noms invalides et les collisions, puis affiche les erreurs du systeme de fichiers.
+Le chemin du world courant est actualise si son fichier ou un dossier parent est renomme.
+Un autre panneau peut posseder un `FilesystemRenameDialog`, appeler `Open(path, isDirectory)`
+puis `Render()` chaque frame pour recuperer les anciens et nouveaux chemins apres un renommage reussi.
 
 ## Drag and drop
 
@@ -94,4 +99,3 @@ Le [[World]] est injecte avec:
 ```cpp
 panel.SetWorld(world);
 ```
-

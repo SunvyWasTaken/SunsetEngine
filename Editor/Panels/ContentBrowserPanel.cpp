@@ -8,12 +8,7 @@
 #include "Render/Resources/Texture.h"
 #include "SaveSystem/SaveSystem.h"
 
-#include <algorithm>
-#include <cstring>
-#include <filesystem>
 #include <imgui.h>
-#include <string>
-#include <vector>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -204,6 +199,36 @@ namespace Sunset
         }
     }
 
+    void ContentBrowserPanel::UpdatePathsAfterRename(const RenamedPath& renamed)
+    {
+        const auto replacePath = [&renamed](std::filesystem::path& path)
+        {
+            if (path.empty())
+                return;
+
+            std::error_code error;
+            const std::filesystem::path oldPath = std::filesystem::absolute(renamed.oldPath, error).lexically_normal();
+            if (error)
+                return;
+            const std::filesystem::path referencedPath = std::filesystem::absolute(path, error).lexically_normal();
+            if (error)
+                return;
+
+            if (referencedPath == oldPath)
+            {
+                path = renamed.newPath;
+                return;
+            }
+
+            const std::filesystem::path relative = referencedPath.lexically_relative(oldPath);
+            if (!relative.empty() && *relative.begin() != "..")
+                path = renamed.newPath / relative;
+        };
+
+        replacePath(currentPath);
+        replacePath(m_CurrentWorldPath);
+    }
+
     void ContentBrowserPanel::OnImGuiRender()
     {
         if (!m_FolderIcon)
@@ -212,16 +237,6 @@ namespace Sunset
             m_FileIcon = LoadTexture(EDITOR_RESOURCES "Icons/File.png");
 
         ImGui::Begin("Content");
-
-        if (ImGui::BeginPopupContextWindow())
-        {
-            if (ImGui::Button("Create Folder"))
-            {
-                std::filesystem::path filepath(currentPath / "NewFolder");
-                std::filesystem::create_directory(filepath);
-            }
-            ImGui::EndPopup();
-        }
 
         if (currentPath != CONTENT_BROWSER_PATH)
         {
@@ -256,12 +271,13 @@ namespace Sunset
             if (column > 0)
                 ImGui::SameLine(0.0f, padding);
 
-            if (file.is_directory())
-            {
-                const BrowserItemAction action = DrawBrowserItem(file, m_FolderIcon.get(), tileSize, iconSize);
-                BeginContentBrowserDragSource(file);
+            const bool isDirectory = file.is_directory();
+            const BrowserItemAction action = DrawBrowserItem(file, isDirectory ? m_FolderIcon.get() : m_FileIcon.get(), tileSize, iconSize);
+            BeginContentBrowserDragSource(file);
 
-                bool movedItemIntoFolder = false;
+            bool movedItemIntoFolder = false;
+            if (isDirectory)
+            {
                 if (ImGui::BeginDragDropTarget())
                 {
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(CONTENT_BROWSER_ITEM_PAYLOAD))
@@ -273,38 +289,22 @@ namespace Sunset
                     ImGui::EndDragDropTarget();
                 }
 
-                const std::string popupID = "FolderContext_" + file.path().string();
-                if (ImGui::BeginPopupContextItem(popupID.c_str()))
-                {
-                    if (ImGui::MenuItem("Rename"))
-                    {
-                        m_RenameTarget = file.path();
-                        m_RenameError.clear();
-
-                        const std::string fileName = file.path().filename().string();
-                        std::ranges::fill(m_RenameBuffer, '\0');
-                        std::strncpy(m_RenameBuffer.data(), fileName.c_str(), m_RenameBuffer.size() - 1);
-
-                        m_ShouldOpenRenamePopup = true;
-                    }
-                    ImGui::EndPopup();
-                }
-
                 if (action.clicked && !movedItemIntoFolder)
-                {
                     currentPath = file.path();
-                }
             }
-            else
-            {
-                const BrowserItemAction action = DrawBrowserItem(file, m_FileIcon.get(), tileSize, iconSize);
-                BeginContentBrowserDragSource(file);
 
-                if (action.doubleClicked && m_World && file.path().extension() == ".bin")
-                {
-                    if (SaveSystem::Load(file.path(), *m_World))
-                        m_CurrentWorldPath = file.path();
-                }
+            const std::string popupID = "ItemContext_" + file.path().string();
+            if (ImGui::BeginPopupContextItem(popupID.c_str()))
+            {
+                if (ImGui::MenuItem("Rename"))
+                    m_RenameDialog.Open(file.path(), isDirectory);
+                ImGui::EndPopup();
+            }
+
+            if (!isDirectory && action.doubleClicked && m_World && file.path().extension() == ".bin")
+            {
+                if (SaveSystem::Load(file.path(), *m_World))
+                    m_CurrentWorldPath = file.path();
             }
 
             column = (column + 1) % columns;
@@ -313,56 +313,18 @@ namespace Sunset
         if (!m_ContentBrowserError.empty())
             ImGui::TextColored(ImVec4(0.95f, 0.25f, 0.25f, 1.0f), "%s", m_ContentBrowserError.c_str());
 
-        if (m_ShouldOpenRenamePopup)
+        if (ImGui::BeginPopupContextWindow(nullptr, ImGuiPopupFlags_NoOpenOverItems))
         {
-            ImGui::OpenPopup("Rename Folder");
-            m_ShouldOpenRenamePopup = false;
-        }
-
-        if (ImGui::BeginPopupModal("Rename Folder", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
-        {
-            ImGui::InputText("Name", m_RenameBuffer.data(), m_RenameBuffer.size());
-
-            if (!m_RenameError.empty())
-                ImGui::TextColored(ImVec4(0.95f, 0.25f, 0.25f, 1.0f), "%s", m_RenameError.c_str());
-
-            if (ImGui::Button("Rename"))
+            if (ImGui::MenuItem("Create Folder"))
             {
-                const std::string newName = m_RenameBuffer.data();
-                if (newName.empty())
-                {
-                    m_RenameError = "Folder name cannot be empty.";
-                }
-                else
-                {
-                    const std::filesystem::path newPath = m_RenameTarget.parent_path() / newName;
-                    if (std::filesystem::exists(newPath))
-                    {
-                        m_RenameError = "A file or folder already has this name.";
-                    }
-                    else
-                    {
-                        std::filesystem::rename(m_RenameTarget, newPath);
-                        if (currentPath == m_RenameTarget)
-                            currentPath = newPath;
-
-                        m_RenameTarget.clear();
-                        m_RenameError.clear();
-                        ImGui::CloseCurrentPopup();
-                    }
-                }
+                std::filesystem::path filepath(currentPath / "NewFolder");
+                std::filesystem::create_directory(filepath);
             }
-
-            ImGui::SameLine();
-            if (ImGui::Button("Cancel"))
-            {
-                m_RenameTarget.clear();
-                m_RenameError.clear();
-                ImGui::CloseCurrentPopup();
-            }
-
             ImGui::EndPopup();
         }
+
+        if (const auto renamed = m_RenameDialog.Render())
+            UpdatePathsAfterRename(*renamed);
 
         ImGui::End();
     }

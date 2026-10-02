@@ -4,8 +4,6 @@
 
 #include "WorldHierarchyPanel.h"
 
-#include <algorithm>
-#include <cctype>
 #include <imgui.h>
 #include <glm/gtc/type_ptr.inl>
 

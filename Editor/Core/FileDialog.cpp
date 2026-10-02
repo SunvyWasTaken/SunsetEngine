@@ -4,11 +4,6 @@
 
 #include "FileDialog.h"
 
-#include <array>
-#include <cstdio>
-#include <cstdlib>
-#include <string>
-
 #ifdef _WIN32
 #include <windows.h>
 #include <commdlg.h>

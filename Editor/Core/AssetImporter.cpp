@@ -36,7 +36,7 @@ namespace Sunset
 
         if (type == AssetType::Mesh)
         {
-            YamlSerialization::Serialize({.source = assetPath.c_str()}, CONTENT_PATH + assetPath.filename().string());
+            YamlSerialization::Serialize({.source = assetPath.c_str()}, CONTENT_PATH + assetPath.stem().string() + ".asset");
         }
     }
 } // Sunset

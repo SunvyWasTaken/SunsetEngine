@@ -4,10 +4,7 @@
 
 #pragma once
 
-#include <array>
-#include <filesystem>
-#include <memory>
-#include <string>
+#include "Widgets/FilesystemRenameDialog.h"
 
 namespace Sunset
 {
@@ -27,15 +24,13 @@ namespace Sunset
         void OnImGuiRender();
     private:
         void MoveEntryToDirectory(const std::filesystem::path& sourcePath, const std::filesystem::path& destinationDirectory);
+        void UpdatePathsAfterRename(const RenamedPath& renamed);
 
         std::shared_ptr<World> m_World;
         std::filesystem::path m_CurrentWorldPath;
         std::unique_ptr<Texture> m_FolderIcon;
         std::unique_ptr<Texture> m_FileIcon;
-        std::filesystem::path m_RenameTarget;
-        std::array<char, 256> m_RenameBuffer{};
-        std::string m_RenameError;
+        FilesystemRenameDialog m_RenameDialog;
         std::string m_ContentBrowserError;
-        bool m_ShouldOpenRenamePopup = false;
     };
 } // Sunset

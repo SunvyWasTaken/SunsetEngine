@@ -4,9 +4,6 @@
 
 #include "EditorLayer.h"
 
-#include <algorithm>
-#include <cstring>
-
 #include "Core/Application.h"
 #include "Core/FileDialog.h"
 #include "GameFramework/World/Entity.h"

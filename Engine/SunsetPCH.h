@@ -15,11 +15,14 @@
 #include <filesystem>
 #include <functional>
 #include <fstream>
+#include <initializer_list>
 #include <limits>
 #include <map>
 #include <memory>
+#include <optional>
 #include <ranges>
 #include <string>
+#include <string_view>
 #include <variant>
 #include <vector>
 
