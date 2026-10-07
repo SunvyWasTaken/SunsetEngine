@@ -10,6 +10,7 @@ namespace Sunset
     struct AssetImporter
     {
         static void Import(const std::filesystem::path& assetPath);
+        static bool Load(const std::filesystem::path& assetPath);
     };
 } // Sunset
 

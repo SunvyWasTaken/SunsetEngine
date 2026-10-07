@@ -9,7 +9,7 @@ namespace Sunset
 {
     struct AssetMetaData
     {
-        std::uint32_t version = 0;
+        std::string version{};
         std::uint64_t handle = 0;
         std::uint32_t type = 0;
         std::string source{};

@@ -12,6 +12,7 @@ namespace Sunset
     struct YamlSerialization
     {
         static void Serialize(const AssetMetaData& metaData, const std::filesystem::path& path);
+        static void Deserialize(AssetMetaData& metaData, const std::filesystem::path& path);
     };
 } // Sunset
 

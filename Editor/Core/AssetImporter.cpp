@@ -34,9 +34,23 @@ namespace Sunset
 
         const AssetType type = AssetTypeRegistry::GetTypeFromExtension(assetPath.extension());
 
+        AssetMetaData meta;
+        meta.type = static_cast<std::uint32_t>(AssetType::Mesh);
+        meta.source = assetPath.c_str();
+
         if (type == AssetType::Mesh)
         {
-            YamlSerialization::Serialize({.source = assetPath.c_str()}, CONTENT_PATH + assetPath.stem().string() + ".asset");
+            YamlSerialization::Serialize(meta,
+                std::filesystem::path(CONTENT_PATH) / (assetPath.stem().string() + ".asset"));
         }
+    }
+
+    bool AssetImporter::Load(const std::filesystem::path& assetPath)
+    {
+        if (!std::filesystem::exists(assetPath))
+            return false;
+
+        AssetMetaData meta;
+        YamlSerialization::Deserialize(meta, assetPath);
     }
 } // Sunset
