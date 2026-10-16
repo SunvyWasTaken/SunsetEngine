@@ -35,14 +35,31 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            libgl1-mesa-dev \
-            libx11-dev \
-            libxrandr-dev \
-            libxinerama-dev \
-            libxcursor-dev \
-            libxi-dev
+          build-essential \
+          ninja-build \
+          pkg-config \
+          autoconf \
+          autoconf-archive \
+          automake \
+          libtool \
+          libgl1-mesa-dev \
+          libx11-dev \
+          libxrandr-dev \
+          libxinerama-dev \
+          libxcursor-dev \
+          libxi-dev
 
       - name: Configure CMake
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          cmake -S . -B build \
+            -G Ninja \
+            -DCMAKE_TOOLCHAIN_FILE="$RUNNER_TEMP/vcpkg/scripts/buildsystems/vcpkg.cmake" \
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Configure CMake
+        if: runner.os == 'Windows'
         shell: bash
         run: |
           cmake -S . -B build \

@@ -1,5 +1,7 @@
 # SunsetEngine
 
+![Image](Resources/SunsetEngine_16.10.26.png)
+
 SunsetEngine est un moteur et framework applicatif modulaire en **C++23**. Ce projet de portfolio explore la conception d'un runtime réutilisable : une base pour créer des jeux, mais aussi, à terme, des applications interactives hors jeu vidéo.
 
 Le dépôt rassemble le moteur, une application de jeu d'exemple et un éditeur en cours de construction. L'objectif est de travailler des sujets d'architecture concrets : séparation des responsabilités, abstractions de plateforme et de rendu, ECS, chargement de modules et outils de création.
