@@ -214,9 +214,9 @@ namespace Sunset
         ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(GetWindow()), true);
         ImGui_ImplOpenGL3_Init("#version 330");
 
-        if (!loader.Load(SUNSET_EDITOR_GAME_MODULE_PATH, *this))
-        {
-            throw std::runtime_error("Cannot load game module : " SUNSET_EDITOR_GAME_MODULE_PATH);
-        }
+        // if (!loader.Load(SUNSET_EDITOR_GAME_MODULE_PATH, *this))
+        // {
+        //     throw std::runtime_error("Cannot load game module : " SUNSET_EDITOR_GAME_MODULE_PATH);
+        // }
     }
 } // Sunset

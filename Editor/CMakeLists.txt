@@ -30,8 +30,8 @@ if(PRODUCTION_BUILD)
                 EDITOR_RESOURCES=\"Resources/\"
                 SUNSET_RESOURCES=\"Resources/\"
                 CONTENT_PATH=\"./Content/
-                SUNSET_EDITOR_GAME_MODULE_PATH=\"$<TARGET_FILE:${SUNSET_GAME_TARGET}>\"
-                SUNSET_EDITOR_GAME_NAME=\"${SUNSET_GAME_TARGET}\"
+#                SUNSET_EDITOR_GAME_MODULE_PATH=\"$<TARGET_FILE:${SUNSET_GAME_TARGET}>\"
+#                SUNSET_EDITOR_GAME_NAME=\"${SUNSET_GAME_TARGET}\"
     )
 else()
     target_compile_definitions(SunsetEditor
@@ -41,7 +41,7 @@ else()
                 EDITOR_RESOURCES=\"${CMAKE_CURRENT_SOURCE_DIR}/Resources/\"
                 SUNSET_RESOURCES=\"${CMAKE_SOURCE_DIR}/Resources/\"
                 CONTENT_PATH=\"${CMAKE_SOURCE_DIR}/Content/\"
-                SUNSET_EDITOR_GAME_MODULE_PATH=\"$<TARGET_FILE:${SUNSET_GAME_TARGET}>\"
-                SUNSET_EDITOR_GAME_NAME=\"${SUNSET_GAME_TARGET}\"
+#                SUNSET_EDITOR_GAME_MODULE_PATH=\"$<TARGET_FILE:${SUNSET_GAME_TARGET}>\"
+#                SUNSET_EDITOR_GAME_NAME=\"${SUNSET_GAME_TARGET}\"
     )
 endif()
