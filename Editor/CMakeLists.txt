@@ -20,7 +20,7 @@ target_link_libraries(SunsetEditor PRIVATE
         yaml-cpp::yaml-cpp
 )
 
-add_dependencies(SunsetEditor Sunset::Game)
+#add_dependencies(SunsetEditor Sunset::Game)
 
 if(PRODUCTION_BUILD)
     target_compile_definitions(SunsetEditor
