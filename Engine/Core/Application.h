@@ -9,8 +9,6 @@
 
 namespace Sunset
 {
-    struct RenderAPI;
-    class Renderer;
     class Window;
     struct WindowSetting;
     class Layer;
@@ -24,8 +22,6 @@ namespace Sunset
 
         void SetWindow(std::unique_ptr<Window> window);
 
-        void SetRenderAPI(std::unique_ptr<RenderAPI> API);
-
         void InitializeWindow();
 
         void Run();
@@ -37,8 +33,6 @@ namespace Sunset
         virtual void BeginFrame();
 
         void Update(float deltatime);
-
-        void Render();
 
         virtual void EndFrame();
 
@@ -106,16 +100,16 @@ namespace Sunset
 
         static void* GetWindow();
 
-        static RenderAPI* GetAPI();
-
         static bool IsHeadless();
 
         static void CloseApplication();
 
+    protected:
+        void ReleaseLayers();
+
     private:
         LayerStack m_LayerStack;
         std::unique_ptr<Window> m_Window;
-        std::unique_ptr<Renderer> m_Renderer;
         std::vector<std::function<void()>> m_CommandBuffer;
     };
 }

@@ -11,12 +11,10 @@ class GLFWwindow;
 
 namespace Sunset
 {
-    class GraphicsContext;
-
     class GLFWWindow : public Window
     {
     public:
-        explicit GLFWWindow(const WindowSetting& setting);
+        explicit GLFWWindow(const WindowSetting& setting, bool createOpenGLContext = false);
         ~GLFWWindow() override;
 
         GLFWWindow(const GLFWWindow&) = delete;
@@ -61,7 +59,7 @@ namespace Sunset
         };
 
         GLFWwindow* m_WindowHandle = nullptr;
-        std::unique_ptr<GraphicsContext> m_GraphicsContext;
+        bool m_HasOpenGLContext = false;
 
         WindowData m_Data;
 

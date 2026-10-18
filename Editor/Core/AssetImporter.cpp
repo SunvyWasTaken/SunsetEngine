@@ -52,5 +52,6 @@ namespace Sunset
 
         AssetMetaData meta;
         YamlSerialization::Deserialize(meta, assetPath);
+        return false;
     }
 } // Sunset

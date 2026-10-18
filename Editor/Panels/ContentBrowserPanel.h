@@ -8,7 +8,6 @@
 
 namespace Sunset
 {
-    class Texture;
     class World;
 
     class ContentBrowserPanel
@@ -28,8 +27,6 @@ namespace Sunset
 
         std::shared_ptr<World> m_World;
         std::filesystem::path m_CurrentWorldPath;
-        std::unique_ptr<Texture> m_FolderIcon;
-        std::unique_ptr<Texture> m_FileIcon;
         FilesystemRenameDialog m_RenameDialog;
         std::string m_ContentBrowserError;
     };

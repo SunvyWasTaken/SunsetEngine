@@ -40,8 +40,8 @@ m_World->ForEach([](const Entity& entity)
 Et pour parcourir les entities avec certains components:
 
 ```cpp
-m_World->Each<TransformComponent, SpriteRenderComponent>(
-	[](const Entity& entity, TransformComponent& transform, SpriteRenderComponent& sprite)
+m_World->Each<TransformComponent>(
+	[](const Entity& entity, TransformComponent& transform)
 	{
 	}
 );
@@ -102,9 +102,7 @@ Le clone copie les components supportes:
 
 - [[TagComponent]]
 - [[TransformComponent]]
-- [[CameraComponent]]
 - [[InputComponent]]
-- [[SpriteRenderComponent]]
 - [[NativeScriptComponent]]
 
 Pour [[NativeScriptComponent]], le clone recopie les factories `InstantiateScriptEntity`, mais pas les instances runtime deja creees.
@@ -125,4 +123,3 @@ Le format sauvegarde:
 La serialization actuelle ne sauvegarde pas les bindings C++ de [[NativeScriptComponent]].
 
 Pour cette raison, le mode Play utilise `World::Clone()` et non une copie par save/load.
-

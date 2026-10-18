@@ -41,16 +41,12 @@ endif ()
 # Permet de faire des options.
 option(SUNSET_BUILD_EDITOR "Build Sunset Editor" ON)
 option(SUNSET_USE_GLFW "Use GLFW as Window platform" ON)
-option(SUNSET_USE_OPENGL "Use OpenGL as Rendering backend" ON)
-option(SUNSET_USE_VULKAN "Use Vulkan as Rendering backend" OFF)
 
 add_subdirectory(Thirdparty/FastNoiseSIMD)
-add_subdirectory(Thirdparty/SRmGUI)
 
 add_subdirectory(Engine)
 
 add_subdirectory(Platform)
-add_subdirectory(RenderAPI)
 
 add_library(SunsetRuntime INTERFACE)
 add_library(Sunset::Runtime ALIAS SunsetRuntime)
@@ -61,16 +57,6 @@ target_include_directories(SunsetRuntime INTERFACE "${CMAKE_CURRENT_BINARY_DIR}/
 
 if (SUNSET_USE_GLFW)
     target_link_libraries(SunsetRuntime INTERFACE Sunset::PlatformGLFW)
-endif ()
-
-if (SUNSET_USE_OPENGL)
-    target_compile_definitions(SunsetEngine_compiler_flags INTERFACE SUNSET_OPENGL)
-    target_link_libraries(SunsetRuntime INTERFACE Sunset::BackendOpenGL)
-endif ()
-
-if (SUNSET_USE_VULKAN)
-    target_compile_definitions(SunsetEngine_compiler_flags INTERFACE SUNSET_VULKAN)
-    target_link_libraries(SunsetRuntime INTERFACE Sunset::Vulkan)
 endif ()
 
 # add_subdirectory(Game)

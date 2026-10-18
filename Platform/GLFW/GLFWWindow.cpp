@@ -6,10 +6,6 @@
 
 #include <GLFW/glfw3.h>
 
-#ifdef SUNSET_OPENGL
-#include "OpenGLContext.h"
-#endif
-#include "Core/GraphicContext.h"
 
 namespace
 {
@@ -163,9 +159,9 @@ namespace Sunset
 {
     std::uint32_t GLFWWindow::s_WindowCount = 0;
 
-    GLFWWindow::GLFWWindow(const WindowSetting &setting)
+    GLFWWindow::GLFWWindow(const WindowSetting &setting, bool createOpenGLContext)
         : m_WindowHandle(nullptr)
-        // , m_GraphicsContext(nullptr)
+        , m_HasOpenGLContext(createOpenGLContext)
     {
         Initialize(setting);
     }
@@ -185,10 +181,16 @@ namespace Sunset
 
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-        // if (m_GraphicsAPI == WindowGraphicsAPI::Vulkan)
-        // {
-        //     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        // }
+        if (m_HasOpenGLContext)
+        {
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        }
+        else
+        {
+            glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        }
 
         m_WindowHandle = glfwCreateWindow(static_cast<int>(properties.WindowSize.x), static_cast<int>(properties.WindowSize.y), properties.WindowTitle.data(), nullptr, nullptr);
 
@@ -202,13 +204,8 @@ namespace Sunset
 
         ++s_WindowCount;
 
-#ifdef SUNSET_OPENGL
-        m_GraphicsContext = std::make_unique<OpenGLContext>(m_WindowHandle);
-#elif defined(SUNSET_VULKAN)
-        m_GraphicsContext = std::make_shared<VulkanContext>(m_WindowHandle);
-#endif
-
-        m_GraphicsContext->Init();
+        if (m_HasOpenGLContext)
+            glfwMakeContextCurrent(m_WindowHandle);
 
         m_Data.Title = properties.WindowTitle.data();
         m_Data.Size = properties.WindowSize;
@@ -217,7 +214,8 @@ namespace Sunset
         glfwSetWindowUserPointer(m_WindowHandle, &m_Data);
 
         RegisterCallbacks();
-        SetVSync(m_Data.VSync);
+        if (m_HasOpenGLContext)
+            SetVSync(m_Data.VSync);
     }
 
     GLFWWindow::~GLFWWindow()
@@ -227,8 +225,6 @@ namespace Sunset
 
     void GLFWWindow::Shutdown()
     {
-        m_GraphicsContext.reset();
-
         if (m_WindowHandle != nullptr)
         {
             glfwDestroyWindow(m_WindowHandle);
@@ -248,7 +244,8 @@ namespace Sunset
 
     void GLFWWindow::Present()
     {
-        m_GraphicsContext->SwapBuffers();
+        if (m_HasOpenGLContext)
+            glfwSwapBuffers(m_WindowHandle);
     }
 
     bool GLFWWindow::ShouldClose() const
@@ -263,11 +260,11 @@ namespace Sunset
 
     void GLFWWindow::SetVSync(bool enabled)
     {
-        // if (m_GraphicsAPI == WindowGraphicsAPI::OpenGL)
-        // {
+        if (m_HasOpenGLContext)
+        {
             glfwMakeContextCurrent(m_WindowHandle);
             glfwSwapInterval(enabled ? 1 : 0);
-        // }
+        }
 
         m_Data.VSync = enabled;
     }

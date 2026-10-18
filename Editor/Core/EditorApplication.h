@@ -13,6 +13,7 @@
     {
     public:
         using Application::Application;
+        ~EditorApplication() override;
         void OnDestroy() override;
         void BeginFrame() override;
         void EndFrame() override;

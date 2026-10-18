@@ -22,4 +22,14 @@ while(IsAppRunning)
 }
 ```
 
-Application est aussi responsable de la vie de [[Window]] et [[Renderer]].
+Application est aussi responsable de la vie de [[Window]] et Du [[Renderer]]
+
+```cpp
+class Application
+{
+	// ...
+private:
+	std::unique_ptr<Window> m_window;
+	// ...
+}
+```

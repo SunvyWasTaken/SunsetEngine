@@ -50,7 +50,6 @@ target_link_libraries(
             glm::glm
             fastNoiseSIMD
             EnTT::EnTT
-            SRmGUI
             spdlog::spdlog_header_only
             fmt::fmt
         PRIVATE

@@ -6,10 +6,8 @@
 
 #include <algorithm>
 
-#include "CameraComponent.h"
 #include "InputComponent.h"
 #include "NativeScriptComponent.h"
-#include "SpriteRenderComponent.h"
 #include "TransformComponent.h"
 #include "GameFramework/World/ScriptEntity.h"
 
@@ -59,8 +57,6 @@ namespace Sunset
         };
 
         registerEngineComponent.template operator()<TransformComponent>("Transform", "Core");
-        registerEngineComponent.template operator()<CameraComponent>("Camera", "Rendering");
-        registerEngineComponent.template operator()<SpriteRenderComponent>("Sprite Render", "Rendering");
         registerEngineComponent.template operator()<InputComponent>("Input", "Gameplay");
         registerEngineComponent.template operator()<NativeScriptComponent>("Native Script", "Scripting");
     }

@@ -5,13 +5,10 @@
 #include "ContentBrowserPanel.h"
 
 #include "GameFramework/World/World.h"
-#include "Render/Resources/Texture.h"
 #include "SaveSystem/SaveSystem.h"
 
 #include <imgui.h>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
 
 namespace
 {
@@ -20,28 +17,6 @@ namespace
     const std::filesystem::path CONTENT_BROWSER_PATH = CONTENT_PATH;
     std::filesystem::path currentPath = CONTENT_BROWSER_PATH;
 
-    std::unique_ptr<Sunset::Texture> LoadTexture(const char* filepath)
-    {
-        int width = 0;
-        int height = 0;
-        int channels = 0;
-        stbi_uc* data = stbi_load(filepath, &width, &height, &channels, STBI_rgb_alpha);
-
-        if (!data)
-            return nullptr;
-
-        Sunset::TextureDescription desc;
-        desc.width = static_cast<std::uint32_t>(width);
-        desc.height = static_cast<std::uint32_t>(height);
-        desc.format = Sunset::TextureFormat::RGBA;
-        desc.data = data;
-
-        std::unique_ptr<Sunset::Texture> texture = Sunset::Texture::Create(desc);
-        stbi_image_free(data);
-
-        return texture;
-    }
-
     struct BrowserItemAction
     {
         bool clicked = false;
@@ -49,7 +24,7 @@ namespace
     };
 
     BrowserItemAction DrawBrowserItem(const std::filesystem::directory_entry& entry,
-                                      const Sunset::Texture* icon,
+                                      const char* icon,
                                       const ImVec2& tileSize,
                                       const ImVec2& iconSize)
     {
@@ -71,19 +46,8 @@ namespace
         drawList->AddRectFilled(start, ImVec2(start.x + tileSize.x, start.y + tileSize.y), backgroundColor, style.FrameRounding);
         drawList->AddRect(start, ImVec2(start.x + tileSize.x, start.y + tileSize.y), borderColor, style.FrameRounding);
 
-        if (icon)
-        {
-            const ImVec2 iconMin(
-                start.x + (tileSize.x - iconSize.x) * 0.5f,
-                start.y + 8.0f
-            );
-            const ImVec2 iconMax(iconMin.x + iconSize.x, iconMin.y + iconSize.y);
-            drawList->AddImage(
-                ImTextureRef(static_cast<ImTextureID>(icon->GetRenderID())),
-                iconMin,
-                iconMax
-            );
-        }
+        const ImVec2 iconMin(start.x + (tileSize.x - ImGui::CalcTextSize(icon).x) * 0.5f, start.y + 20.0f);
+        drawList->AddText(iconMin, ImGui::GetColorU32(ImGuiCol_Text), icon);
 
         const ImVec2 textSize = ImGui::CalcTextSize(fileName.c_str());
         const float textX = start.x + std::max((tileSize.x - textSize.x) * 0.5f, 6.0f);
@@ -231,11 +195,6 @@ namespace Sunset
 
     void ContentBrowserPanel::OnImGuiRender()
     {
-        if (!m_FolderIcon)
-            m_FolderIcon = LoadTexture(EDITOR_RESOURCES "Icons/Folder.png");
-        if (!m_FileIcon)
-            m_FileIcon = LoadTexture(EDITOR_RESOURCES "Icons/File.png");
-
         ImGui::Begin("Content");
 
         if (currentPath != CONTENT_BROWSER_PATH)
@@ -272,7 +231,7 @@ namespace Sunset
                 ImGui::SameLine(0.0f, padding);
 
             const bool isDirectory = file.is_directory();
-            const BrowserItemAction action = DrawBrowserItem(file, isDirectory ? m_FolderIcon.get() : m_FileIcon.get(), tileSize, iconSize);
+            const BrowserItemAction action = DrawBrowserItem(file, isDirectory ? "[DIR]" : "[FILE]", tileSize, iconSize);
             BeginContentBrowserDragSource(file);
 
             bool movedItemIntoFolder = false;

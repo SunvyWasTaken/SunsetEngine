@@ -6,7 +6,6 @@
 Elle possede:
 
 - un `GLFWwindow*`
-- un [[GraphicsContext]]
 - les donnees de fenetre
 - le callback d'[[Event]]
 
@@ -14,10 +13,8 @@ Elle possede:
 class GLFWWindow : public Window
 {
 	GLFWwindow* m_WindowHandle;
-	std::unique_ptr<GraphicsContext> m_GraphicsContext;
 	WindowData m_Data;
 };
 ```
 
 Elle transforme les callbacks GLFW en [[Event]] de l'engine.
-

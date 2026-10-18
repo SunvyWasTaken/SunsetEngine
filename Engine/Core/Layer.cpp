@@ -10,7 +10,7 @@ namespace Sunset
     {
     }
 
-    void Layer::OnDraw(Renderer* renderer)
+    void Layer::OnDraw()
     {
     }
 

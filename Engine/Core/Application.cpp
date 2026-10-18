@@ -10,8 +10,6 @@
 #include "GameFramework/World/World.h"
 #include "Layer.h"
 #include "Network/NetworkService.h"
-#include "Render/Core/Renderer.h"
-#include "Render/Core/RenderAPI.h"
 #include "Window.h"
 #include "WindowSetting.h"
 
@@ -24,7 +22,6 @@ namespace
     void ResizeWindow(const glm::ivec2& setting)
     {
         AppSetting.WindowSize = setting;
-        Sunset::Application::GetAPI()->SetViewport(setting);
     }
 }
 
@@ -33,7 +30,6 @@ namespace Sunset
     Application::Application(const WindowSetting& setting)
         : m_LayerStack()
         , m_Window(nullptr)
-        , m_Renderer(nullptr)
         , m_CommandBuffer()
     {
         Log::Init();
@@ -61,11 +57,6 @@ namespace Sunset
         m_Window->BindEvent([this](const Event::Type& event) { OnEvent(event); });
     }
 
-    void Application::SetRenderAPI(std::unique_ptr<RenderAPI> API)
-    {
-        m_Renderer = std::make_unique<Renderer>(std::move(API));
-    }
-
     void Application::InitializeWindow()
     {
         if (!m_Window)
@@ -76,6 +67,9 @@ namespace Sunset
 
     void Application::Run()
     {
+        if (!m_Window)
+            throw std::runtime_error("Application window has not been configured.\nYou forgot to call SetWindow before Run");
+
         std::chrono::steady_clock::time_point prev = std::chrono::steady_clock::now();
 
         while (IsAppRunning && (AppSetting.Headless || (m_Window && !m_Window->ShouldClose())))
@@ -93,7 +87,10 @@ namespace Sunset
             Update(dt.count());
 
             if (!AppSetting.Headless)
-                Render();
+            {
+                for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )
+                    (*--layer)->OnDraw();
+            }
 
             ProfileData::end = std::chrono::high_resolution_clock::now();
             EndFrame();
@@ -124,10 +121,14 @@ namespace Sunset
     {
         AudioSystem::Shutdown();
 
+        ReleaseLayers();
+        m_Window.reset();
+    }
+
+    void Application::ReleaseLayers()
+    {
         m_CommandBuffer.clear();
         m_LayerStack.Clear();
-        m_Renderer.reset();
-        m_Window.reset();
     }
 
     void Application::BeginFrame()
@@ -138,7 +139,6 @@ namespace Sunset
             m_Window->PollEvents();
         }
 
-        GetAPI()->BeginFrame();
     }
 
     void Application::Update(const float deltatime)
@@ -158,19 +158,10 @@ namespace Sunset
         }
     }
 
-    void Application::Render()
-    {
-        SS_PROFILE_SCOPE("Render part");
-
-        for (auto layer = m_LayerStack.end(); layer != m_LayerStack.begin(); )
-            (*--layer)->OnDraw(m_Renderer.get());
-    }
-
     void Application::EndFrame()
     {
-        GetAPI()->EndFrame();
-
-        m_Window->Present();
+        if (m_Window)
+            m_Window->Present();
     }
 
     void Application::OnWindowReady()
@@ -209,14 +200,6 @@ namespace Sunset
             return nullptr;
 
         return app->m_Window->GetNativeHandle();
-    }
-
-    RenderAPI * Application::GetAPI()
-    {
-        if (!app)
-            return nullptr;
-
-        return app->m_Renderer->m_API.get();
     }
 
     bool Application::IsHeadless()

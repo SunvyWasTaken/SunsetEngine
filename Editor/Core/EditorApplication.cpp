@@ -13,15 +13,22 @@
 
 namespace Sunset
 {
+    EditorApplication::~EditorApplication()
+    {
+        OnDestroy();
+    }
+
     void EditorApplication::OnDestroy()
     {
-        Application::OnDestroy();
-
+        ReleaseLayers();
         loader.Unload();
 
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui_ImplGlfw_Shutdown();
-        ImGui::DestroyContext();
+        if (ImGui::GetCurrentContext())
+        {
+            ImGui_ImplOpenGL3_Shutdown();
+            ImGui_ImplGlfw_Shutdown();
+            ImGui::DestroyContext();
+        }
     }
 
     void EditorApplication::BeginFrame()

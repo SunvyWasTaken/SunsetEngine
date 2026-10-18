@@ -6,11 +6,9 @@
 
 #include "Entity.h"
 #include "ScriptEntity.h"
-#include "GameFramework/Components/CameraComponent.h"
 #include "GameFramework/Components/ComponentRegistry.h"
 #include "GameFramework/Components/InputComponent.h"
 #include "GameFramework/Components/NativeScriptComponent.h"
-#include "GameFramework/Components/SpriteRenderComponent.h"
 #include "GameFramework/Components/TransformComponent.h"
 #include "GameFramework/System/NativeScriptingSystem.h"
 #include "Network/NetworkService.h"
@@ -21,7 +19,7 @@
 namespace
 {
     constexpr std::uint32_t WorldSaveMagic = 0x44574E53; // SNWD
-    constexpr std::uint32_t WorldSaveVersion = 3;
+    constexpr std::uint32_t WorldSaveVersion = 4;
 
     void RegisterEngineSystems(Sunset::World& world)
     {
@@ -128,14 +126,6 @@ namespace Sunset
         archive(component.GetBindings());
     }
 
-    void Serialize(BinaryInputArchive& archive, SpriteRenderComponent& component)
-    {
-    }
-
-    void Serialize(BinaryOutputArchive& archive, SpriteRenderComponent& component)
-    {
-    }
-
     World::World()
         : m_Registry()
     {
@@ -178,18 +168,6 @@ namespace Sunset
     void World::Update(float dt)
     {
         SS_PROFILE_FUNCTION();
-
-        // if (!Application::IsHeadless())
-        // {
-        //     for (const auto view = m_Registry.view<CameraComponent>(); const auto entity : view)
-        //     {
-        //         if (const auto& cam = m_Registry.get<CameraComponent>(entity); cam.Primary)
-        //         {
-        //             RenderCommand::UseCamera(cam.camera);
-        //             break;
-        //         }
-        //     }
-        // }
 
         // for (const auto& system : m_Systems)
         //     system->Update(dt);
@@ -241,9 +219,7 @@ namespace Sunset
 
             CloneComponent<TagComponent>(m_Registry, targetEntity, sourceEntity);
             CloneComponent<TransformComponent>(m_Registry, targetEntity, sourceEntity);
-            CloneComponent<CameraComponent>(m_Registry, targetEntity, sourceEntity);
             CloneComponent<InputComponent>(m_Registry, targetEntity, sourceEntity);
-            CloneComponent<SpriteRenderComponent>(m_Registry, targetEntity, sourceEntity);
 
             if (m_Registry.all_of<NativeScriptComponent>(sourceEntity))
             {
@@ -289,9 +265,7 @@ namespace Sunset
             archive(entityId);
             SaveComponent<TagComponent>(archive, world.m_Registry, enttEntity);
             SaveComponent<TransformComponent>(archive, world.m_Registry, enttEntity);
-            SaveComponent<CameraComponent>(archive, world.m_Registry, enttEntity);
             SaveComponent<InputComponent>(archive, world.m_Registry, enttEntity);
-            SaveComponent<SpriteRenderComponent>(archive, world.m_Registry, enttEntity);
             SaveComponent<NativeScriptComponent>(archive, world.m_Registry, enttEntity);
 
             std::uint64_t projectComponentCount = 0;
@@ -331,6 +305,7 @@ namespace Sunset
         if (magic != WorldSaveMagic || version != WorldSaveVersion)
         {
             LOG("Engine", error, "Invalid world save file")
+            archive.Invalidate();
             return;
         }
 
@@ -349,9 +324,7 @@ namespace Sunset
             Entity entity{&world, world.m_Registry.create(static_cast<entt::entity>(entityId))};
             LoadComponent<TagComponent>(archive, entity);
             LoadComponent<TransformComponent>(archive, entity);
-            LoadComponent<CameraComponent>(archive, entity);
             LoadComponent<InputComponent>(archive, entity);
-            LoadComponent<SpriteRenderComponent>(archive, entity);
             LoadComponent<NativeScriptComponent>(archive, entity);
 
             std::uint64_t projectComponentCount = 0;

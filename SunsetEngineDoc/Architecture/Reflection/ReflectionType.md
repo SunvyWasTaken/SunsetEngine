@@ -32,11 +32,10 @@ struct ReflectionField
 Les enums sont declarees avec une liste de valeurs.
 
 ```cpp
-type.EnumField("Projection", &CameraComponent::Projection, {
-	{ProjectionType::Perspective, "Perspective"},
-	{ProjectionType::Orthographic, "Orthographic"}
+type.EnumField("Mode", &Settings::Mode, {
+	{Mode::Edit, "Edit"},
+	{Mode::Play, "Play"}
 });
 ```
 
 Cela permet a l'editor d'afficher un combo.
-

@@ -62,6 +62,11 @@ namespace Sunset
             BinaryInputArchive::Read(value);
         }
 
+        void Invalidate()
+        {
+            m_Stream.setstate(std::ios::failbit);
+        }
+
     private:
         template <typename T>
         void Read(T& value)

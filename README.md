@@ -4,37 +4,25 @@
 
 SunsetEngine est un moteur et framework applicatif modulaire en **C++23**. Ce projet de portfolio explore la conception d'un runtime réutilisable : une base pour créer des jeux, mais aussi, à terme, des applications interactives hors jeu vidéo.
 
-Le dépôt rassemble le moteur, une application de jeu d'exemple et un éditeur en cours de construction. L'objectif est de travailler des sujets d'architecture concrets : séparation des responsabilités, abstractions de plateforme et de rendu, ECS, chargement de modules et outils de création.
+Le dépôt rassemble le moteur, une application de jeu d'exemple et un éditeur en cours de construction. L'objectif est de travailler des sujets d'architecture concrets : séparation des responsabilités, ECS, chargement de modules et outils de création.
 
 ## En bref
 
 - Runtime applicatif avec boucle principale, pile de layers, événements, entrées et mode headless.
 - Game framework fondé sur **EnTT** : mondes, entités, composants, systèmes et scripts C++ natifs.
-- Rendu à API abstraite, avec backend **OpenGL** actif et point d'extension Vulkan.
 - Services intégrés : réseau **ENet**, audio OpenAL, sérialisation binaire, réflexion légère, logs et profiling.
-- UI retained-mode avec SRmGUI et éditeur basé sur ImGui, Gizmo et node editor.
+- Éditeur basé sur ImGui, avec un viewport vide en attendant un nouveau rendu de scène.
 - Documentation d'architecture versionnée, écrite pour être consultée dans **Obsidian**.
 
 ## Architecture
 
-Le workspace CMake construit le moteur, puis compose un runtime avec les modules de plateforme et de rendu sélectionnés. Les applications de jeu et l'éditeur utilisent ce runtime sans dépendre directement des détails OpenGL ou GLFW.
-
-<details>
-<summary>Afficher le diagramme d'architecture</summary>
-
-<a href="Resources/SunsetEngine_Diagram.png">
-  <img src="Resources/SunsetEngine_Diagram.png" alt="Diagramme de l'architecture de SunsetEngine" width="460">
-</a>
-
-Cliquez sur l'image pour l'ouvrir en taille réelle.
-</details>
+Le workspace CMake construit le moteur et compose un runtime avec la plateforme GLFW. L'éditeur utilise OpenGL uniquement pour afficher son interface ImGui. Le rendu des mondes reste à réimplémenter.
 
 | Domaine | Rôle |
 | --- | --- |
 | **Core** | Cycle de vie de l'application, layers, fenêtre, événements et entrées. |
 | **GameFramework** | Mondes ECS, entités, composants, systèmes, scripts et gestion des scènes. |
-| **Render** | Construction de scène, ressources graphiques, commandes et abstraction `RenderAPI`. |
-| **Platform / RenderAPI** | Implémentations interchangeables de fenêtre et de backend graphique ; GLFW et OpenGL sont actuellement utilisés. |
+| **Platform** | Fenêtre et événements GLFW pour les applications graphiques. |
 | **Runtime services** | Réseau, audio, sauvegarde, logs, profiling et réflexion. |
 | **Editor** | Application de validation et outils d'édition en cours de développement. |
 
@@ -43,12 +31,11 @@ Cliquez sur l'image pour l'ouvrir en taille réelle.
 ```text
 Engine/             Runtime et systèmes du moteur
 Platform/           Implémentations de plateforme, dont GLFW
-RenderAPI/          Backends graphiques, dont OpenGL et une base Vulkan
 Game/               Application de jeu et module d'exemple Pong
 Editor/             Éditeur construit au-dessus du runtime
 SunsetEngineDoc/    Documentation d'architecture pour Obsidian
-Resources/          Ressources du dépôt, dont le diagramme d'architecture
-Thirdparty/         Dépendances vendoriées (FastNoiseSIMD, SRmGUI)
+Resources/          Ressources du dépôt
+Thirdparty/         Dépendance vendoriée FastNoiseSIMD
 ```
 
 ## Compiler le projet
@@ -77,12 +64,10 @@ Les options CMake principales sont :
 | --- | --- | --- |
 | `SUNSET_BUILD_EDITOR` | `ON` | Compile l'exécutable `SunsetEditor`. |
 | `SUNSET_USE_GLFW` | `ON` | Ajoute la plateforme GLFW au runtime. |
-| `SUNSET_USE_OPENGL` | `ON` | Ajoute le backend OpenGL au runtime. |
-| `SUNSET_USE_VULKAN` | `OFF` | Active le point d'intégration du backend Vulkan. |
 
 ## Utiliser le runtime dans un projet CMake
 
-Ajoutez SunsetEngine comme sous-répertoire, puis liez l'interface `Sunset::Runtime`. Elle rassemble `Sunset::Engine` avec les implémentations de plateforme et de rendu activées par la configuration CMake.
+Ajoutez SunsetEngine comme sous-répertoire, puis liez l'interface `Sunset::Runtime`. Elle rassemble `Sunset::Engine` et la plateforme GLFW si elle est activée.
 
 ```cmake
 add_subdirectory(path/to/SunsetEngine)
@@ -97,7 +82,7 @@ La documentation se trouve dans [`SunsetEngineDoc/`](SunsetEngineDoc). C'est un 
 
 1. Installez [Obsidian](https://obsidian.md), puis choisissez **Open folder as vault**.
 2. Sélectionnez le dossier `SunsetEngineDoc` du clone local.
-3. Commencez par les notes [Core](SunsetEngineDoc/Architecture/Core/Application.md), [GameFramework](SunsetEngineDoc/Architecture/GameFramework/World.md) et [Render](SunsetEngineDoc/Architecture/Render/Renderer.md).
+3. Commencez par les notes [Core](SunsetEngineDoc/Architecture/Core/Application.md) et [GameFramework](SunsetEngineDoc/Architecture/GameFramework/World.md).
 4. Suivez les liens internes et ouvrez la **Graph view** pour visualiser les relations entre les systèmes.
 5. Poursuivez selon le sujet : [réseau](SunsetEngineDoc/Architecture/Network/NetworkService.md), [sauvegarde](SunsetEngineDoc/Architecture/SaveSystem/SaveSystem.md), [éditeur](SunsetEngineDoc/Architecture/Editor/EditorApplication.md) ou [scripts natifs](SunsetEngineDoc/Architecture/GameFramework/ScriptRegistry.md).
 

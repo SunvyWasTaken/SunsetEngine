@@ -9,31 +9,16 @@
 #include "GameFramework/World/Entity.h"
 #include "GameFramework/World/ScriptEntity.h"
 #include "GameFramework/World/World.h"
-#include "GameFramework/Components/CameraComponent.h"
 #include "GameFramework/Components/InputComponent.h"
 #include "GameFramework/Components/NativeScriptComponent.h"
-#include "GameFramework/Components/SpriteRenderComponent.h"
 #include "GameFramework/Components/TransformComponent.h"
 #include "Panels/WorldHierarchyPanel.h"
-#include "Render/Resources/RenderTarget.h"
-#include "Render/Resources/Texture.h"
-#include "Render/Core/Renderer.h"
 #include "SaveSystem/SaveSystem.h"
-
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/matrix_decompose.hpp>
-#include <ImGuizmo.h>
-#include <stb_image.h>
 
 #include "Core/AssetImporter.h"
 
 namespace
 {
-    bool ViewportHover = false;
-
     struct ImGuiDockspaceArgs
     {
         bool                IsFullscreen = true;
@@ -41,70 +26,13 @@ namespace
         ImGuiDockNodeFlags  DockSpaceFlags  = ImGuiDockNodeFlags_None;
     };
 
-    ImGuizmo::OPERATION gizmoOperation = ImGuizmo::TRANSLATE;
 
-    float Cross(const ImVec2& a, const ImVec2& b, const ImVec2& c)
-    {
-        return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
-    }
-
-    bool IsPointInTriangle(const ImVec2& point, const ImVec2& a, const ImVec2& b, const ImVec2& c)
-    {
-        const float ab = Cross(a, b, point);
-        const float bc = Cross(b, c, point);
-        const float ca = Cross(c, a, point);
-
-        return (ab >= 0.0f && bc >= 0.0f && ca >= 0.0f) || (ab <= 0.0f && bc <= 0.0f && ca <= 0.0f);
-    }
-
-    bool IsPointInQuad(const ImVec2& point, const std::array<ImVec2, 4>& quad)
-    {
-        return IsPointInTriangle(point, quad[0], quad[1], quad[2])
-            || IsPointInTriangle(point, quad[2], quad[3], quad[0]);
-    }
-
-    ImVec2 WorldToViewportScreen(const glm::vec3& worldPosition,
-                                 const glm::mat4& viewProjection,
-                                 const ImVec2& viewportMin,
-                                 const ImVec2& viewportSize)
-    {
-        const glm::vec4 clip = viewProjection * glm::vec4(worldPosition, 1.0f);
-        const glm::vec3 ndc = glm::vec3(clip) / clip.w;
-
-        return {
-            viewportMin.x + (ndc.x * 0.5f + 0.5f) * viewportSize.x,
-            viewportMin.y + (1.0f - (ndc.y * 0.5f + 0.5f)) * viewportSize.y
-        };
-    }
-
-    std::unique_ptr<Sunset::Texture> LoadTexture(const char* filepath)
-    {
-        int width = 0;
-        int height = 0;
-        int channels = 0;
-        stbi_uc* data = stbi_load(filepath, &width, &height, &channels, STBI_rgb_alpha);
-
-        if (!data)
-            return nullptr;
-
-        Sunset::TextureDescription desc;
-        desc.width = static_cast<std::uint32_t>(width);
-        desc.height = static_cast<std::uint32_t>(height);
-        desc.format = Sunset::TextureFormat::RGBA;
-        desc.data = data;
-
-        std::unique_ptr<Sunset::Texture> texture = Sunset::Texture::Create(desc);
-        stbi_image_free(data);
-
-        return texture;
-    }
 }
 
 namespace Sunset
 {
     EditorLayer::EditorLayer()
         : m_WorldHierarchy(nullptr)
-        , m_Framebuffer(nullptr)
     {
     }
 
@@ -117,10 +45,6 @@ namespace Sunset
     {
         Layer::Init();
         SetActiveWorld(std::make_shared<World>());
-        m_PlayIcon = LoadTexture(EDITOR_RESOURCES "Icons/jouer.png");
-        m_PauseIcon = LoadTexture(EDITOR_RESOURCES "Icons/pause.png");
-        m_Framebuffer = RenderTarget::Create({1280, 720});
-        m_Camera.SetPosition({0, 0, 10});
     }
 
     void EditorLayer::SetActiveWorld(const std::shared_ptr<World>& world)
@@ -185,11 +109,9 @@ namespace Sunset
         }
     }
 
-    void EditorLayer::OnDraw(Renderer* renderer)
+    void EditorLayer::OnDraw()
     {
-        Layer::OnDraw(renderer);
-
-        RenderWorldViewport(renderer);
+        Layer::OnDraw();
 
         DrawDockspace();
 
@@ -208,43 +130,9 @@ namespace Sunset
         // });
         if (std::holds_alternative<EditorState::Play>(m_EditorState))
             m_World->OnEvent(event);
-        else if (ViewportHover)
-            if (auto* keyboard = std::get_if<Event::Keyboard>(&event))
-            {
-                if (keyboard->key == Key::W)
-                    m_Camera.AddPosition(m_Camera.GetForward());
-                else if (keyboard->key == Key::S)
-                    m_Camera.AddPosition(-m_Camera.GetForward());
-                else if (keyboard->key == Key::A)
-                    m_Camera.AddPosition(-m_Camera.GetRight());
-                else if (keyboard->key == Key::D)
-                    m_Camera.AddPosition(m_Camera.GetRight());
-            }
+
 
         return Layer::OnEvent(event);
-    }
-
-    void EditorLayer::RenderWorldViewport(Renderer *renderer)
-    {
-        m_Framebuffer->Bind();
-        renderer->SetViewport({viewportSize.x, viewportSize.y});
-        Camera viewportCamera = m_Camera;
-        if (std::holds_alternative<EditorState::Play>(m_EditorState))
-        {
-            m_World->Each<CameraComponent>([&](const Entity&, const CameraComponent& camera)
-            {
-                if (camera.Primary)
-                {
-                    viewportCamera = camera.camera;
-                }
-            });
-        }
-        viewportCamera.SetAspectRatio(viewportSize.y > 0.0f ? viewportSize.x / viewportSize.y : 1.0f);
-        m_RenderScene.BeginScene(viewportCamera);
-        m_BuildRenderScene(*(m_World.get()), m_RenderScene);
-        renderer->RenderScene(m_RenderScene);
-        m_Framebuffer->UnBind();
-        renderer->SetViewport(Application::GetSetting().WindowSize);
     }
 
     void EditorLayer::DrawDockspace()
@@ -338,19 +226,19 @@ namespace Sunset
 
         if (std::holds_alternative<EditorState::Edit>(m_EditorState))
         {
-            if (DrawToolbarImageButton("PlayButton", m_PlayIcon.get(), "Play"))
+            if (ImGui::Button("Play"))
                 StartPlayMode();
         }
         else
         {
             if (std::holds_alternative<EditorState::Play>(m_EditorState))
             {
-                if (DrawToolbarImageButton("PauseButton", m_PauseIcon.get(), "Pause"))
+                if (ImGui::Button("Pause"))
                     PausePlayMode();
             }
             else
             {
-                if (DrawToolbarImageButton("ResumeButton", m_PlayIcon.get(), "Resume"))
+                if (ImGui::Button("Resume"))
                     ResumePlayMode();
             }
 
@@ -360,18 +248,6 @@ namespace Sunset
         }
 
         ImGui::End();
-    }
-
-    bool EditorLayer::DrawToolbarImageButton(const char* id, const Texture* icon, const char* fallbackLabel)
-    {
-        if (!icon)
-            return ImGui::Button(fallbackLabel);
-
-        return ImGui::ImageButton(
-            id,
-            ImTextureRef(static_cast<ImTextureID>(icon->GetRenderID())),
-            ImVec2(24.0f, 24.0f)
-        );
     }
 
     void EditorLayer::DrawSaveWorldAsPopup()
@@ -436,128 +312,9 @@ namespace Sunset
 
     void EditorLayer::DrawViewportPanel()
     {
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
         ImGui::Begin("Viewport");
-        ViewportHover = ImGui::IsWindowHovered();
-        const auto& AvailableSpace = ImGui::GetContentRegionAvail();
-        if (viewportSize.x != AvailableSpace.x || viewportSize.y != AvailableSpace.y)
-        {
-            viewportSize = AvailableSpace;
-            m_Framebuffer = RenderTarget::Create({static_cast<uint32_t>(viewportSize.x), static_cast<uint32_t>(viewportSize.y)});
-        }
-
-        m_ViewportMin = ImGui::GetCursorScreenPos();
-        m_ViewportMax = ImVec2(m_ViewportMin.x + viewportSize.x, m_ViewportMin.y + viewportSize.y);
-        ImGui::Image(m_Framebuffer->GetColorAttachmentRenderID(), viewportSize, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
-
-        const bool viewportHovered = ImGui::IsItemHovered();
-        if (ImGui::IsItemHovered())
-        {
-            if (ImGui::IsKeyPressed(ImGuiKey_T))
-                gizmoOperation = ImGuizmo::TRANSLATE;
-            if (ImGui::IsKeyPressed(ImGuiKey_R))
-                gizmoOperation = ImGuizmo::ROTATE;
-            if (ImGui::IsKeyPressed(ImGuiKey_Y))
-                gizmoOperation = ImGuizmo::SCALE;
-        }
-
-        DrawGizmo();
-
-        if (viewportHovered
-            && ImGui::IsMouseClicked(ImGuiMouseButton_Left)
-            && !ImGuizmo::IsOver()
-            && !ImGuizmo::IsUsing())
-        {
-            SelectEntityFromViewport(ImGui::GetMousePos());
-        }
+        ImGui::TextUnformatted("Rendu de scène à implémenter.");
         ImGui::End();
-        ImGui::PopStyleVar();
-    }
-
-    void EditorLayer::DrawGizmo()
-    {
-        if (!m_WorldHierarchy)
-            return;
-
-        Entity selectedEntity = m_WorldHierarchy->GetSelectedEntity();
-        if (!selectedEntity)
-            return;
-
-        auto* transform = selectedEntity.GetComponent<TransformComponent>();
-        if (!transform)
-            return;
-
-        ImGuizmo::BeginFrame();
-        ImGuizmo::SetOrthographic(false);
-        ImGuizmo::SetDrawlist();
-        ImGuizmo::SetRect(m_ViewportMin.x, m_ViewportMin.y, viewportSize.x, viewportSize.y);
-
-        glm::mat4 transformMatrix = transform->GetWorldMatrix();
-        const glm::mat4 viewMatrix = m_Camera.GetViewMatrix();
-        const float viewportAspect = viewportSize.y > 0.0f ? viewportSize.x / viewportSize.y : 1.0f;
-        const glm::mat4 projectionMatrix = m_Camera.GetProjection(viewportAspect);
-
-        ImGuizmo::Manipulate(
-            glm::value_ptr(viewMatrix),
-            glm::value_ptr(projectionMatrix),
-            gizmoOperation,
-            ImGuizmo::LOCAL,
-            glm::value_ptr(transformMatrix)
-        );
-
-        if (ImGuizmo::IsUsing())
-        {
-            glm::vec3 skew;
-            glm::vec4 perspective;
-            glm::decompose(transformMatrix, transform->Scale, transform->Rotation, transform->Position, skew, perspective);
-            transform->Rotation = glm::conjugate(transform->Rotation);
-        }
-    }
-
-    void EditorLayer::SelectEntityFromViewport(const ImVec2& mousePosition)
-    {
-        if (!m_WorldHierarchy)
-            return;
-
-        const float viewportAspect = viewportSize.y > 0.0f ? viewportSize.x / viewportSize.y : 1.0f;
-        const glm::mat4 viewProjection = m_Camera.GetProjection(viewportAspect) * m_Camera.GetViewMatrix();
-
-        Entity selectedEntity;
-        float selectedDepth = std::numeric_limits<float>::max();
-
-        m_World->Each<TransformComponent, SpriteRenderComponent>([&](const Entity& entity, const TransformComponent& transform, const SpriteRenderComponent&)
-        {
-            const glm::mat4 model = transform.GetWorldMatrix();
-            const std::array<glm::vec3, 4> localCorners = {
-                glm::vec3{-0.5f, -0.5f, 0.0f},
-                glm::vec3{ 0.5f, -0.5f, 0.0f},
-                glm::vec3{ 0.5f,  0.5f, 0.0f},
-                glm::vec3{-0.5f,  0.5f, 0.0f}
-            };
-
-            std::array<ImVec2, 4> screenCorners{};
-            float depth = 0.0f;
-            for (std::size_t i = 0; i < localCorners.size(); ++i)
-            {
-                const glm::vec4 worldCorner = model * glm::vec4(localCorners[i], 1.0f);
-                const glm::vec4 clip = viewProjection * worldCorner;
-                if (clip.w <= 0.0f)
-                    return;
-
-                const glm::vec3 ndc = glm::vec3(clip) / clip.w;
-                depth += ndc.z;
-                screenCorners[i] = WorldToViewportScreen(glm::vec3(worldCorner), viewProjection, m_ViewportMin, viewportSize);
-            }
-
-            depth /= static_cast<float>(localCorners.size());
-            if (IsPointInQuad(mousePosition, screenCorners) && depth < selectedDepth)
-            {
-                selectedDepth = depth;
-                selectedEntity = entity;
-            }
-        });
-
-        m_WorldHierarchy->SetSelectedEntity(selectedEntity);
     }
 
     void EditorLayer::DrawPanels()

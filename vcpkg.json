@@ -3,10 +3,8 @@
   "version-string" : "0.2.1",
   "dependencies" :
   [
-    "assimp",
     "enet",
     "entt",
-    "glad",
     "glfw3",
     "glm",
     {
@@ -14,7 +12,6 @@
     "features" : [ "glfw-binding", "opengl3-binding", "docking-experimental" ]
     },
     "imgui-node-editor",
-    "imguizmo",
     "openal-soft",
     "spdlog",
     "libsndfile",
